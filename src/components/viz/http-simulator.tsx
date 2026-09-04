@@ -2,7 +2,7 @@
 
 import { SimShell } from "./sim-shell";
 import { useSim } from "./use-sim";
-import { Pipeline } from "@/components/docs/pipeline";
+import { Pipeline } from "@/components/topics/pipeline";
 
 const STEPS = [
   "URL bar: https://example.com/",

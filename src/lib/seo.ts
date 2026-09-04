@@ -76,7 +76,7 @@ export function topicMetadata(slug: string): Metadata {
     const count = ALL_NAV.filter((t) => t.section === slug).length;
     const title = section.title;
     const description = `${section.blurb} ${count} topics.`;
-    const path = `/docs/${slug}`;
+    const path = `/topics/${slug}`;
     return pageMeta({ title, description, path, keywords: [section.title, section.short, "computer science"] });
   }
   const topic = getTopic(slug);
@@ -86,7 +86,7 @@ export function topicMetadata(slug: string): Metadata {
   return pageMeta({
     title: topic.title,
     description,
-    path: `/docs/${topic.slug}`,
+    path: `/topics/${topic.slug}`,
     keywords: [topic.title, section.title, topic.level, ...topic.tags],
     type: "article",
   });
@@ -146,7 +146,7 @@ export function pageMeta(opts: {
 
 export function topicJsonLd(topic: Topic) {
   const section = SECTION_BY_ID[topic.section];
-  const url = abs(`/docs/${topic.slug}`);
+  const url = abs(`/topics/${topic.slug}`);
   const article = {
     "@type": "TechArticle",
     "@id": url,
@@ -167,8 +167,8 @@ export function topicJsonLd(topic: Topic) {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: abs("/") },
-      { "@type": "ListItem", position: 2, name: "Library", item: abs("/docs") },
-      { "@type": "ListItem", position: 3, name: section.title, item: abs(`/docs/${topic.section}`) },
+      { "@type": "ListItem", position: 2, name: "Library", item: abs("/topics") },
+      { "@type": "ListItem", position: 3, name: section.title, item: abs(`/topics/${topic.section}`) },
       { "@type": "ListItem", position: 4, name: topic.title, item: url },
     ],
   };
@@ -196,7 +196,7 @@ export function websiteJsonLd() {
     inLanguage: "en",
     potentialAction: {
       "@type": "SearchAction",
-      target: `${abs("/docs")}?q={search_term_string}`,
+      target: `${abs("/topics")}?q={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };

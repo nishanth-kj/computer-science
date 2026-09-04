@@ -78,7 +78,7 @@ export function GraphPage() {
           );
         })}
         {laid.map((n) => (
-          <g key={n.id} className="cursor-pointer" onClick={() => router.push(`/docs/${n.id}`)}>
+          <g key={n.id} className="cursor-pointer" onClick={() => router.push(`/topics/${n.id}`)}>
             <circle cx={n.x} cy={n.y} r="1.4" className="fill-primary" />
             <text x={n.x + 1.8} y={n.y + 0.6} fontSize="1.6" className="fill-fg">
               {n.title.length > 18 ? n.title.slice(0, 16) + "…" : n.title}

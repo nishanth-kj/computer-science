@@ -60,7 +60,7 @@ export function InterviewPage() {
           <li key={it.slug + it.q} className="rounded-lg border border-border bg-surface px-4 py-3">
             <p className="text-[11px] text-muted">
               {i + 1}.{" "}
-              <Link href={`/docs/${it.slug}`} className="hover:underline">
+              <Link href={`/topics/${it.slug}`} className="hover:underline">
                 {it.title}
               </Link>
             </p>

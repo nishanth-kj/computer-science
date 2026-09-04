@@ -2,16 +2,18 @@ import type { MetadataRoute } from "next";
 import { ALL_NAV, LABS, PATHS, SECTION_BY_ID } from "@/content";
 import { abs } from "@/lib/seo";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
   const sections = Object.keys(SECTION_BY_ID).map((id) => ({
-    url: abs(`/docs/${id}`),
+    url: abs(`/topics/${id}`),
     lastModified,
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
   const topics = ALL_NAV.map((t) => ({
-    url: abs(`/docs/${t.slug}`),
+    url: abs(`/topics/${t.slug}`),
     lastModified,
     changeFrequency: "weekly" as const,
     priority: 0.7,
@@ -30,7 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
   return [
     { url: abs("/"), lastModified, changeFrequency: "weekly", priority: 1 },
-    { url: abs("/docs"), lastModified, changeFrequency: "weekly", priority: 0.9 },
+    { url: abs("/topics"), lastModified, changeFrequency: "weekly", priority: 0.9 },
     { url: abs("/labs"), lastModified, changeFrequency: "monthly", priority: 0.7 },
     { url: abs("/graph"), lastModified, changeFrequency: "monthly", priority: 0.5 },
     { url: abs("/paths"), lastModified, changeFrequency: "monthly", priority: 0.6 },

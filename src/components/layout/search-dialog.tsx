@@ -49,7 +49,7 @@ export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                 <Command.Item
                   key={t.slug}
                   value={t.title + t.slug}
-                  onSelect={() => go(`/docs/${t.slug}`)}
+                  onSelect={() => go(`/topics/${t.slug}`)}
                   className={cn(
                     "flex cursor-pointer flex-col rounded-md px-3 py-2 text-sm text-fg aria-selected:bg-surface-2",
                   )}
@@ -93,7 +93,7 @@ export function SearchDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                   <Command.Item
                     key={s.id}
                     value={s.title}
-                    onSelect={() => go(`/docs/${s.id}`)}
+                    onSelect={() => go(`/topics/${s.id}`)}
                     className="cursor-pointer rounded-md px-3 py-2 text-sm aria-selected:bg-surface-2"
                   >
                     {s.title}

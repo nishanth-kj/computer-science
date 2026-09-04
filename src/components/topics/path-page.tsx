@@ -26,7 +26,7 @@ export function PathPage({ id }: { id: string }) {
           return (
             <li key={slug}>
               <Link
-                href={`/docs/${slug}`}
+                href={`/topics/${slug}`}
                 className={cn(
                   "flex items-start gap-4 rounded-lg border border-border px-4 py-3 hover:bg-surface-2",
                   done && "border-ok/40",

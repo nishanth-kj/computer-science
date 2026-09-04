@@ -23,7 +23,7 @@ export function LibraryPage() {
                     <CardHeader>
                       <div className="flex items-baseline justify-between gap-3">
                         <CardTitle>
-                          <Link href={`/docs/${id}`} className="hover:underline">
+                          <Link href={`/topics/${id}`} className="hover:underline">
                             {s.title}
                           </Link>
                         </CardTitle>
@@ -35,7 +35,7 @@ export function LibraryPage() {
                       <ul className="space-y-1">
                         {topics.slice(0, 4).map((t) => (
                           <li key={t.slug}>
-                            <Link href={`/docs/${t.slug}`} className="text-sm text-link hover:underline">
+                            <Link href={`/topics/${t.slug}`} className="text-sm text-link hover:underline">
                               {t.title}
                             </Link>
                           </li>

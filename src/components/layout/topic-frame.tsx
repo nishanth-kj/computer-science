@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import { List } from "lucide-react";
-import { DocsSidebar } from "@/components/docs/sidebar";
+import { DocsSidebar } from "@/components/topics/sidebar";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 

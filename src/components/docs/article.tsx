@@ -22,14 +22,14 @@ function TopicLink({ slug }: { slug: string }) {
   const t = getTopic(slug);
   if (t)
     return (
-      <Link href={`/docs/${slug}`} className="text-link underline-offset-2 hover:underline">
+      <Link href={`/topics/${slug}`} className="text-link underline-offset-2 hover:underline">
         {t.title}
       </Link>
     );
   const section = SECTION_BY_ID[slug as keyof typeof SECTION_BY_ID];
   if (section)
     return (
-      <Link href={`/docs/${slug}`} className="text-link underline-offset-2 hover:underline">
+      <Link href={`/topics/${slug}`} className="text-link underline-offset-2 hover:underline">
         {section.title}
       </Link>
     );
@@ -142,7 +142,7 @@ export function DocArticle({ topic }: { topic: Topic }) {
   return (
     <article className="mx-auto max-w-3xl pb-24">
       <p className="mb-3 text-xs tracking-wide text-muted uppercase">
-        <Link href={`/docs/${topic.section}`} className="hover:text-fg">
+        <Link href={`/topics/${topic.section}`} className="hover:text-fg">
           {section.title}
         </Link>
       </p>
@@ -268,7 +268,7 @@ export function DocArticle({ topic }: { topic: Topic }) {
           {topic.related.filter(exists).map((s) => (
             <Link
               key={s}
-              href={`/docs/${s}`}
+              href={`/topics/${s}`}
               className="rounded-full border border-border px-3 py-1 text-sm hover:bg-surface-2"
             >
               {getTopic(s)?.title ?? SECTION_BY_ID[s as keyof typeof SECTION_BY_ID]?.title ?? s}
@@ -278,7 +278,7 @@ export function DocArticle({ topic }: { topic: Topic }) {
       </Section>
       {topic.next && exists(topic.next) ? (
         <Section id="next-topic" title="Next topic">
-          <Link href={`/docs/${topic.next}`} className="text-link hover:underline">
+          <Link href={`/topics/${topic.next}`} className="text-link hover:underline">
             {getTopic(topic.next)?.title ?? SECTION_BY_ID[topic.next as keyof typeof SECTION_BY_ID]?.title}
           </Link>
         </Section>

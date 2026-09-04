@@ -99,7 +99,7 @@ export function DocsSidebar({ onNavigate }: { onNavigate?: () => void }) {
                           />
                         </button>
                         <Link
-                          href={`/docs/${b.id}`}
+                          href={`/topics/${b.id}`}
                           onClick={onNavigate}
                           className={cn(
                             "flex min-h-10 min-w-0 flex-1 items-center rounded-md px-1.5 text-sm hover:bg-surface-2",
@@ -117,7 +117,7 @@ export function DocsSidebar({ onNavigate }: { onNavigate?: () => void }) {
                           {b.topics.map((t) => (
                             <li key={t.slug}>
                               <Link
-                                href={`/docs/${t.slug}`}
+                                href={`/topics/${t.slug}`}
                                 onClick={onNavigate}
                                 className={cn(
                                   "block min-h-9 px-3 py-1.5 text-sm text-muted hover:bg-surface-2/80 hover:text-fg",

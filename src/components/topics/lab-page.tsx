@@ -42,7 +42,7 @@ export function LabPage({ id }: { id: string }) {
       <ul className="mt-3 space-y-1">
         {lab.topics.map((slug) => (
           <li key={slug}>
-            <Link href={`/docs/${slug}`} className="text-sm text-link hover:underline">
+            <Link href={`/topics/${slug}`} className="text-sm text-link hover:underline">
               {getTopic(slug)?.title ?? slug}
             </Link>
           </li>

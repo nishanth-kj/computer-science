@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /__grok/install/
+
+Host: http://localhost:8080
+Sitemap: http://localhost:8080/sitemap.xml

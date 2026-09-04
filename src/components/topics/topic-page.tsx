@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { DocArticle } from "@/components/docs/article";
-import { Toc } from "@/components/docs/toc";
+import { DocArticle } from "@/components/topics/article";
+import { Toc } from "@/components/topics/toc";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -35,13 +35,13 @@ export function TopicPage({ slug }: { slug: string }) {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="/docs">Library</Link>
+                <Link href="/topics">Library</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href={`/docs/${topic.section}`}>{section.title}</Link>
+                <Link href={`/topics/${topic.section}`}>{section.title}</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />

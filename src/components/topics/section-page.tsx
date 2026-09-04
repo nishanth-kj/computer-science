@@ -22,7 +22,7 @@ export function SectionPage({ id }: { id: SectionId }) {
         "@type": "CollectionPage",
         name: section.title,
         description: section.blurb,
-        url: abs(`/docs/${id}`),
+        url: abs(`/topics/${id}`),
         isPartOf: { "@type": "WebSite", name: SITE_NAME, url: abs("/") },
       },
       {
@@ -31,15 +31,15 @@ export function SectionPage({ id }: { id: SectionId }) {
           "@type": "ListItem",
           position: i + 1,
           name: t.title,
-          url: abs(`/docs/${t.slug}`),
+          url: abs(`/topics/${t.slug}`),
         })),
       },
       {
         "@type": "BreadcrumbList",
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Home", item: abs("/") },
-          { "@type": "ListItem", position: 2, name: "Library", item: abs("/docs") },
-          { "@type": "ListItem", position: 3, name: section.title, item: abs(`/docs/${id}`) },
+          { "@type": "ListItem", position: 2, name: "Library", item: abs("/topics") },
+          { "@type": "ListItem", position: 3, name: section.title, item: abs(`/topics/${id}`) },
         ],
       },
     ],
@@ -52,7 +52,7 @@ export function SectionPage({ id }: { id: SectionId }) {
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/docs">Library</Link>
+              <Link href="/topics">Library</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -67,7 +67,7 @@ export function SectionPage({ id }: { id: SectionId }) {
       <ol className="mt-8 divide-y divide-border border-y border-border">
         {topics.map((t, i) => (
           <li key={t.slug}>
-            <Link href={`/docs/${t.slug}`} className="flex gap-4 py-3 hover:bg-surface-2/60">
+            <Link href={`/topics/${t.slug}`} className="flex gap-4 py-3 hover:bg-surface-2/60">
               <span className="w-8 font-mono text-xs text-subtle tabular-nums">{String(i + 1).padStart(2, "0")}</span>
               <span className="min-w-0">
                 <span className="block text-sm font-medium">{t.title}</span>

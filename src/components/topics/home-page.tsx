@@ -18,7 +18,7 @@ export function HomePage() {
           return (
             <li key={id} className="break-inside-avoid">
               <Link
-                href={`/docs/${id}`}
+                href={`/topics/${id}`}
                 className="flex items-baseline justify-between gap-3 border-b border-border py-2 text-sm hover:text-link"
               >
                 <span>{s.title}</span>
