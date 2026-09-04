@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "CS",
+      "hasCanvas": false,
+      "bodyTextLen": 2810,
+      "bodyTextHash": "cb8a3bd19bcbc1721b34a007a15613fe746fe7e85a23669657a36bd58d858a9f",
+      "bodyTextPrefix": "CS Docs Labs Graph Paths Interview Search ⌘K PROGRAMMING Languag",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "CS",
+      "hasCanvas": false,
+      "bodyTextLen": 567,
+      "bodyTextHash": "965f60a454122daaee8fb62d35bfcf318231d41c4873b78bc2e09ea18e1b2f5e",
+      "bodyTextPrefix": "CS COMPUTER SCIENCE Topics 626 pages. Pick one from the sidebar ",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}

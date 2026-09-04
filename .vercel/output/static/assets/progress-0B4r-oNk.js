@@ -1,0 +1,1 @@
+import{a as e,i as t}from"./index-BOkrSyUQ.js";var n=e()(t((e,t)=>({visited:[],bookmarks:[],markVisited:t=>e(e=>e.visited.includes(t)?e:{visited:[...e.visited,t]}),toggleBookmark:t=>e(e=>e.bookmarks.includes(t)?{bookmarks:e.bookmarks.filter(e=>e!==t)}:{bookmarks:[...e.bookmarks,t]}),isBookmarked:e=>t().bookmarks.includes(e)}),{name:`cs-atlas-progress`}));export{n as t};
