@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-discrete-math-page",
   imports: [SectionView],
   templateUrl: "./discrete-math.html",
+  styleUrl: "./discrete-math.css",
 })
 export class DiscreteMathPage {
   readonly id = "discrete-math";

@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-os-page",
   imports: [SectionView],
   templateUrl: "./os.html",
+  styleUrl: "./os.css",
 })
 export class OsPage {
   readonly id = "os";

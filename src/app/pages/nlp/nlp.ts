@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-nlp-page",
   imports: [SectionView],
   templateUrl: "./nlp.html",
+  styleUrl: "./nlp.css",
 })
 export class NlpPage {
   readonly id = "nlp";

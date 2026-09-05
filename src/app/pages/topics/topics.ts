@@ -1,0 +1,20 @@
+import { Component, computed, input } from "@angular/core";
+import { SECTION_BY_ID } from "@/app/lib/content";
+import type { SectionId } from "@/app/lib/content/types";
+import { SectionView } from "../../components/section-view/section-view";
+import { TopicView } from "../../components/topics/topic-view";
+
+@Component({
+  selector: "cs-topics",
+  imports: [SectionView, TopicView],
+  templateUrl: "./topics.html",
+  styleUrl: "./topics.css",
+})
+export class Topics {
+  readonly slug = input.required<string>();
+  readonly isSection = computed(() => this.slug() in SECTION_BY_ID);
+
+  sectionId(): SectionId {
+    return this.slug() as SectionId;
+  }
+}

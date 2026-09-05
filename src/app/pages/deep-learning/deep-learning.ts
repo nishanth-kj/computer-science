@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-deep-learning-page",
   imports: [SectionView],
   templateUrl: "./deep-learning.html",
+  styleUrl: "./deep-learning.css",
 })
 export class DeepLearningPage {
   readonly id = "deep-learning";

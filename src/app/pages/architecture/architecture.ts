@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-architecture-page",
   imports: [SectionView],
   templateUrl: "./architecture.html",
+  styleUrl: "./architecture.css",
 })
 export class ArchitecturePage {
   readonly id = "architecture";

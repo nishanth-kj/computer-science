@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-distributed-page",
   imports: [SectionView],
   templateUrl: "./distributed.html",
+  styleUrl: "./distributed.css",
 })
 export class DistributedPage {
   readonly id = "distributed";

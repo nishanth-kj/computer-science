@@ -1,0 +1,5 @@
+@if (isSection()) {
+  <cs-section-view [id]="sectionId()" />
+} @else {
+  <cs-topic-view [slug]="slug()" />
+}

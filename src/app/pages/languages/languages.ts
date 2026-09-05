@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-languages-page",
   imports: [SectionView],
   templateUrl: "./languages.html",
+  styleUrl: "./languages.css",
 })
 export class LanguagesPage {
   readonly id = "languages";

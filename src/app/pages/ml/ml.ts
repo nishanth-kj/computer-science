@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-ml-page",
   imports: [SectionView],
   templateUrl: "./ml.html",
+  styleUrl: "./ml.css",
 })
 export class MlPage {
   readonly id = "ml";

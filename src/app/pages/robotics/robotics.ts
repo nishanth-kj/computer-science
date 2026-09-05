@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-robotics-page",
   imports: [SectionView],
   templateUrl: "./robotics.html",
+  styleUrl: "./robotics.css",
 })
 export class RoboticsPage {
   readonly id = "robotics";

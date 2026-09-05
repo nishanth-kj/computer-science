@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-theory-page",
   imports: [SectionView],
   templateUrl: "./theory.html",
+  styleUrl: "./theory.css",
 })
 export class TheoryPage {
   readonly id = "theory";

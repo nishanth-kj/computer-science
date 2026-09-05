@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-mobile-page",
   imports: [SectionView],
   templateUrl: "./mobile.html",
+  styleUrl: "./mobile.css",
 })
 export class MobilePage {
   readonly id = "mobile";

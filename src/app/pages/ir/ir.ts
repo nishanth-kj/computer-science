@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-ir-page",
   imports: [SectionView],
   templateUrl: "./ir.html",
+  styleUrl: "./ir.css",
 })
 export class IrPage {
   readonly id = "ir";

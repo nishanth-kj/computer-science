@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-vision-page",
   imports: [SectionView],
   templateUrl: "./vision.html",
+  styleUrl: "./vision.css",
 })
 export class VisionPage {
   readonly id = "vision";

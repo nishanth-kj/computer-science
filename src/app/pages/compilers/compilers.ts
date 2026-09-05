@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-compilers-page",
   imports: [SectionView],
   templateUrl: "./compilers.html",
+  styleUrl: "./compilers.css",
 })
 export class CompilersPage {
   readonly id = "compilers";

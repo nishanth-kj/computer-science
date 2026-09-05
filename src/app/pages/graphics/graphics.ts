@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-graphics-page",
   imports: [SectionView],
   templateUrl: "./graphics.html",
+  styleUrl: "./graphics.css",
 })
 export class GraphicsPage {
   readonly id = "graphics";

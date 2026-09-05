@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-parallel-page",
   imports: [SectionView],
   templateUrl: "./parallel.html",
+  styleUrl: "./parallel.css",
 })
 export class ParallelPage {
   readonly id = "parallel";

@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-research-page",
   imports: [SectionView],
   templateUrl: "./research.html",
+  styleUrl: "./research.css",
 })
 export class ResearchPage {
   readonly id = "research";

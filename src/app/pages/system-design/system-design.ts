@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-system-design-page",
   imports: [SectionView],
   templateUrl: "./system-design.html",
+  styleUrl: "./system-design.css",
 })
 export class SystemDesignPage {
   readonly id = "system-design";

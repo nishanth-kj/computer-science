@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-dbms-page",
   imports: [SectionView],
   templateUrl: "./dbms.html",
+  styleUrl: "./dbms.css",
 })
 export class DbmsPage {
   readonly id = "dbms";

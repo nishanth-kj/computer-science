@@ -5,6 +5,7 @@ import { SectionView } from "../../components/section-view/section-view";
   selector: "cs-web-page",
   imports: [SectionView],
   templateUrl: "./web.html",
+  styleUrl: "./web.css",
 })
 export class WebPage {
   readonly id = "web";

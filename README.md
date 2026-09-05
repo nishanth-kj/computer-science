@@ -21,6 +21,14 @@ Static files land in `dist/` (`index.html` + `404.html` for hosts that fall back
 
 Serve that folder with any static host (GitHub Pages, Netlify, nginx, `npx serve dist`).
 
+## Test
+
+```bash
+npm test
+```
+
+Page specs live next to each screen in `src/app/pages/` (`home.spec.ts`, `graph.spec.ts`, …).
+
 ## Layout
 
 - `src/content/` — topic, lab, and path data
