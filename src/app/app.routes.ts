@@ -1,8 +1,8 @@
 import { Routes } from "@angular/router";
-import { AiPage } from "./ai/a./graph/graph.routes
-import { ArchitecturePage } f./ home / home.routesitecture";
-import { CloudPage } from "./cloud./interview-mode/interview.routes
-import { CompilersPage } from./ labs / labs.routes;
+import { AiPage } from "./ai/ai";
+import { ArchitecturePage } from "./architecture/architecture";
+import { CloudPage } from "./cloud/cloud";
+import { CompilersPage } from "./compilers/compilers";
 import { CybersecurityPage } from "./cybersecurity/cybersecurity";
 import { DbmsPage } from "./dbms/dbms";
 import { DeepLearningPage } from "./deep-learning/deep-learning";
