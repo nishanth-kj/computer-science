@@ -1,0 +1,21 @@
+@if (visible()) {
+  <aside class="cookie-banner" role="dialog" aria-label="Cookie and Privacy Consent">
+    <div class="cookie-banner__inner">
+      <div class="cookie-banner__text">
+        <p class="cookie-banner__title">Cookie & Privacy Notice</p>
+        <p class="cookie-banner__desc">
+          We use cookies and local storage to remember your reading progress, theme preferences, and to support this free educational handbook with relevant advertising. Learn more in our
+          <a routerLink="/privacy" class="cookie-banner__link">Privacy Policy</a>.
+        </p>
+      </div>
+      <div class="cookie-banner__actions">
+        <button type="button" class="btn btn--ghost" (click)="decline()">
+          Decline
+        </button>
+        <button type="button" class="btn btn--primary" (click)="accept()">
+          Accept All
+        </button>
+      </div>
+    </div>
+  </aside>
+}

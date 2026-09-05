@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200",
-    "build": "node scripts/generate-sitemap.mjs && ng build && node -e \"require('fs').copyFileSync('dist/index.html','dist/404.html')\"",
+    "build": "node scripts/generate-sitemap.mjs && ng build && node scripts/prerender.mjs && node -e \"require('fs').copyFileSync('dist/index.html','dist/404.html')\"",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

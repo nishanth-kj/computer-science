@@ -11,10 +11,11 @@ import { Callout } from "./callout";
 import { CodeBlock } from "./code-block";
 import { Pipeline } from "./pipeline";
 import { Viz } from "@/app/components/viz/registry";
+import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
 
 @Component({
   selector: "cs-article",
-  imports: [RouterLink, Callout, CodeBlock, Pipeline, Viz, Badge, Table, GraphView],
+  imports: [RouterLink, Callout, CodeBlock, Pipeline, Viz, Badge, Table, GraphView, AdSlot],
   template: `
     <article class="mx-auto max-w-3xl pb-24">
       <p class="mb-3 text-xs tracking-wide text-muted uppercase">
@@ -168,6 +169,7 @@ import { Viz } from "@/app/components/viz/registry";
           @for (u of topic().mistakes; track u) { <li>{{ u }}</li> }
         </ul>
       </section>
+      <cs-ad-slot slot="in-article" format="auto" />
       <section class="scroll-mt-24">
         <h2 id="interview-questions" class="mt-10 mb-3 font-display text-2xl tracking-tight">Interview questions</h2>
         <div class="space-y-2">
