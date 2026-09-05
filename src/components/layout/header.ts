@@ -26,8 +26,9 @@ const NAV = [
         >
           <cs-icon name="menu" />
         </button>
-        <a routerLink="/" class="inline-flex items-center text-fg no-underline" aria-label="CS home">
-          <span class="inline-flex h-8 items-center rounded-md border border-border px-2 font-mono text-sm font-medium tracking-wide">CS</span>
+        <a routerLink="/" class="inline-flex items-center gap-2.5 text-fg no-underline hover:opacity-90 transition-opacity" aria-label="Computer Science home">
+          <img src="logo.svg" alt="Computer Science" class="size-7 rounded-lg border border-border shrink-0" />
+          <span class="font-sans text-base font-semibold tracking-tight sm:text-lg whitespace-nowrap">Computer Science</span>
         </a>
         <nav class="ml-4 hidden items-center gap-1 lg:flex">
           @for (n of nav; track n.href) {
@@ -66,7 +67,10 @@ const NAV = [
       <div class="fixed inset-0 z-50 lg:hidden">
         <button type="button" class="absolute inset-0 bg-bg/70" aria-label="Close menu" (click)="menu.set(false)"></button>
         <div class="relative z-10 flex h-full w-[min(20rem,88vw)] flex-col border-r border-border bg-surface p-4">
-          <p class="mb-4 font-mono text-sm">CS</p>
+          <div class="mb-4 flex items-center gap-2.5">
+            <img src="logo.svg" alt="Computer Science" class="size-6 rounded-md border border-border shrink-0" />
+            <span class="font-sans text-base font-semibold tracking-tight">Computer Science</span>
+          </div>
           <nav class="flex flex-col gap-1">
             @for (n of nav; track n.href) {
               <a [routerLink]="n.href" class="rounded-md px-3 py-2 text-sm hover:bg-surface-2" (click)="menu.set(false)">{{ n.label }}</a>
