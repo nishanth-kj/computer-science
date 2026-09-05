@@ -1,7 +1,7 @@
 import { Component, computed, inject, output, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterLink } from "@angular/router";
-import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS } from "@/content";
+import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS } from "@/app/lib/content";
 import { filter, map, startWith } from "rxjs";
 import { Icon } from "../ui/icon";
 

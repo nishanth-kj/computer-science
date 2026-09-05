@@ -1,0 +1,39 @@
+@if (topic()) {
+  <div class="flex">
+    <div class="min-w-0 flex-1 px-4 py-10 sm:px-8">
+      <nav class="mb-6 text-sm text-muted" aria-label="Breadcrumb">
+        <ol class="flex flex-wrap items-center gap-1.5">
+          <li><a routerLink="/topics" class="hover:text-fg">Library</a></li>
+          <li aria-hidden="true">/</li>
+          <li>
+            <a [routerLink]="'/topics/' + topic()!.section" class="hover:text-fg">{{ SECTION_BY_ID[topic()!.section].title }}</a>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li class="font-medium text-fg">{{ topic()!.title }}</li>
+        </ol>
+      </nav>
+      <div class="mb-4 flex justify-end">
+        <button
+          type="button"
+          class="inline-flex h-8 items-center gap-2 rounded-sm px-3 text-xs"
+          [class.bg-surface-2]="bookmarked()"
+          [class.hover:bg-surface-2]="!bookmarked()"
+          (click)="progress.toggleBookmark(slug())"
+        >
+          <cs-icon name="bookmark" />
+          {{ bookmarked() ? "Saved" : "Save" }}
+        </button>
+      </div>
+      <cs-article [topic]="topic()!" />
+    </div>
+    <aside class="hidden w-52 shrink-0 px-3 py-10 xl:block">
+      <cs-toc />
+    </aside>
+  </div>
+} @else {
+  <div class="mx-auto max-w-lg px-4 py-24 text-center">
+    <p class="font-mono text-xs text-muted">404</p>
+    <h1 class="mt-2 font-display text-3xl">This page was not found</h1>
+    <a routerLink="/" class="mt-6 inline-block text-sm text-link hover:underline">Back to home</a>
+  </div>
+}

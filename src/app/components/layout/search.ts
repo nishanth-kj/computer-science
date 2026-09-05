@@ -1,6 +1,6 @@
 import { Component, effect, inject, input, output, signal } from "@angular/core";
 import { Router } from "@angular/router";
-import { LABS, PATHS, SECTIONS, searchLabs, searchTopics } from "@/content";
+import { LABS, PATHS, SECTIONS, searchLabs, searchTopics } from "@/app/lib/content";
 
 @Component({
   selector: "cs-search",

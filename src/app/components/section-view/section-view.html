@@ -1,0 +1,27 @@
+@if (section()) {
+  <div class="mx-auto max-w-3xl px-4 py-10 sm:px-8">
+    <nav class="mb-6 text-sm text-muted" aria-label="Breadcrumb">
+      <ol class="flex flex-wrap items-center gap-1.5">
+        <li><a routerLink="/topics" class="hover:text-fg">Library</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="font-medium text-fg">{{ section()!.title }}</li>
+      </ol>
+    </nav>
+    <p class="font-mono text-xs text-muted uppercase">Section</p>
+    <h1 class="mt-2 font-display text-4xl tracking-tight">{{ section()!.title }}</h1>
+    <p class="mt-3 text-lg text-muted">{{ section()!.blurb }}</p>
+    <ol class="mt-8 divide-y divide-border border-y border-border">
+      @for (t of topics(); track t.slug; let i = $index) {
+        <li>
+          <a [routerLink]="'/topics/' + t.slug" class="flex gap-4 py-3 hover:bg-surface-2/60">
+            <span class="w-8 font-mono text-xs text-subtle tabular-nums">{{ pad(i + 1) }}</span>
+            <span class="min-w-0">
+              <span class="block text-sm font-medium">{{ t.title }}</span>
+              <span class="block text-xs text-muted">{{ t.summary }}</span>
+            </span>
+          </a>
+        </li>
+      }
+    </ol>
+  </div>
+}

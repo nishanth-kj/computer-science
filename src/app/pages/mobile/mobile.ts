@@ -1,0 +1,11 @@
+import { Component } from "@angular/core";
+import { SectionView } from "../../components/section-view/section-view";
+
+@Component({
+  selector: "cs-mobile-page",
+  imports: [SectionView],
+  templateUrl: "./mobile.html",
+})
+export class MobilePage {
+  readonly id = "mobile";
+}

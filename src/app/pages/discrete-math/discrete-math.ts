@@ -1,0 +1,11 @@
+import { Component } from "@angular/core";
+import { SectionView } from "../../components/section-view/section-view";
+
+@Component({
+  selector: "cs-discrete-math-page",
+  imports: [SectionView],
+  templateUrl: "./discrete-math.html",
+})
+export class DiscreteMathPage {
+  readonly id = "discrete-math";
+}

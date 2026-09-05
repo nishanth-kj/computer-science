@@ -1,8 +1,8 @@
 import { Component, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { exists, getTopic, type Topic } from "@/content";
-import { SECTION_BY_ID } from "@/content/sections";
-import type { ContentBlock } from "@/content/types";
+import { exists, getTopic, type Topic } from "@/app/lib/content";
+import { SECTION_BY_ID } from "@/app/lib/content/sections";
+import type { ContentBlock } from "@/app/lib/content/types";
 import { hasViz } from "../../lib/viz-ids";
 import { Callout } from "./callout";
 import { CodeBlock } from "./code-block";
