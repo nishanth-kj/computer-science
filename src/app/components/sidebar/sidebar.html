@@ -1,5 +1,5 @@
-<div class="flex h-full min-h-0 flex-col overflow-hidden">
-  <div class="p-3">
+<div class="sidebar">
+  <div class="sidebar__filter">
     <input
       class="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm text-fg shadow-[var(--shadow-border)] placeholder:text-subtle"
       placeholder="Filter topics"
@@ -7,7 +7,7 @@
       (input)="q.set($any($event.target).value)"
     />
   </div>
-  <nav class="min-h-0 flex-1 overflow-y-auto px-2 pb-10" aria-label="Topics">
+  <nav class="sidebar__nav scroll" aria-label="Topics">
     @for (group of groups(); track group.id) {
       <div class="mb-3">
         @if (group.showTitle) {

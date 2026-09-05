@@ -4,12 +4,12 @@
     <div class="relative z-10 w-full max-w-xl overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-border)]">
       <input
         class="h-12 w-full border-b border-border bg-transparent px-4 text-sm outline-none placeholder:text-subtle"
-        placeholder="Search topics, labs, paths…"
+        placeholder="Search topics and paths…"
         [value]="q()"
         (input)="q.set($any($event.target).value)"
       />
       <div class="max-h-80 overflow-y-auto p-2">
-        @if (q() && !topics().length && !labs().length) {
+        @if (q() && !topics().length) {
           <p class="px-3 py-6 text-center text-sm text-muted">No matches.</p>
         }
         @if (topics().length) {
@@ -21,17 +21,7 @@
             </button>
           }
         }
-        @if (labs().length) {
-          <p class="px-3 py-1 text-[11px] text-muted">Labs</p>
-          @for (l of labs(); track l.id) {
-            <button type="button" class="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go('/labs/' + l.id)">{{ l.title }}</button>
-          }
-        }
         @if (!q()) {
-          <p class="px-3 py-1 text-[11px] text-muted">Labs</p>
-          @for (l of featuredLabs; track l.id) {
-            <button type="button" class="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go('/labs/' + l.id)">{{ l.title }}</button>
-          }
           <p class="px-3 py-1 text-[11px] text-muted">Sections</p>
           @for (s of featuredSections; track s.id) {
             <button type="button" class="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go('/' + s.id)">{{ s.title }}</button>

@@ -1,1 +1,25 @@
-/* Sidebar styles */
+:host {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.sidebar {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar__filter {
+  flex-shrink: 0;
+  padding: 0.75rem;
+}
+
+.sidebar__nav {
+  min-height: 0;
+  flex: 1 1 auto;
+  padding: 0 0.5rem 2.5rem;
+}

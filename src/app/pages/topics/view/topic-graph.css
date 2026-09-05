@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+
+.topic-graph {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--surface);
+}
+
+.topic-graph__edge {
+  stroke: var(--border-strong);
+  stroke-width: 0.22;
+}
+
+.topic-graph__edge--prereq {
+  stroke-dasharray: 0.8 0.6;
+}
+
+.topic-graph__node {
+  cursor: pointer;
+}
+
+.topic-graph__node circle {
+  fill: var(--muted);
+}
+
+.topic-graph__node--here {
+  cursor: default;
+}
+
+.topic-graph__node--here circle {
+  fill: var(--primary);
+}
+
+.topic-graph__node text {
+  fill: var(--fg);
+  font-size: 2.1px;
+  font-family: var(--font-sans);
+}
+
+.topic-graph__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin: 0.6rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}

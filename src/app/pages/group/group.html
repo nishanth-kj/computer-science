@@ -1,0 +1,16 @@
+@if (group(); as g) {
+  <div class="group">
+    <p class="group__kicker">Field</p>
+    <h1>{{ g.title }}</h1>
+    <p class="group__blurb">{{ blurb() }}</p>
+    <div class="group__grid">
+      @for (sec of g.sections; track sec) {
+        <a [routerLink]="href(sec)" class="group__card">
+          <h2>{{ SECTION_BY_ID[sec].title }}</h2>
+          <p>{{ SECTION_BY_ID[sec].blurb }}</p>
+          <span>{{ countIn(sec) }} topics</span>
+        </a>
+      }
+    </div>
+  </div>
+}

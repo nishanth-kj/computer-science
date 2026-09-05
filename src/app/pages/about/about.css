@@ -1,0 +1,47 @@
+:host {
+  display: block;
+}
+
+.prose {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2.5rem 1rem 4rem;
+}
+
+@media (min-width: 640px) {
+  .prose {
+    padding: 3rem 2rem 5rem;
+  }
+}
+
+.kicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+h1 {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  letter-spacing: -0.03em;
+}
+
+p {
+  margin: 1rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+a {
+  color: var(--link);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}

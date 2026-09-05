@@ -1,0 +1,25 @@
+<svg viewBox="0 0 100 100" class="topic-graph" role="img" [attr.aria-label]="'Connections for ' + topic().title">
+  @for (e of map().edges; track $index) {
+    <line
+      [attr.x1]="e.x1"
+      [attr.y1]="e.y1"
+      [attr.x2]="e.x2"
+      [attr.y2]="e.y2"
+      class="topic-graph__edge"
+      [class.topic-graph__edge--prereq]="e.kind === 'prereq'"
+    />
+  }
+  @for (n of map().nodes; track n.id) {
+    <g class="topic-graph__node" [class.topic-graph__node--here]="n.kind === 'here'" (click)="open(n.id)">
+      <circle [attr.cx]="n.x" [attr.cy]="n.y" [attr.r]="n.kind === 'here' ? 2.4 : 1.5" />
+      <text [attr.x]="n.x" [attr.y]="n.y + (n.x < 50 ? -3.2 : n.kind === 'here' ? 5.2 : 3.6)" text-anchor="middle">
+        {{ label(n.title) }}
+      </text>
+    </g>
+  }
+</svg>
+<p class="topic-graph__legend">
+  <span>Left: prerequisites</span>
+  <span>Center: this page</span>
+  <span>Right: related / next</span>
+</p>

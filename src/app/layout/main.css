@@ -1,9 +1,25 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
 .app-shell {
   display: flex;
-  min-height: 100dvh;
+  height: 100%;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .app-shell__body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  padding-top: 3.5rem;
+}
+
+.app-shell__body > * {
+  min-height: 0;
   flex: 1;
 }

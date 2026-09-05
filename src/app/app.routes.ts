@@ -1,11 +1,11 @@
 import { RedirectFunction, Routes } from "@angular/router";
 import { topicHref } from "@/lib/content";
 import { MainLayout } from "@/app/layout/main";
-import { Graph } from "@/app/pages/graph/graph";
+import { AboutPage } from "@/app/pages/about/about";
+import { ContactPage } from "@/app/pages/contact/contact";
+import { GroupPage } from "@/app/pages/group/group";
 import { Home } from "@/app/pages/home/home";
 import { Interview } from "@/app/pages/interview-mode/interview";
-import { Lab } from "@/app/pages/labs/lab/lab";
-import { Labs } from "@/app/pages/labs/labs";
 import { Library } from "@/app/pages/library/library";
 import { NotFound } from "@/app/pages/not-found/not-found";
 import { Path } from "@/app/pages/paths/path/path";
@@ -37,6 +37,7 @@ import { NlpPage } from "@/app/pages/intelligence/nlp/nlp";
 import { OopPage } from "@/app/pages/programming/oop/oop";
 import { OsPage } from "@/app/pages/os/os";
 import { ParallelPage } from "@/app/pages/systems/parallel/parallel";
+import { PrivacyPage } from "@/app/pages/privacy/privacy";
 import { ResearchPage } from "@/app/pages/theory/research/research";
 import { RoboticsPage } from "@/app/pages/intelligence/robotics/robotics";
 import { SoftwareEngineeringPage } from "@/app/pages/software/software-engineering/software-engineering";
@@ -52,7 +53,7 @@ export const routes: Routes = [
     path: "",
     component: MainLayout,
     children: [
-      { path: "", component: Home, title: "CS — Computer science topics" },
+      { path: "", component: Home, title: "CS — Learn computer science in depth" },
 
       {
         path: "topics",
@@ -901,13 +902,8 @@ export const routes: Routes = [
         ],
       },
 
-      {
-        path: "labs",
-        children: [
-          { path: "", component: Labs, title: "Interactive labs · CS" },
-          { path: ":id", component: Lab, title: "Lab · CS" },
-        ],
-      },
+      { path: "labs", redirectTo: "topics", pathMatch: "prefix" },
+      { path: "graph", redirectTo: "topics" },
       {
         path: "paths",
         children: [
@@ -916,7 +912,13 @@ export const routes: Routes = [
         ],
       },
       { path: "quiz", component: Interview, title: "Interview · CS" },
-      { path: "graph", component: Graph, title: "Knowledge graph · CS" },
+      { path: "systems", component: GroupPage, data: { id: "systems" }, title: "Systems · CS" },
+      { path: "software", component: GroupPage, data: { id: "software" }, title: "Software · CS" },
+      { path: "security", component: GroupPage, data: { id: "security" }, title: "Security & Cloud · CS" },
+      { path: "intelligence", component: GroupPage, data: { id: "intelligence" }, title: "Intelligence · CS" },
+      { path: "about", component: AboutPage, title: "About · CS" },
+      { path: "privacy", component: PrivacyPage, title: "Privacy · CS" },
+      { path: "contact", component: ContactPage, title: "Contact · CS" },
       { path: "**", component: NotFound, title: "Not found · CS" },
     ],
   },

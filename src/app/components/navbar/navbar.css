@@ -1,1 +1,13 @@
-/* Navbar styles */
+:host {
+  display: block;
+}
+
+.navbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  height: 3.5rem;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+  backdrop-filter: blur(8px);
+}

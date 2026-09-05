@@ -7,11 +7,12 @@ import { hasViz } from "@/lib/viz-ids";
 import { Callout } from "./callout";
 import { CodeBlock } from "./code-block";
 import { Pipeline } from "./pipeline";
+import { TopicGraph } from "./topic-graph";
 import { Viz } from "@/app/pages/labs/viz/registry";
 
 @Component({
   selector: "cs-article",
-  imports: [RouterLink, Callout, CodeBlock, Pipeline, Viz],
+  imports: [RouterLink, Callout, CodeBlock, Pipeline, TopicGraph, Viz],
   template: `
     <article class="mx-auto max-w-3xl pb-24">
       <p class="mb-3 text-xs tracking-wide text-muted uppercase">
@@ -45,6 +46,13 @@ import { Viz } from "@/app/pages/labs/viz/registry";
           <p class="text-[15px] leading-relaxed text-fg/90">None — you can start here.</p>
         }
       </section>
+      @if (hasGraph()) {
+        <section class="scroll-mt-24">
+          <h2 id="topic-map" class="mt-10 mb-3 font-display text-2xl tracking-tight">How it connects</h2>
+          <p class="mb-3 text-[15px] leading-relaxed text-muted">The neighborhood around this idea. Click a node to open that page.</p>
+          <cs-topic-graph [topic]="topic()" />
+        </section>
+      }
       <section class="scroll-mt-24">
         <h2 id="mental-model" class="mt-10 mb-3 font-display text-2xl tracking-tight">Mental model</h2>
         <p class="text-[15px] leading-relaxed text-fg/90">{{ topic().mental }}</p>
@@ -82,6 +90,11 @@ import { Viz } from "@/app/pages/labs/viz/registry";
               @case ("code") { <cs-code [code]="$any(b).code" [lang]="$any(b).lang" [title]="$any(b).title" /> }
               @case ("callout") { <cs-callout [kind]="$any(b).kind" [title]="$any(b).title" [text]="$any(b).text" /> }
               @case ("flow") { <cs-pipeline [steps]="$any(b).steps" /> }
+              @case ("viz") {
+                @if (hasViz($any(b).id)) {
+                  <cs-viz [id]="$any(b).id" />
+                }
+              }
               @case ("table") {
                 <div class="my-4 overflow-x-auto">
                   <table class="w-full min-w-xl text-left text-sm">
@@ -106,12 +119,9 @@ import { Viz } from "@/app/pages/labs/viz/registry";
       </section>
       @if (vizId()) {
         <section class="scroll-mt-24">
-          <h2 id="interactive" class="mt-10 mb-3 font-display text-2xl tracking-tight">Interactive simulation</h2>
+          <h2 id="lab" class="mt-10 mb-3 font-display text-2xl tracking-tight">Lab — see it move</h2>
+          <p class="mb-3 text-[15px] leading-relaxed text-muted">This simulation is the same idea as the page, running. Play, step, or reset while you read.</p>
           <cs-viz [id]="vizId()!" />
-          <p class="text-muted">
-            Use play, step, and reset. Open the same lab full-page in
-            <a [routerLink]="'/labs/' + vizId()" class="text-link hover:underline">Interactive Labs</a>.
-          </p>
         </section>
       }
       @if (topic().code) {
@@ -200,16 +210,22 @@ export class DocArticle {
   readonly topic = input.required<Topic>();
   exists = exists;
   topicHref = topicHref;
+  hasViz = hasViz;
 
   sectionTitle() {
     return SECTION_BY_ID[this.topic().section].title;
   }
   extra(): ContentBlock[] {
-    return (this.topic().extra ?? []).filter((b) => b.type !== "viz");
+    return this.topic().extra ?? [];
   }
   vizId() {
-    const v = this.topic().viz;
-    return v && hasViz(v) ? v : undefined;
+    const topic = this.topic();
+    const id = topic.viz || topic.lab;
+    return hasViz(id) ? id : undefined;
+  }
+  hasGraph() {
+    const topic = this.topic();
+    return topic.prereqs.length + topic.related.length + (topic.next ? 1 : 0) > 0;
   }
   titleOf(slug: string) {
     return getTopic(slug)?.title ?? SECTION_BY_ID[slug as keyof typeof SECTION_BY_ID]?.title ?? slug;

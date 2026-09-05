@@ -3,11 +3,10 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "@/lib/theme";
 import { Icon } from "@/app/components/ui/icon";
 import { SearchDialog } from "@/app/components/search/search";
+import { SidebarState } from "@/app/components/sidebar/sidebar-state";
 
 const NAV = [
   { href: "/topics", label: "Topics" },
-  { href: "/labs", label: "Labs" },
-  { href: "/graph", label: "Graph" },
   { href: "/paths", label: "Paths" },
   { href: "/interview", label: "Interview" },
 ] as const;
@@ -20,6 +19,7 @@ const NAV = [
 })
 export class Navbar {
   readonly theme = inject(ThemeService);
+  readonly sidebar = inject(SidebarState);
   readonly nav = NAV;
   readonly search = signal(false);
   readonly menu = signal(false);
@@ -34,9 +34,13 @@ export class Navbar {
     } else if (!typing && e.key === "/" && !e.metaKey && !e.ctrlKey) {
       e.preventDefault();
       this.search.set(true);
+    } else if (!typing && e.key === "[") {
+      e.preventDefault();
+      this.sidebar.toggle();
     } else if (e.key === "Escape") {
       this.search.set(false);
       this.menu.set(false);
+      this.sidebar.hideOverlay();
     }
   }
 }

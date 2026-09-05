@@ -1,31 +1,37 @@
-<div class="mx-auto flex min-h-[calc(100dvh-3.5rem)] max-w-[88rem]">
-  <aside class="hidden w-72 shrink-0 overflow-hidden border-r border-border lg:block">
-    <div class="sticky top-14 h-[calc(100dvh-3.5rem)] overflow-hidden">
+<div class="frame" [class.frame--open]="sidebar.open()">
+  <aside class="frame__sidebar">
+    @if (sidebar.open()) {
+      <div class="frame__sidebar-bar">
+        <span>Topics</span>
+      </div>
       <cs-sidebar />
-    </div>
-  </aside>
-  <div class="lg:hidden">
+    }
     <button
       type="button"
-      class="fixed bottom-4 left-4 z-30 inline-flex size-10 items-center justify-center rounded-md border border-border bg-surface shadow-[var(--shadow-border)]"
-      aria-label="Topics"
-      (click)="open.set(true)"
+      class="frame__rail-btn"
+      [attr.aria-expanded]="sidebar.open()"
+      [attr.aria-label]="sidebar.open() ? 'Close topics' : 'Open topics'"
+      title="Topics ([)"
+      (click)="sidebar.toggle()"
     >
-      <cs-icon name="list" />
+      <cs-icon name="chevron" />
     </button>
-    @if (open()) {
-      <div class="fixed inset-0 z-50">
-        <button type="button" class="absolute inset-0 bg-bg/70" aria-label="Close topics" (click)="open.set(false)"></button>
-        <div class="relative z-10 flex h-full w-[min(20rem,88vw)] flex-col border-r border-border bg-surface">
-          <button type="button" class="absolute top-3 right-3 z-10 rounded-md p-1 text-muted hover:bg-surface-2" aria-label="Close" (click)="open.set(false)">
-            <cs-icon name="x" />
-          </button>
-          <cs-sidebar (navigated)="open.set(false)" />
-        </div>
+  </aside>
+  @if (sidebar.open()) {
+    <div class="frame__drawer">
+      <button type="button" class="frame__scrim" aria-label="Close topics" (click)="sidebar.hide()"></button>
+      <div class="frame__sheet">
+        <button type="button" class="frame__icon-btn frame__sheet-close" aria-label="Close topics" (click)="sidebar.hide()">
+          <cs-icon name="x" />
+        </button>
+        <cs-sidebar (navigated)="sidebar.hideOverlay()" />
       </div>
-    }
-  </div>
-  <div class="min-w-0 flex-1">
-    <ng-content />
+    </div>
+  }
+  <div class="frame__content scroll">
+    <div class="frame__stack">
+      <ng-content />
+      <cs-footer />
+    </div>
   </div>
 </div>

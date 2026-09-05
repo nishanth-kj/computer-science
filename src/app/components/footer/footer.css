@@ -1,0 +1,76 @@
+:host {
+  display: block;
+  margin-top: auto;
+}
+
+.site-footer {
+  padding: 2.5rem 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface) 70%, transparent);
+}
+
+@media (min-width: 640px) {
+  .site-footer {
+    padding: 2.75rem 2rem 1.75rem;
+  }
+}
+
+.site-footer__grid {
+  display: grid;
+  gap: 1.75rem;
+  width: 100%;
+}
+
+@media (min-width: 720px) {
+  .site-footer__grid {
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  }
+}
+
+.site-footer__mark {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.site-footer__blurb {
+  margin: 0.6rem 0 0;
+  max-width: 16rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.site-footer nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.site-footer nav p {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+.site-footer a {
+  width: fit-content;
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: var(--fg);
+}
+
+.site-footer__copy {
+  margin: 2rem 0 0;
+  font-size: 0.75rem;
+  color: var(--subtle);
+}
