@@ -4,7 +4,7 @@
     <div class="relative z-10 w-full max-w-xl overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-border)]">
       <input
         class="h-12 w-full border-b border-border bg-transparent px-4 text-sm outline-none placeholder:text-subtle"
-        placeholder="Search topics and paths…"
+        placeholder="Search pages and paths…"
         [value]="q()"
         (input)="q.set($any($event.target).value)"
       />
@@ -13,7 +13,7 @@
           <p class="px-3 py-6 text-center text-sm text-muted">No matches.</p>
         }
         @if (topics().length) {
-          <p class="px-3 py-1 text-[11px] text-muted">Topics</p>
+          <p class="px-3 py-1 text-[11px] text-muted">Pages</p>
           @for (t of topics(); track t.slug) {
             <button type="button" class="flex w-full flex-col rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go(topicHref(t.slug))">
               <span>{{ t.title }}</span>

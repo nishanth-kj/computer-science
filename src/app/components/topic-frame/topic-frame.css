@@ -109,7 +109,7 @@
   flex-direction: column;
 }
 
-.frame__stack > :first-child {
+.frame__page {
   flex: 1 0 auto;
 }
 

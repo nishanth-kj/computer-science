@@ -189,7 +189,7 @@ export function searchLabs(query: string, limit = 8) {
 }
 
 export const STATS = {
-  topics: ALL_NAV.length,
+  pages: ALL_NAV.length,
   sections: SECTIONS.length,
   labs: LABS.length,
   paths: PATHS.length,

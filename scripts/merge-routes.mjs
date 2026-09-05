@@ -140,10 +140,10 @@ export const routes: Routes = [
     path: "",
     component: MainLayout,
     children: [
-      { path: "", component: Home, title: "CS — Computer science topics" },
+      { path: "", component: Home, title: "CS — Learn computer science in depth" },
 
       {
-        path: "topics",
+        path: "library",
         children: [
           { path: "", component: Library, title: "Library · CS" },
           { path: ":slug", redirectTo: toTopicPage },

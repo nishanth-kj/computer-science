@@ -2,12 +2,12 @@
   <div class="sidebar__filter">
     <input
       class="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm text-fg shadow-[var(--shadow-border)] placeholder:text-subtle"
-      placeholder="Filter topics"
+      placeholder="Filter pages"
       [value]="q()"
       (input)="q.set($any($event.target).value)"
     />
   </div>
-  <nav class="sidebar__nav scroll" aria-label="Topics">
+  <nav class="sidebar__nav scroll" aria-label="Library">
     @for (group of groups(); track group.id) {
       <div class="mb-3">
         @if (group.showTitle) {

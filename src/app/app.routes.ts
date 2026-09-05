@@ -56,7 +56,7 @@ export const routes: Routes = [
       { path: "", component: Home, title: "CS — Learn computer science in depth" },
 
       {
-        path: "topics",
+        path: "library",
         children: [
           { path: "", component: Library, title: "Library · CS" },
           { path: ":slug", redirectTo: toTopicPage },
@@ -902,8 +902,9 @@ export const routes: Routes = [
         ],
       },
 
-      { path: "labs", redirectTo: "topics", pathMatch: "prefix" },
-      { path: "graph", redirectTo: "topics" },
+      { path: "topics", redirectTo: "library", pathMatch: "prefix" },
+      { path: "labs", redirectTo: "library", pathMatch: "prefix" },
+      { path: "graph", redirectTo: "library" },
       {
         path: "paths",
         children: [

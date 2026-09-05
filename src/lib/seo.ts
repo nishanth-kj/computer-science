@@ -56,13 +56,13 @@ export function describePath(path: string): SeoPage {
   const [head, ...rest] = parts;
   const last = parts.at(-1)!;
 
-  if (head === "topics" && rest.length === 0) {
+  if ((head === "library" || head === "topics") && rest.length === 0) {
     return page({
       kind: "collection",
-      description: `A library of ${ALL_NAV.length} computer science topics across programming, systems, networks, databases, and more.`,
+      description: `A library of ${ALL_NAV.length} computer science pages across programming, systems, networks, databases, and more.`,
       breadcrumbs: [
         { name: SITE_NAME, path: "/" },
-        { name: "Library", path: "/topics" },
+        { name: "Library", path: "/library" },
       ],
     });
   }
@@ -124,7 +124,7 @@ export function describePath(path: string): SeoPage {
 
   if (head === "graph" && rest.length === 0) {
     return page({
-      description: "A knowledge graph of computer science topics and how they connect.",
+      description: "A knowledge graph of computer science pages and how they connect.",
       breadcrumbs: [
         { name: SITE_NAME, path: "/" },
         { name: "Graph", path: "/graph" },

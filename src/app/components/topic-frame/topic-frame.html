@@ -2,7 +2,7 @@
   <aside class="frame__sidebar">
     @if (sidebar.open()) {
       <div class="frame__sidebar-bar">
-        <span>Topics</span>
+        <span>Library</span>
       </div>
       <cs-sidebar />
     }
@@ -10,8 +10,8 @@
       type="button"
       class="frame__rail-btn"
       [attr.aria-expanded]="sidebar.open()"
-      [attr.aria-label]="sidebar.open() ? 'Close topics' : 'Open topics'"
-      title="Topics ([)"
+      [attr.aria-label]="sidebar.open() ? 'Close library' : 'Open library'"
+      title="Library ([)"
       (click)="sidebar.toggle()"
     >
       <cs-icon name="chevron" />
@@ -19,9 +19,9 @@
   </aside>
   @if (sidebar.open()) {
     <div class="frame__drawer">
-      <button type="button" class="frame__scrim" aria-label="Close topics" (click)="sidebar.hide()"></button>
+      <button type="button" class="frame__scrim" aria-label="Close library" (click)="sidebar.hide()"></button>
       <div class="frame__sheet">
-        <button type="button" class="frame__icon-btn frame__sheet-close" aria-label="Close topics" (click)="sidebar.hide()">
+        <button type="button" class="frame__icon-btn frame__sheet-close" aria-label="Close library" (click)="sidebar.hide()">
           <cs-icon name="x" />
         </button>
         <cs-sidebar (navigated)="sidebar.hideOverlay()" />
@@ -30,7 +30,10 @@
   }
   <div class="frame__content scroll">
     <div class="frame__stack">
-      <ng-content />
+      <div class="frame__page">
+        <cs-breadcrumb />
+        <ng-content />
+      </div>
       <cs-footer />
     </div>
   </div>

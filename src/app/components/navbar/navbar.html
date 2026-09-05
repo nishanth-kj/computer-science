@@ -4,7 +4,7 @@
       type="button"
       class="inline-flex size-8 items-center justify-center rounded-md text-fg hover:bg-surface-2 lg:hidden"
       [attr.aria-expanded]="sidebar.open()"
-      aria-label="Open topics"
+      aria-label="Open library"
       (click)="sidebar.show()"
     >
       <cs-icon name="panel" />
@@ -26,7 +26,7 @@
         <a
           [routerLink]="n.href"
           routerLinkActive="text-fg bg-surface-2"
-          [routerLinkActiveOptions]="{ exact: n.href === '/topics' ? false : false }"
+          [routerLinkActiveOptions]="{ exact: n.href === '/library' }"
           class="rounded-md px-3 py-1.5 text-sm text-muted hover:bg-surface-2 hover:text-fg"
           >{{ n.label }}</a
         >

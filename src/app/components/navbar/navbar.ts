@@ -6,7 +6,7 @@ import { SearchDialog } from "@/app/components/search/search";
 import { SidebarState } from "@/app/components/sidebar/sidebar-state";
 
 const NAV = [
-  { href: "/topics", label: "Topics" },
+  { href: "/library", label: "Library" },
   { href: "/paths", label: "Paths" },
   { href: "/interview", label: "Interview" },
 ] as const;

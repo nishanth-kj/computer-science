@@ -34,7 +34,7 @@ const paths = idsFrom("src/lib/content/paths.ts");
 
 const urls = [
   { loc: "/", priority: "1.0", changefreq: "weekly" },
-  { loc: "/topics", priority: "0.9", changefreq: "weekly" },
+  { loc: "/library", priority: "0.9", changefreq: "weekly" },
   { loc: "/programming", priority: "0.8", changefreq: "weekly" },
   { loc: "/paths", priority: "0.8", changefreq: "weekly" },
   { loc: "/quiz", priority: "0.6", changefreq: "monthly" },

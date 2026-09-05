@@ -1,17 +1,6 @@
 @if (topic()) {
   <div class="flex">
     <div class="min-w-0 flex-1 px-4 py-10 sm:px-8">
-      <nav class="mb-6 text-sm text-muted" aria-label="Breadcrumb">
-        <ol class="flex flex-wrap items-center gap-1.5">
-          <li><a routerLink="/topics" class="hover:text-fg">Library</a></li>
-          <li aria-hidden="true">/</li>
-          <li>
-            <a [routerLink]="'/' + topic()!.section" class="hover:text-fg">{{ SECTION_BY_ID[topic()!.section].title }}</a>
-          </li>
-          <li aria-hidden="true">/</li>
-          <li class="font-medium text-fg">{{ topic()!.title }}</li>
-        </ol>
-      </nav>
       <div class="mb-4 flex justify-end">
         <button
           type="button"

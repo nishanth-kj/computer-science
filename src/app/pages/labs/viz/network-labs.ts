@@ -1,6 +1,6 @@
 import { Component, computed, signal } from "@angular/core";
 import { useSim } from "@/lib/sim";
-import { Pipeline } from "@/app/pages/topics/view/pipeline";
+import { Pipeline } from "@/app/components/topic-view/pipeline";
 import { SimShell } from "./sim-shell";
 
 const LAYERS = [

@@ -1,6 +1,6 @@
 # CS
 
-Static Angular website for computer science topics, labs, learning paths, and interview questions. Frontend only — no server, no database, no auth.
+Static Angular website for computer science pages, learning paths, and interview questions. Frontend only — no server, no database, no auth.
 
 ## Run locally
 

@@ -1,0 +1,15 @@
+@if (crumbs().length > 1) {
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <ol>
+      @for (c of crumbs(); track c.path; let last = $last) {
+        <li>
+          @if (last) {
+            <span>{{ c.name }}</span>
+          } @else {
+            <a [routerLink]="c.path">{{ c.name }}</a>
+          }
+        </li>
+      }
+    </ol>
+  </nav>
+}

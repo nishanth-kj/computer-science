@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { SectionView } from "@/app/pages/section-view/section-view";
+import { SectionView } from "@/app/components/section-view/section-view";
 
 @Component({
   selector: "cs-deep-learning-page",

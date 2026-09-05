@@ -1,73 +1,117 @@
-<div class="landing">
+<div class="lp">
   <section class="hero">
-    <p class="hero__kicker">The path through computer science</p>
-    <h1 class="hero__mark">CS</h1>
-    <p class="hero__lede">
-      Learn full CS in depth. One map: languages, systems, networks, databases, software, security,
-      distributed design, intelligence, and theory — ordered paths, not a pile of tabs.
-    </p>
-    <div class="hero__stats" aria-label="Catalog size">
-      <div><strong>{{ stats.topics }}</strong><span>topics</span></div>
-      <div><strong>{{ stats.sections }}</strong><span>fields</span></div>
-      <div><strong>{{ stats.paths }}</strong><span>paths</span></div>
+    <div class="hero__copy">
+      <p class="kicker">The complete path</p>
+      <h1>Learn the <em>whole</em> of computer science.</h1>
+      <p class="lede">
+        From the first program to compilers, kernels, networks, databases, and models that learn —
+        written in depth, in order, as pages you can finish.
+      </p>
+      <div class="actions">
+        <a routerLink="/paths/beginner" class="btn btn--solid">Start from zero <cs-icon name="arrow" /></a>
+        <a routerLink="/library" class="btn btn--line">Browse the catalog</a>
+      </div>
+      <ul class="stats">
+        <li><b>{{ stats.pages }}</b> pages</li>
+        <li><b>{{ stats.sections }}</b> fields</li>
+        <li><b>{{ stats.paths }}</b> paths</li>
+      </ul>
     </div>
-    <div class="hero__actions">
-      <a routerLink="/paths/beginner" class="btn btn--primary">Start the full path <cs-icon name="arrow" /></a>
-      <a routerLink="/topics" class="btn btn--ghost">Open the library</a>
+    <div class="hero__panel" aria-label="Curriculum spine">
+      <p class="kicker">The spine</p>
+      <ol>
+        @for (g of featured; track g.id) {
+          <li>
+            <a [routerLink]="g.href">
+              <span class="dot"></span>
+              <span class="idx">{{ g.n }}</span>
+              <strong>{{ g.title }}</strong>
+              <span class="n">{{ g.count }}</span>
+            </a>
+          </li>
+        }
+      </ol>
     </div>
   </section>
 
-  <section class="band">
-    <div class="band__head">
-      <h2>The whole field</h2>
-      <p>Every neighborhood of CS, written as pages you can finish. Pick a door; the rest of the map stays in the sidebar.</p>
+  <section class="strip">
+    <p>One idea. One page. A next link. That is the whole method.</p>
+  </section>
+
+  <section class="block">
+    <header class="block__head">
+      <p class="kicker">Method</p>
+      <h2>How you actually learn it.</h2>
+    </header>
+    <div class="tri">
+      @for (b of beats; track b.n) {
+        <article>
+          <span>{{ b.n }}</span>
+          <h3>{{ b.title }}</h3>
+          <p>{{ b.text }}</p>
+        </article>
+      }
     </div>
-    <div class="fields">
-      @for (g of featured; track g.id) {
-        <a [routerLink]="g.href" class="field">
-          <span class="field__meta">
-            <span>{{ g.title }}</span>
-            <span class="field__count">{{ g.count }}</span>
-          </span>
-          <strong>{{ g.blurb }}</strong>
+  </section>
+
+  <section class="block">
+    <header class="block__head">
+      <p class="kicker">Catalog</p>
+      <h2>The field, laid out.</h2>
+      <p>Ten neighborhoods. Open one and keep walking.</p>
+    </header>
+    <div class="mosaic">
+      @for (g of featured; track g.id; let i = $index) {
+        <a [routerLink]="g.href" class="tile" [class.tile--lg]="i === 0">
+          <span class="tile__n">{{ g.n }}</span>
+          <h3>{{ g.title }}</h3>
+          <p>{{ g.blurb }}</p>
+          <span class="tile__meta">{{ g.count }} pages</span>
         </a>
       }
     </div>
   </section>
 
-  <section class="band">
-    <div class="band__head">
-      <h2>Start in depth</h2>
-      <p>Six foundations. After these, you can walk any branch without guessing.</p>
-    </div>
-    <ol class="start">
+  <section class="block">
+    <header class="block__head">
+      <p class="kicker">Foundations</p>
+      <h2>Six pages that unlock the rest.</h2>
+    </header>
+    <div class="found">
       @for (t of start; track t.slug; let i = $index) {
-        <li>
-          <a [routerLink]="topicHref(t.slug)" class="start__item">
-            <span class="start__n">{{ i + 1 }}</span>
-            <span>
-              <span class="start__title">{{ t.title }}</span>
-              <span class="start__sum">{{ t.summary }}</span>
-            </span>
-          </a>
-        </li>
-      }
-    </ol>
-  </section>
-
-  <section class="band band--paths">
-    <div class="band__head">
-      <h2>Follow a path</h2>
-      <p>Ordered curricula through the catalog — beginner to interview, backend, and AI.</p>
-    </div>
-    <div class="paths">
-      @for (p of paths; track p.id) {
-        <a [routerLink]="'/paths/' + p.id" class="path">
-          <span class="path__aud">{{ p.audience }}</span>
-          <strong>{{ p.title }}</strong>
-          <span>{{ p.blurb }}</span>
+        <a [routerLink]="topicHref(t.slug)" class="found__card">
+          <span>{{ i + 1 }}</span>
+          <h3>{{ t.title }}</h3>
+          <p>{{ t.summary }}</p>
         </a>
       }
+    </div>
+  </section>
+
+  <section class="block">
+    <header class="block__head">
+      <p class="kicker">Paths</p>
+      <h2>Walk it in order.</h2>
+    </header>
+    <div class="ways">
+      @for (p of paths; track p.id) {
+        <a [routerLink]="'/paths/' + p.id" class="way">
+          <span>{{ p.audience }}</span>
+          <h3>{{ p.title }}</h3>
+          <p>{{ p.blurb }}</p>
+          <em>Open path <cs-icon name="arrow" /></em>
+        </a>
+      }
+    </div>
+  </section>
+
+  <section class="finale">
+    <p class="kicker">Begin</p>
+    <h2>The whole degree, as pages.</h2>
+    <p>Start at zero, or jump a field. Depth is the point.</p>
+    <div class="actions">
+      <a routerLink="/paths/beginner" class="btn btn--solid">Start the path <cs-icon name="arrow" /></a>
+      <a routerLink="/library" class="btn btn--line">The library</a>
     </div>
   </section>
 </div>

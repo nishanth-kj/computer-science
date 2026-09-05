@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+.crumbs {
+  padding: 1.5rem 1rem 0;
+}
+
+@media (min-width: 640px) {
+  .crumbs {
+    padding: 1.75rem 2rem 0;
+  }
+}
+
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.crumbs li:not(:last-child)::after {
+  content: "/";
+  margin-left: 0.45rem;
+  color: var(--subtle);
+}
+
+.crumbs a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.crumbs a:hover {
+  color: var(--fg);
+}
+
+.crumbs span {
+  font-weight: 500;
+  color: var(--fg);
+}

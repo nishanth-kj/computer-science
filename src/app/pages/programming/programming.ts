@@ -17,7 +17,7 @@ import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS } from "@/lib/content";
             <div class="h-full rounded-xl border border-border bg-surface p-5 shadow-[var(--shadow-border)] transition-colors hover:bg-surface-2">
               <h2 class="font-display text-2xl tracking-tight">{{ SECTION_BY_ID[sec].title }}</h2>
               <p class="mt-1 text-sm text-muted">{{ SECTION_BY_ID[sec].blurb }}</p>
-              <p class="mt-3 font-mono text-xs text-subtle">{{ countIn(sec) }} topics</p>
+              <p class="mt-3 font-mono text-xs text-subtle">{{ countIn(sec) }} pages</p>
             </div>
           </a>
         }

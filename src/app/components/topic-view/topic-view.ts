@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { getTopic, SECTION_BY_ID } from "@/lib/content";
+import { getTopic } from "@/lib/content";
 import { ProgressService } from "@/lib/progress";
 import { DocArticle } from "./article";
 import { Toc } from "./toc";
@@ -15,7 +15,6 @@ import { Icon } from "@/app/components/ui/icon";
 export class TopicView {
   readonly slug = input.required<string>();
   readonly progress = inject(ProgressService);
-  readonly SECTION_BY_ID = SECTION_BY_ID;
   readonly topic = computed(() => getTopic(this.slug()));
 
   constructor() {
