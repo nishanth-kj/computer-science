@@ -1,5 +1,9 @@
-node_modules/
+﻿node_modules/
 .project_id
 .github_repo
 .env
 .env.*
+.next/
+out/
+screenshots/
+.DS_Store

@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import { LABS, SECTION_BY_ID, SECTION_GROUPS } from "@/content";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,8 +7,8 @@ export function LabsPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
       <h1 className="font-display text-4xl tracking-tight">Interactive labs</h1>
-      <p className="mt-2 max-w-2xl text-muted">
-        Play, pause, step, reset. Labs are grouped the same way as the docs — no topic is featured above the others.
+      <p className="text-muted-fg max-w-2xl mt-3 text-lg leading-relaxed">
+        Play, pause, step, reset. Labs are grouped the same way as the topics - no topic is featured above the others.
       </p>
       <div className="mt-10 space-y-10">
         {SECTION_GROUPS.map((group) => {

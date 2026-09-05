@@ -12,7 +12,7 @@ import { useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/topics", label: "Docs" },
+  { href: "/topics", label: "Topics" },
   { href: "/labs", label: "Labs" },
   { href: "/graph", label: "Graph" },
   { href: "/paths", label: "Paths" },
