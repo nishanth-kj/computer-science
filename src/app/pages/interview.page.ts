@@ -1,0 +1,64 @@
+import { Component, computed, signal } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { ALL_NAV, SECTIONS, getTopic } from "@/content";
+import type { Level, SectionId } from "@/content/types";
+
+@Component({
+  selector: "cs-interview",
+  imports: [RouterLink],
+  template: `
+    <div class="mx-auto max-w-3xl px-4 py-10">
+      <h1 class="font-display text-4xl tracking-tight">Interview mode</h1>
+      <p class="mt-2 text-muted">Questions pulled from the documentation. Try to answer before you open the fold. Then read the page.</p>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <select class="h-9 rounded-md border border-border bg-surface px-2 text-sm" [value]="section()" (change)="section.set($any($event.target).value)">
+          <option value="all">All sections</option>
+          @for (s of sections; track s.id) {
+            <option [value]="s.id">{{ s.short }}</option>
+          }
+        </select>
+        <select class="h-9 rounded-md border border-border bg-surface px-2 text-sm" [value]="level()" (change)="level.set($any($event.target).value)">
+          <option value="all">All levels</option>
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+      <ol class="mt-8 space-y-3">
+        @for (it of items(); track it.slug + it.q; let i = $index) {
+          <li class="rounded-lg border border-border bg-surface px-4 py-3">
+            <p class="text-[11px] text-muted">
+              {{ i + 1 }}.
+              <a [routerLink]="'/topics/' + it.slug" class="hover:underline">{{ it.title }}</a>
+            </p>
+            <details>
+              <summary class="cursor-pointer text-sm font-medium">{{ it.q }}</summary>
+              <p class="mt-2 text-sm text-muted">{{ it.a }}</p>
+            </details>
+            <span class="mt-2 inline-flex items-center rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-muted">{{ it.level }}</span>
+          </li>
+        }
+      </ol>
+    </div>
+  `,
+})
+export class InterviewPage {
+  readonly sections = SECTIONS;
+  readonly section = signal<SectionId | "all">("all");
+  readonly level = signal<Level | "all">("all");
+  readonly items = computed(() => {
+    const section = this.section();
+    const level = this.level();
+    const slugs = section === "all" ? ALL_NAV.map((t) => t.slug) : ALL_NAV.filter((t) => t.section === section).map((t) => t.slug);
+    const out: { slug: string; title: string; q: string; a: string; level: Level }[] = [];
+    for (const slug of [...new Set(slugs)]) {
+      const t = getTopic(slug);
+      if (!t) continue;
+      for (const iq of t.interview) {
+        if (level !== "all" && iq.level !== level) continue;
+        out.push({ slug, title: t.title, q: iq.q, a: iq.a, level: iq.level });
+      }
+    }
+    return out.slice(0, 120);
+  });
+}

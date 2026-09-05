@@ -1,1 +1,0 @@
-import{r as e}from"./useRouter-Dpb7RwMI.js";import{t}from"./topic-frame-CgJqFej4.js";import{P as n}from"./index-BOkrSyUQ.js";var r=e();function i(){return(0,r.jsx)(t,{children:(0,r.jsx)(n,{})})}export{i as component};

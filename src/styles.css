@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-ibm-sans), "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-newsreader), "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
-  --font-mono: var(--font-ibm-mono), "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   --color-bg: var(--bg);
   --color-surface: var(--surface);

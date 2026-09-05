@@ -1,0 +1,49 @@
+import { Component } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS } from "@/content";
+
+@Component({
+  selector: "cs-library",
+  imports: [RouterLink],
+  template: `
+    <div class="px-4 py-10 sm:px-8">
+      <h1 class="font-display text-4xl tracking-tight">Library</h1>
+      <p class="mt-2 max-w-2xl text-muted">{{ count }} topics. Programming, networks, operating systems, and databases are peers — pick a field in the sidebar, then a page.</p>
+      <div class="mt-10 space-y-10">
+        @for (group of groups; track group.id) {
+          <section>
+            <h2 class="font-display text-2xl tracking-tight">{{ group.title }}</h2>
+            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+              @for (id of group.sections; track id) {
+                <div class="rounded-xl border border-border bg-surface p-5 shadow-[var(--shadow-border)]">
+                  <div class="flex items-baseline justify-between gap-3">
+                    <h3 class="font-display text-xl">
+                      <a [routerLink]="'/topics/' + id" class="hover:underline">{{ SECTION_BY_ID[id].title }}</a>
+                    </h3>
+                    <span class="font-mono text-xs text-subtle tabular-nums">{{ topics(id).length }}</span>
+                  </div>
+                  <p class="mt-1 text-sm text-muted">{{ SECTION_BY_ID[id].blurb }}</p>
+                  <ul class="mt-3 space-y-1">
+                    @for (t of topics(id).slice(0, 4); track t.slug) {
+                      <li>
+                        <a [routerLink]="'/topics/' + t.slug" class="text-sm text-link hover:underline">{{ t.title }}</a>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+          </section>
+        }
+      </div>
+    </div>
+  `,
+})
+export class LibraryPage {
+  readonly count = ALL_NAV.length;
+  readonly groups = SECTION_GROUPS;
+  readonly SECTION_BY_ID = SECTION_BY_ID;
+  topics(id: string) {
+    return ALL_NAV.filter((t) => t.section === id);
+  }
+}

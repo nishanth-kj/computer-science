@@ -1,0 +1,44 @@
+import { Component, signal } from "@angular/core";
+import { DocsSidebar } from "./sidebar";
+import { Icon } from "../ui/icon";
+
+@Component({
+  selector: "cs-topic-frame",
+  imports: [DocsSidebar, Icon],
+  template: `
+    <div class="mx-auto flex min-h-[calc(100dvh-3.5rem)] max-w-[88rem]">
+      <aside class="hidden w-72 shrink-0 overflow-hidden border-r border-border lg:block">
+        <div class="sticky top-14 h-[calc(100dvh-3.5rem)] overflow-hidden">
+          <cs-sidebar />
+        </div>
+      </aside>
+      <div class="lg:hidden">
+        <button
+          type="button"
+          class="fixed bottom-4 left-4 z-30 inline-flex size-10 items-center justify-center rounded-md border border-border bg-surface shadow-[var(--shadow-border)]"
+          aria-label="Topics"
+          (click)="open.set(true)"
+        >
+          <cs-icon name="list" />
+        </button>
+        @if (open()) {
+          <div class="fixed inset-0 z-50">
+            <button type="button" class="absolute inset-0 bg-bg/70" aria-label="Close topics" (click)="open.set(false)"></button>
+            <div class="relative z-10 flex h-full w-[min(20rem,88vw)] flex-col border-r border-border bg-surface">
+              <button type="button" class="absolute top-3 right-3 z-10 rounded-md p-1 text-muted hover:bg-surface-2" aria-label="Close" (click)="open.set(false)">
+                <cs-icon name="x" />
+              </button>
+              <cs-sidebar (navigated)="open.set(false)" />
+            </div>
+          </div>
+        }
+      </div>
+      <div class="min-w-0 flex-1">
+        <ng-content />
+      </div>
+    </div>
+  `,
+})
+export class TopicFrame {
+  readonly open = signal(false);
+}

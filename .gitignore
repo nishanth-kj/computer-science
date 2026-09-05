@@ -1,9 +1,37 @@
-﻿node_modules/
-.project_id
-.github_repo
+# Dependencies
+node_modules/
+
+# Angular
+dist/
+.angular/
+out-tsc/
+
+# Environment / secrets
 .env
 .env.*
+!.env.example
+*.pem
+*.p12
+.npmrc
+.github_repo
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Old stacks / build output (do not commit)
 .next/
 out/
+.vercel/
+.grok/
 screenshots/
-.DS_Store
+artifacts/
