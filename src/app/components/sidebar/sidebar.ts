@@ -1,9 +1,9 @@
 import { Component, computed, inject, output, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterLink } from "@angular/router";
-import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS } from "@/lib/content";
+import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS, topicHref } from "@/lib/content";
 import { filter, map, startWith } from "rxjs";
-import { Icon } from "@/components/ui/icon";
+import { Icon } from "@/app/components/ui/icon";
 
 const DEFAULT_OPEN: Record<string, boolean> = Object.fromEntries(
   SECTION_GROUPS.flatMap((g) => g.sections).map((id) => [id, true]),
@@ -16,6 +16,7 @@ const DEFAULT_OPEN: Record<string, boolean> = Object.fromEntries(
   styleUrl: "./sidebar.css",
 })
 export class Sidebar {
+  readonly topicHref = topicHref;
   readonly navigated = output<void>();
   readonly q = signal("");
   readonly open = signal<Record<string, boolean>>({ ...DEFAULT_OPEN });
@@ -26,7 +27,7 @@ export class Sidebar {
       startWith(null),
       map(() => {
         const parts = this.router.url.split("?")[0].split("#")[0].split("/").filter(Boolean);
-        return parts[0] === "topics" ? (parts[1] ?? "") : "";
+        return parts.at(-1) ?? "";
       }),
     ),
     { initialValue: "" },

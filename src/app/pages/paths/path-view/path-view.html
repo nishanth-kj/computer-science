@@ -7,7 +7,7 @@
       @for (slug of path()!.slugs; track slug; let i = $index) {
         <li>
           <a
-            [routerLink]="'/topics/' + slug"
+            [routerLink]="topicHref(slug)"
             class="flex items-start gap-4 rounded-lg border px-4 py-3 hover:bg-surface-2"
             [class.border-ok/40]="visited().includes(slug)"
             [class.border-border]="!visited().includes(slug)"

@@ -13,7 +13,7 @@
     <ol class="mt-8 divide-y divide-border border-y border-border">
       @for (t of topics(); track t.slug; let i = $index) {
         <li>
-          <a [routerLink]="'/topics/' + t.slug" class="flex gap-4 py-3 hover:bg-surface-2/60">
+          <a [routerLink]="topicHref(t.slug)" class="flex gap-4 py-3 hover:bg-surface-2/60">
             <span class="w-8 font-mono text-xs text-subtle tabular-nums">{{ pad(i + 1) }}</span>
             <span class="min-w-0">
               <span class="block text-sm font-medium">{{ t.title }}</span>

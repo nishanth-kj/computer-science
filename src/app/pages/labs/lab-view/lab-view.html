@@ -12,7 +12,7 @@
     <ul class="mt-3 space-y-1">
       @for (slug of lab()!.topics; track slug) {
         <li>
-          <a [routerLink]="'/topics/' + slug" class="text-sm text-link hover:underline">{{ getTopic(slug)?.title ?? slug }}</a>
+          <a [routerLink]="topicHref(slug)" class="text-sm text-link hover:underline">{{ getTopic(slug)?.title ?? slug }}</a>
         </li>
       }
     </ul>

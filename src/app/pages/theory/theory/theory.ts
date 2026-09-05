@@ -1,10 +1,11 @@
 import { Component } from "@angular/core";
-import { SectionView } from "@/app/section-view/section-view";
+import { SectionView } from "@/app/pages/section-view/section-view";
 
 @Component({
   selector: "cs-theory-page",
   imports: [SectionView],
   templateUrl: "./theory.html",
+  styleUrl: "./theory.css",
 })
 export class TheoryPage {
   readonly id = "theory";

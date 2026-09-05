@@ -1,6 +1,6 @@
 import { Component, signal } from "@angular/core";
-import { Sidebar, DocsSidebar } from "@/components/sidebar/sidebar";
-import { Icon } from "@/components/ui/icon";
+import { Sidebar, DocsSidebar } from "@/app/components/sidebar/sidebar";
+import { Icon } from "@/app/components/ui/icon";
 
 @Component({
   selector: "cs-topic-frame",

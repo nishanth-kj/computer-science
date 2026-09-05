@@ -25,7 +25,7 @@
                 <span [class.rotate-90]="b.open" class="inline-flex transition-transform"><cs-icon name="chevron" /></span>
               </button>
               <a
-                [routerLink]="'/topics/' + b.id"
+                [routerLink]="'/' + b.id"
                 class="flex min-h-10 min-w-0 flex-1 items-center rounded-md px-1.5 text-sm hover:bg-surface-2"
                 [class.bg-surface-2]="current() === b.id"
                 [class.text-fg]="current() === b.id"
@@ -40,7 +40,7 @@
                 @for (t of b.topics; track t.slug) {
                   <li>
                     <a
-                      [routerLink]="'/topics/' + t.slug"
+                      [routerLink]="topicHref(t.slug)"
                       class="block min-h-9 px-3 py-1.5 text-sm text-muted hover:bg-surface-2/80 hover:text-fg"
                       [class.bg-surface-2]="current() === t.slug"
                       [class.text-fg]="current() === t.slug"

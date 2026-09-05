@@ -1,6 +1,6 @@
 import { Component, effect, inject, input, output, signal } from "@angular/core";
 import { Router } from "@angular/router";
-import { LABS, PATHS, SECTIONS, searchLabs, searchTopics } from "@/lib/content";
+import { LABS, PATHS, SECTIONS, searchLabs, searchTopics, topicHref } from "@/lib/content";
 
 @Component({
   selector: "cs-search",
@@ -35,4 +35,6 @@ export class SearchDialog {
     this.close();
     void this.router.navigateByUrl(to);
   }
+
+  topicHref = topicHref;
 }

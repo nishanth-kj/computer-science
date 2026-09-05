@@ -1,5 +1,5 @@
 import { Component, input } from "@angular/core";
-import { PathView } from "@/app/paths/path-view/path-view";
+import { PathView } from "@/app/pages/paths/path-view/path-view";
 
 @Component({
   selector: "cs-path",

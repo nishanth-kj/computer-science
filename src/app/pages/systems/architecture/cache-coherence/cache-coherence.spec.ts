@@ -1,0 +1,23 @@
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { pageProviders } from "@/app/pages/page-spec";
+import { ArchitectureCacheCoherencePage } from "./cache-coherence";
+
+describe("ArchitectureCacheCoherencePage", () => {
+  let component: ArchitectureCacheCoherencePage;
+  let fixture: ComponentFixture<ArchitectureCacheCoherencePage>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ArchitectureCacheCoherencePage],
+      providers: pageProviders(),
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ArchitectureCacheCoherencePage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it("should create", () => {
+    expect(component).toBeTruthy();
+  });
+});

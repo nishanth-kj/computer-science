@@ -138,6 +138,21 @@ export function getTopic(slug: string): Topic | undefined {
   return topic;
 }
 
+const PROGRAMMING_SECTIONS = new Set<string>(
+  SECTION_GROUPS.find((g) => g.id === "programming")?.sections ?? [],
+);
+
+export function topicHref(slug: string): string {
+  if (!slug) return "/";
+  if (slug in SECTION_BY_ID) {
+    return PROGRAMMING_SECTIONS.has(slug) ? `/programming/${slug}` : `/${slug}`;
+  }
+  const topic = getTopic(slug);
+  if (!topic) return "/";
+  if (PROGRAMMING_SECTIONS.has(topic.section)) return `/programming/${topic.section}/${topic.slug}`;
+  return `/${topic.section}/${topic.slug}`;
+}
+
 export function topicsInSection(section: SectionId): Topic[] {
   return ALL_NAV.filter((t) => t.section === section).map((t) => getTopic(t.slug)!);
 }

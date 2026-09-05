@@ -1,14 +1,16 @@
 import { Component, computed, inject, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { PATH_BY_ID, getTopic } from "@/lib/content";
+import { PATH_BY_ID, getTopic, topicHref } from "@/lib/content";
 import { ProgressService } from "@/lib/progress";
 
 @Component({
   selector: "cs-path-view",
   imports: [RouterLink],
   templateUrl: "./path-view.html",
+  styleUrl: "./path-view.css",
 })
 export class PathView {
+  readonly topicHref = topicHref;
   readonly id = input.required<string>();
   readonly progress = inject(ProgressService);
   readonly getTopic = getTopic;

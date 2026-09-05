@@ -15,7 +15,7 @@
         @if (topics().length) {
           <p class="px-3 py-1 text-[11px] text-muted">Topics</p>
           @for (t of topics(); track t.slug) {
-            <button type="button" class="flex w-full flex-col rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go('/topics/' + t.slug)">
+            <button type="button" class="flex w-full flex-col rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go(topicHref(t.slug))">
               <span>{{ t.title }}</span>
               <span class="text-xs text-muted">{{ t.summary }}</span>
             </button>
@@ -34,7 +34,7 @@
           }
           <p class="px-3 py-1 text-[11px] text-muted">Sections</p>
           @for (s of featuredSections; track s.id) {
-            <button type="button" class="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go('/topics/' + s.id)">{{ s.title }}</button>
+            <button type="button" class="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go('/' + s.id)">{{ s.title }}</button>
           }
           <p class="px-3 py-1 text-[11px] text-muted">Paths</p>
           @for (p of paths; track p.id) {

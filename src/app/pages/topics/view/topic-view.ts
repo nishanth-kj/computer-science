@@ -4,12 +4,13 @@ import { getTopic, SECTION_BY_ID } from "@/lib/content";
 import { ProgressService } from "@/lib/progress";
 import { DocArticle } from "./article";
 import { Toc } from "./toc";
-import { Icon } from "@/components/ui/icon";
+import { Icon } from "@/app/components/ui/icon";
 
 @Component({
   selector: "cs-topic-view",
   imports: [RouterLink, DocArticle, Toc, Icon],
   templateUrl: "./topic-view.html",
+  styleUrl: "./topic-view.css",
 })
 export class TopicView {
   readonly slug = input.required<string>();

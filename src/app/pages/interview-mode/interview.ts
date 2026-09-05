@@ -1,6 +1,6 @@
 import { Component, computed, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { ALL_NAV, SECTIONS, getTopic } from "@/lib/content";
+import { ALL_NAV, SECTIONS, getTopic, topicHref } from "@/lib/content";
 import type { Level, SectionId } from "@/lib/content/types";
 
 @Component({
@@ -10,6 +10,7 @@ import type { Level, SectionId } from "@/lib/content/types";
   styleUrl: "./interview.css",
 })
 export class Interview {
+  readonly topicHref = topicHref;
   readonly sections = SECTIONS;
   readonly section = signal<SectionId | "all">("all");
   readonly level = signal<Level | "all">("all");

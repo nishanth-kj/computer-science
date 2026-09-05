@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from "@angular/core";
 import { Router } from "@angular/router";
-import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS, graphData, type SectionId } from "@/lib/content";
+import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS, graphData, topicHref, type SectionId } from "@/lib/content";
 
 @Component({
   selector: "cs-graph",
@@ -44,6 +44,6 @@ export class Graph {
     };
   });
   open(id: string) {
-    void this.router.navigateByUrl(`/topics/${id}`);
+    void this.router.navigateByUrl(topicHref(id));
   }
 }

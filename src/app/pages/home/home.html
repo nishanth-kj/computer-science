@@ -4,7 +4,7 @@
   <ul class="mt-8 columns-1 gap-x-8 sm:columns-2">
     @for (id of sections; track id) {
       <li class="break-inside-avoid">
-        <a [routerLink]="'/topics/' + id" class="flex items-baseline justify-between gap-3 border-b border-border py-2 text-sm hover:text-link">
+        <a [routerLink]="'/' + id" class="flex items-baseline justify-between gap-3 border-b border-border py-2 text-sm hover:text-link">
           <span>{{ SECTION_BY_ID[id].title }}</span>
           <span class="font-mono text-xs text-subtle tabular-nums">{{ countIn(id) }}</span>
         </a>

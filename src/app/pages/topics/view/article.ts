@@ -1,13 +1,13 @@
 import { Component, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { exists, getTopic, type Topic } from "@/lib/content";
+import { exists, getTopic, topicHref, type Topic } from "@/lib/content";
 import { SECTION_BY_ID } from "@/lib/content/sections";
 import type { ContentBlock } from "@/lib/content/types";
 import { hasViz } from "@/lib/viz-ids";
 import { Callout } from "./callout";
 import { CodeBlock } from "./code-block";
 import { Pipeline } from "./pipeline";
-import { Viz } from "@/app/labs/viz/registry";
+import { Viz } from "@/app/pages/labs/viz/registry";
 
 @Component({
   selector: "cs-article",
@@ -15,7 +15,7 @@ import { Viz } from "@/app/labs/viz/registry";
   template: `
     <article class="mx-auto max-w-3xl pb-24">
       <p class="mb-3 text-xs tracking-wide text-muted uppercase">
-        <a [routerLink]="'/topics/' + topic().section" class="hover:text-fg">{{ sectionTitle() }}</a>
+        <a [routerLink]="'/' + topic().section" class="hover:text-fg">{{ sectionTitle() }}</a>
       </p>
       <div class="flex flex-wrap items-center gap-2">
         <h1 class="font-display text-4xl leading-tight tracking-tight text-balance">{{ topic().title }}</h1>
@@ -37,7 +37,7 @@ import { Viz } from "@/app/labs/viz/registry";
           <ul class="list-disc space-y-1 pl-5 text-[15px]">
             @for (s of topic().prereqs; track s) {
               @if (exists(s)) {
-                <li><a [routerLink]="'/topics/' + s" class="text-link underline-offset-2 hover:underline">{{ titleOf(s) }}</a></li>
+                <li><a [routerLink]="topicHref(s)" class="text-link underline-offset-2 hover:underline">{{ titleOf(s) }}</a></li>
               }
             }
           </ul>
@@ -182,7 +182,7 @@ import { Viz } from "@/app/labs/viz/registry";
         <div class="flex flex-wrap gap-2">
           @for (s of topic().related; track s) {
             @if (exists(s)) {
-              <a [routerLink]="'/topics/' + s" class="rounded-full border border-border px-3 py-1 text-sm hover:bg-surface-2">{{ titleOf(s) }}</a>
+              <a [routerLink]="topicHref(s)" class="rounded-full border border-border px-3 py-1 text-sm hover:bg-surface-2">{{ titleOf(s) }}</a>
             }
           }
         </div>
@@ -190,7 +190,7 @@ import { Viz } from "@/app/labs/viz/registry";
       @if (topic().next && exists(topic().next!)) {
         <section class="scroll-mt-24">
           <h2 id="next-topic" class="mt-10 mb-3 font-display text-2xl tracking-tight">Next topic</h2>
-          <a [routerLink]="'/topics/' + topic().next" class="text-link hover:underline">{{ titleOf(topic().next!) }}</a>
+          <a [routerLink]="topicHref(topic().next!)" class="text-link hover:underline">{{ titleOf(topic().next!) }}</a>
         </section>
       }
     </article>
@@ -199,6 +199,7 @@ import { Viz } from "@/app/labs/viz/registry";
 export class DocArticle {
   readonly topic = input.required<Topic>();
   exists = exists;
+  topicHref = topicHref;
 
   sectionTitle() {
     return SECTION_BY_ID[this.topic().section].title;

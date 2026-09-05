@@ -1,5 +1,5 @@
 import { Component, input } from "@angular/core";
-import { LabView } from "@/app/labs/lab-view/lab-view";
+import { LabView } from "@/app/pages/labs/lab-view/lab-view";
 
 @Component({
   selector: "cs-lab",

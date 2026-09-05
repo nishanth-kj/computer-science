@@ -20,7 +20,7 @@
       <li class="rounded-lg border border-border bg-surface px-4 py-3">
         <p class="text-[11px] text-muted">
           {{ i + 1 }}.
-          <a [routerLink]="'/topics/' + it.slug" class="hover:underline">{{ it.title }}</a>
+          <a [routerLink]="topicHref(it.slug)" class="hover:underline">{{ it.title }}</a>
         </p>
         <details>
           <summary class="cursor-pointer text-sm font-medium">{{ it.q }}</summary>

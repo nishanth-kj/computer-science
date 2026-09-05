@@ -1,5 +1,5 @@
 import { Component, input } from "@angular/core";
-import { Icon } from "@/components/ui/icon";
+import { Icon } from "@/app/components/ui/icon";
 
 @Component({
   selector: "cs-callout",

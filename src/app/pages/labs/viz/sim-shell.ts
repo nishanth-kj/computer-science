@@ -1,6 +1,6 @@
 import { Component, input } from "@angular/core";
-import { Sim } from "../../lib/sim";
-import { Icon } from "@/components/ui/icon";
+import { Sim } from "@/lib/sim";
+import { Icon } from "@/app/components/ui/icon";
 
 @Component({
   selector: "cs-sim-shell",

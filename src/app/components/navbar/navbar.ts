@@ -1,8 +1,8 @@
 import { Component, HostListener, inject, signal } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "@/lib/theme";
-import { Icon } from "@/components/ui/icon";
-import { SearchDialog } from "@/components/search/search";
+import { Icon } from "@/app/components/ui/icon";
+import { SearchDialog } from "@/app/components/search/search";
 
 const NAV = [
   { href: "/topics", label: "Topics" },
