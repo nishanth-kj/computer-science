@@ -1,11 +1,18 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "rootDir": ".",
     "outDir": "./out-tsc/spec",
-    "types": ["jasmine"],
+    "types": [
+      "jasmine"
+    ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
-  "include": ["src/app/pages/**/*.spec.ts"]
+  "include": [
+    "src/app/pages/**/*.spec.ts"
+  ]
 }

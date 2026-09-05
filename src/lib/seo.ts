@@ -115,10 +115,20 @@ export function describePath(path: string): SeoPage {
 
   if (head === "privacy" && rest.length === 0) {
     return page({
-      description: "This site stores theme and progress in your browser. There is no account and no tracking.",
+      description: "Privacy policy, cookies, and data protection practices for CS.",
       breadcrumbs: [
         { name: SITE_NAME, path: "/" },
         { name: "Privacy", path: "/privacy" },
+      ],
+    });
+  }
+
+  if (head === "terms" && rest.length === 0) {
+    return page({
+      description: "Terms of service and educational use license for CS.",
+      breadcrumbs: [
+        { name: SITE_NAME, path: "/" },
+        { name: "Terms of Service", path: "/terms" },
       ],
     });
   }

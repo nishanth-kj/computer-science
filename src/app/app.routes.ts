@@ -38,6 +38,7 @@ import { OopPage } from "@/app/pages/programming/oop/oop";
 import { OsPage } from "@/app/pages/os/os";
 import { ParallelPage } from "@/app/pages/systems/parallel/parallel";
 import { PrivacyPage } from "@/app/pages/privacy/privacy";
+import { TermsPage } from "@/app/pages/terms/terms";
 import { ResearchPage } from "@/app/pages/theory/research/research";
 import { RoboticsPage } from "@/app/pages/intelligence/robotics/robotics";
 import { SoftwareEngineeringPage } from "@/app/pages/software/software-engineering/software-engineering";
@@ -919,6 +920,7 @@ export const routes: Routes = [
       { path: "intelligence", component: GroupPage, data: { id: "intelligence" }, title: "Intelligence · CS" },
       { path: "about", component: AboutPage, title: "About · CS" },
       { path: "privacy", component: PrivacyPage, title: "Privacy · CS" },
+      { path: "terms", component: TermsPage, title: "Terms of Service · CS" },
       { path: "contact", component: ContactPage, title: "Contact · CS" },
       { path: "**", component: NotFound, title: "Not found · CS" },
     ],

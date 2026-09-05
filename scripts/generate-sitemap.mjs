@@ -44,6 +44,7 @@ const urls = [
   { loc: "/intelligence", priority: "0.8", changefreq: "weekly" },
   { loc: "/about", priority: "0.4", changefreq: "yearly" },
   { loc: "/privacy", priority: "0.3", changefreq: "yearly" },
+  { loc: "/terms", priority: "0.3", changefreq: "yearly" },
   { loc: "/contact", priority: "0.4", changefreq: "yearly" },
   ...sections.map((s) => ({ loc: sectionPath(s), priority: "0.8", changefreq: "weekly" })),
   ...topics.map((t) => ({ loc: topicPath(t.slug, t.section), priority: "0.7", changefreq: "monthly" })),

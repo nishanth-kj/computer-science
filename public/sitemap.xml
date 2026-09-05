@@ -67,6 +67,12 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>https://nishanth-kj.github.io/computer-science/terms</loc>
+    <lastmod>2026-09-05</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://nishanth-kj.github.io/computer-science/contact</loc>
     <lastmod>2026-09-05</lastmod>
     <changefreq>yearly</changefreq>
