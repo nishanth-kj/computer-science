@@ -1,0 +1,29 @@
+@if (pageCount() > 1) {
+  <nav class="pager" [attr.aria-label]="'Page ' + page() + ' of ' + pageCount()">
+    <p class="pager__meta">{{ from() }}–{{ to() }} of {{ total() }}</p>
+    <div class="pager__btns">
+      <button type="button" class="pager__nav" [disabled]="page() <= 1" aria-label="Previous page" (click)="go(page() - 1)">
+        <span class="pager__flip"><cs-icon name="chevron" /></span>
+      </button>
+      @for (n of numbers(); track $index) {
+        @if (n === "gap") {
+          <span class="pager__gap" aria-hidden="true">…</span>
+        } @else {
+          <button
+            type="button"
+            class="pager__num"
+            [class.pager__num--on]="n === page()"
+            [attr.aria-current]="n === page() ? 'page' : null"
+            [attr.aria-label]="'Page ' + n"
+            (click)="go(n)"
+          >
+            {{ n }}
+          </button>
+        }
+      }
+      <button type="button" class="pager__nav" [disabled]="page() >= pageCount()" aria-label="Next page" (click)="go(page() + 1)">
+        <cs-icon name="chevron" />
+      </button>
+    </div>
+  </nav>
+}

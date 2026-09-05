@@ -1,0 +1,33 @@
+<div class="table-wrap">
+  <table class="table">
+    @if (caption()) {
+      <caption>{{ caption() }}</caption>
+    }
+    <thead>
+      <tr>
+        @for (h of headers(); track h) {
+          <th>{{ h }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track $index) {
+        <tr>
+          @for (cell of row; track $index) {
+            <td>
+              @if (hrefOf(cell); as href) {
+                <a [routerLink]="href">{{ textOf(cell) }}</a>
+              } @else {
+                {{ textOf(cell) }}
+              }
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr>
+          <td [attr.colspan]="headers().length" class="table__empty">No rows.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

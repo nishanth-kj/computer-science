@@ -56,6 +56,21 @@
 
   <section class="block">
     <header class="block__head">
+      <p class="kicker">Map</p>
+      <h2>See how it connects.</h2>
+      <p>A slice of the catalog. Click a node to open that page.</p>
+    </header>
+    <cs-graph
+      [nodes]="graph.nodes"
+      [edges]="graph.edges"
+      layout="radial"
+      label="A slice of the catalog graph"
+      [legend]="['Dashed: prerequisite', 'Solid: related']"
+    />
+  </section>
+
+  <section class="block">
+    <header class="block__head">
       <p class="kicker">Catalog</p>
       <h2>The field, laid out.</h2>
       <p>Ten neighborhoods. Open one and keep walking.</p>

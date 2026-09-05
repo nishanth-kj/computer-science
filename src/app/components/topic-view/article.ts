@@ -4,15 +4,17 @@ import { exists, getTopic, topicHref, type Topic } from "@/lib/content";
 import { SECTION_BY_ID } from "@/lib/content/sections";
 import type { ContentBlock } from "@/lib/content/types";
 import { hasViz } from "@/lib/viz-ids";
+import { Badge } from "@/app/components/ui/badge";
+import { GraphView, neighborhoodGraph } from "@/app/components/ui/graph/graph";
+import { Table } from "@/app/components/ui/table/table";
 import { Callout } from "./callout";
 import { CodeBlock } from "./code-block";
 import { Pipeline } from "./pipeline";
-import { TopicGraph } from "./topic-graph";
-import { Viz } from "@/app/pages/labs/viz/registry";
+import { Viz } from "@/app/components/viz/registry";
 
 @Component({
   selector: "cs-article",
-  imports: [RouterLink, Callout, CodeBlock, Pipeline, TopicGraph, Viz],
+  imports: [RouterLink, Callout, CodeBlock, Pipeline, Viz, Badge, Table, GraphView],
   template: `
     <article class="mx-auto max-w-3xl pb-24">
       <p class="mb-3 text-xs tracking-wide text-muted uppercase">
@@ -20,7 +22,7 @@ import { Viz } from "@/app/pages/labs/viz/registry";
       </p>
       <div class="flex flex-wrap items-center gap-2">
         <h1 class="font-display text-4xl leading-tight tracking-tight text-balance">{{ topic().title }}</h1>
-        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium" [class]="levelClass(topic().level)">{{ topic().level }}</span>
+        <cs-badge [value]="topic().level" />
       </div>
       <p class="mt-4 text-lg leading-relaxed text-muted">{{ topic().summary }}</p>
 
@@ -50,7 +52,14 @@ import { Viz } from "@/app/pages/labs/viz/registry";
         <section class="scroll-mt-24">
           <h2 id="topic-map" class="mt-10 mb-3 font-display text-2xl tracking-tight">How it connects</h2>
           <p class="mb-3 text-[15px] leading-relaxed text-muted">The neighborhood around this idea. Click a node to open that page.</p>
-          <cs-topic-graph [topic]="topic()" />
+          <cs-graph
+            [nodes]="graph().nodes"
+            [edges]="graph().edges"
+            layout="split"
+            [focus]="topic().slug"
+            [label]="'Connections for ' + topic().title"
+            [legend]="['Left: prerequisites', 'Center: this page', 'Right: related / next']"
+          />
         </section>
       }
       <section class="scroll-mt-24">
@@ -96,21 +105,8 @@ import { Viz } from "@/app/pages/labs/viz/registry";
                 }
               }
               @case ("table") {
-                <div class="my-4 overflow-x-auto">
-                  <table class="w-full min-w-xl text-left text-sm">
-                    <thead>
-                      <tr class="border-b border-border text-muted">
-                        @for (h of $any(b).headers; track h) { <th class="py-2 pr-4 font-medium">{{ h }}</th> }
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @for (r of $any(b).rows; track $index) {
-                        <tr class="border-b border-border/60">
-                          @for (c of r; track $index) { <td class="py-2 pr-4 align-top">{{ c }}</td> }
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
+                <div class="my-4">
+                  <cs-table [headers]="$any(b).headers" [rows]="$any(b).rows" />
                 </div>
               }
             }
@@ -182,7 +178,7 @@ import { Viz } from "@/app/pages/labs/viz/registry";
               @if (q.followUp) {
                 <p class="mt-2 text-xs text-subtle">Follow-up: {{ q.followUp }}</p>
               }
-              <span class="mt-2 inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium" [class]="levelClass(q.level)">{{ q.level }}</span>
+              <cs-badge [value]="q.level" />
             </details>
           }
         </div>
@@ -218,6 +214,9 @@ export class DocArticle {
   extra(): ContentBlock[] {
     return this.topic().extra ?? [];
   }
+  graph() {
+    return neighborhoodGraph(this.topic());
+  }
   vizId() {
     const topic = this.topic();
     const id = topic.viz || topic.lab;
@@ -229,11 +228,5 @@ export class DocArticle {
   }
   titleOf(slug: string) {
     return getTopic(slug)?.title ?? SECTION_BY_ID[slug as keyof typeof SECTION_BY_ID]?.title ?? slug;
-  }
-  levelClass(level: string) {
-    if (level === "beginner") return "bg-ok/15 text-ok";
-    if (level === "intermediate") return "bg-warn/15 text-warn";
-    if (level === "advanced") return "bg-danger/15 text-danger";
-    return "bg-link/15 text-link";
   }
 }

@@ -1,6 +1,5 @@
 import {
   ALL_NAV,
-  LAB_BY_ID,
   PATH_BY_ID,
   SECTION_BY_ID,
   SECTION_GROUPS,
@@ -67,34 +66,6 @@ export function describePath(path: string): SeoPage {
     });
   }
 
-  if (head === "labs" && rest.length === 0) {
-    return page({
-      kind: "collection",
-      description: "Interactive computer science labs — simulators for networks, operating systems, algorithms, and databases.",
-      breadcrumbs: [
-        { name: SITE_NAME, path: "/" },
-        { name: "Labs", path: "/labs" },
-      ],
-    });
-  }
-
-  if (head === "labs" && rest.length === 1) {
-    const lab = LAB_BY_ID[rest[0]];
-    if (lab) {
-      const section = SECTION_BY_ID[lab.section];
-      return page({
-        kind: "article",
-        description: lab.blurb,
-        keywords: [lab.title, section.title, "lab", "simulator"],
-        breadcrumbs: [
-          { name: SITE_NAME, path: "/" },
-          { name: "Labs", path: "/labs" },
-          { name: lab.title, path: `/labs/${lab.id}` },
-        ],
-      });
-    }
-  }
-
   if (head === "paths" && rest.length === 0) {
     return page({
       kind: "collection",
@@ -120,16 +91,6 @@ export function describePath(path: string): SeoPage {
         ],
       });
     }
-  }
-
-  if (head === "graph" && rest.length === 0) {
-    return page({
-      description: "A knowledge graph of computer science pages and how they connect.",
-      breadcrumbs: [
-        { name: SITE_NAME, path: "/" },
-        { name: "Graph", path: "/graph" },
-      ],
-    });
   }
 
   if ((head === "quiz" || head === "interview-mode") && rest.length === 0) {

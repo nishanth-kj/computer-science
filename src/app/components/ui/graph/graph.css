@@ -1,0 +1,198 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.flowchart-wrap {
+  border: 1px solid var(--border);
+  border-radius: 0.875rem;
+  background: var(--surface);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.flowchart-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.flowchart-svg {
+  display: block;
+  min-width: 100%;
+  height: auto;
+}
+
+/* Stage Headers */
+.flow-stage-title {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  fill: var(--muted);
+  text-transform: uppercase;
+}
+
+.flow-stage-arrow {
+  font-size: 14px;
+  fill: var(--border-strong);
+  font-weight: bold;
+}
+
+/* Edges / Connectors */
+.flow-edge {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+  transition: stroke 0.15s ease, stroke-width 0.15s ease, opacity 0.15s ease;
+}
+
+.flow-edge--prereq {
+  stroke-dasharray: 4 3;
+}
+
+.flow-edge--active {
+  stroke: var(--primary) !important;
+  stroke-width: 2.2 !important;
+  opacity: 1 !important;
+}
+
+.flow-edge--dimmed {
+  opacity: 0.15;
+}
+
+/* Node Cards */
+.flow-node {
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.flow-node-box {
+  fill: var(--surface);
+  stroke: var(--border);
+  stroke-width: 1.25;
+  transition: all 0.15s ease;
+}
+
+.flow-node:hover .flow-node-box {
+  stroke: var(--primary);
+  fill: var(--surface-2);
+}
+
+.flow-node--here .flow-node-box {
+  stroke: var(--primary);
+  stroke-width: 2;
+  fill: var(--surface-2);
+}
+
+.flow-node--active .flow-node-box {
+  stroke: var(--primary);
+}
+
+.flow-node--dimmed {
+  opacity: 0.3;
+}
+
+/* Left Accent Pill */
+.flow-node-accent {
+  fill: var(--border-strong);
+  transition: fill 0.15s ease;
+}
+
+.flow-node:hover .flow-node-accent {
+  fill: var(--primary);
+}
+
+.flow-node--here .flow-node-accent {
+  fill: var(--primary);
+}
+
+.flow-node--prereq .flow-node-accent {
+  fill: #eab308;
+}
+
+.flow-node--next .flow-node-accent {
+  fill: #3b82f6;
+}
+
+/* Node Typography */
+.flow-node-title {
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  font-size: 12.5px;
+  font-weight: 500;
+  fill: var(--fg);
+  pointer-events: none;
+}
+
+.flow-node--here .flow-node-title {
+  font-weight: 600;
+  fill: var(--primary);
+}
+
+.flow-node-sub {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  fill: var(--muted);
+  pointer-events: none;
+}
+
+/* Footer & Legend */
+.flowchart-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.flowchart-legend {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-line {
+  display: inline-block;
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.legend-solid {
+  background: var(--border-strong);
+}
+
+.legend-dashed {
+  background: repeating-linear-gradient(90deg, var(--border-strong) 0, var(--border-strong) 4px, transparent 4px, transparent 7px);
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.legend-current {
+  background: var(--primary);
+}
+
+.legend-hint {
+  font-size: 0.7rem;
+  color: var(--subtle);
+}

@@ -1,0 +1,71 @@
+:host {
+  display: block;
+}
+
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-top: 1rem;
+}
+
+.pager__meta {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--subtle);
+}
+
+.pager__btns {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pager__nav,
+.pager__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  background: var(--surface);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.pager__nav:hover:not(:disabled),
+.pager__num:hover {
+  background: var(--surface-2);
+}
+
+.pager__nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.pager__num--on {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+  color: var(--fg);
+}
+
+.pager__flip {
+  display: inline-flex;
+  transform: rotate(180deg);
+}
+
+.pager__gap {
+  width: 1.25rem;
+  text-align: center;
+  color: var(--subtle);
+}

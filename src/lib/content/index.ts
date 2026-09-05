@@ -1,4 +1,3 @@
-import { LABS, LAB_BY_ID } from "./labs";
 import { NAV, NAV_BY_SLUG, type NavTopic } from "./nav";
 import { NAV_REST } from "./nav-rest";
 import { PATHS, PATH_BY_ID } from "./paths";
@@ -11,7 +10,7 @@ import { FLAGSHIP as MORE } from "./topics/more";
 import type { SectionId, Topic } from "./types";
 import { enrich } from "./enrich";
 
-export { LABS, LAB_BY_ID, PATHS, PATH_BY_ID, SECTIONS, SECTION_BY_ID, SECTION_GROUPS };
+export { PATHS, PATH_BY_ID, SECTIONS, SECTION_BY_ID, SECTION_GROUPS };
 export type { Topic, SectionId };
 
 export const ALL_NAV: NavTopic[] = [...NAV, ...NAV_REST];
@@ -182,16 +181,9 @@ export function searchTopics(query: string, limit = 24): NavTopic[] {
   return scored;
 }
 
-export function searchLabs(query: string, limit = 8) {
-  const q = query.trim().toLowerCase();
-  if (!q) return [];
-  return LABS.filter((l) => `${l.title} ${l.blurb} ${l.id}`.toLowerCase().includes(q)).slice(0, limit);
-}
-
 export const STATS = {
   pages: ALL_NAV.length,
   sections: SECTIONS.length,
-  labs: LABS.length,
   paths: PATHS.length,
 };
 

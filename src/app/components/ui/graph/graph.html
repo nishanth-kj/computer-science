@@ -1,0 +1,116 @@
+<div class="flowchart-wrap">
+  <div class="flowchart-scroll">
+    <svg
+      [attr.viewBox]="'0 0 ' + layoutData().width + ' ' + layoutData().height"
+      [attr.width]="layoutData().width"
+      [attr.height]="layoutData().height"
+      class="flowchart-svg"
+      role="img"
+      [attr.aria-label]="label()"
+    >
+      <defs>
+        <!-- Blueprint Dot Grid -->
+        <pattern id="flow-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="0.8" fill="var(--border)" opacity="0.4" />
+        </pattern>
+
+        <!-- Arrow Markers -->
+        <marker id="flow-arrow-default" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 1 2 L 7 5 L 1 8 z" fill="var(--border-strong)" />
+        </marker>
+        <marker id="flow-arrow-highlight" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 1 2 L 7 5 L 1 8 z" fill="var(--primary)" />
+        </marker>
+        <marker id="flow-arrow-prereq" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 1 2 L 7 5 L 1 8 z" fill="var(--muted)" />
+        </marker>
+      </defs>
+
+      <!-- Background Pattern -->
+      <rect width="100%" height="100%" fill="url(#flow-grid)" />
+
+      <!-- Stage Headers -->
+      @for (stage of layoutData().stages; track stage.title; let i = $index) {
+        <g class="flow-stage">
+          <text [attr.x]="stage.x + stage.w / 2" y="30" text-anchor="middle" class="flow-stage-title">
+            {{ stage.title }}
+          </text>
+          @if (i < layoutData().stages.length - 1) {
+            <text [attr.x]="stage.x + stage.w + 32" y="30" text-anchor="middle" class="flow-stage-arrow">
+              →
+            </text>
+          }
+        </g>
+      }
+
+      <!-- Flowchart Connectors (Edges) -->
+      @for (e of layoutData().edges; track e.id) {
+        <path
+          [attr.d]="e.d"
+          class="flow-edge"
+          [class.flow-edge--prereq]="e.kind === 'prereq'"
+          [class.flow-edge--active]="isEdgeActive(e)"
+          [class.flow-edge--dimmed]="isEdgeDimmed(e)"
+          [attr.marker-end]="isEdgeActive(e) ? 'url(#flow-arrow-highlight)' : e.kind === 'prereq' ? 'url(#flow-arrow-prereq)' : 'url(#flow-arrow-default)'"
+        />
+      }
+
+      <!-- Flowchart Nodes (Cards) -->
+      @for (n of layoutData().nodes; track n.id) {
+        <g
+          class="flow-node"
+          [class.flow-node--here]="n.kind === 'here'"
+          [class.flow-node--prereq]="n.kind === 'prereq'"
+          [class.flow-node--next]="n.kind === 'next'"
+          [class.flow-node--active]="isNodeActive(n)"
+          [class.flow-node--dimmed]="isNodeDimmed(n)"
+          (click)="open(n.id)"
+          (mouseenter)="hoveredNode.set(n.id)"
+          (mouseleave)="hoveredNode.set(null)"
+        >
+          <title>{{ n.title }}</title>
+
+          <!-- Card Box -->
+          <rect
+            [attr.x]="n.x"
+            [attr.y]="n.y"
+            [attr.width]="n.w"
+            [attr.height]="n.h"
+            rx="8"
+            class="flow-node-box"
+          />
+
+          <!-- Left Accent Strip -->
+          <rect
+            [attr.x]="n.x"
+            [attr.y]="n.y + 6"
+            width="3.5"
+            height="36"
+            rx="1.75"
+            class="flow-node-accent"
+          />
+
+          <!-- Card Title -->
+          <text [attr.x]="n.x + 14" [attr.y]="n.y + 23" class="flow-node-title">
+            {{ n.displayTitle }}
+          </text>
+
+          <!-- Card Subtitle -->
+          <text [attr.x]="n.x + 14" [attr.y]="n.y + 37" class="flow-node-sub">
+            {{ n.sub }}
+          </text>
+        </g>
+      }
+    </svg>
+  </div>
+
+  <!-- Legend Footer -->
+  <div class="flowchart-footer">
+    <div class="flowchart-legend">
+      <span class="legend-item"><span class="legend-line legend-solid"></span> Related / Next</span>
+      <span class="legend-item"><span class="legend-line legend-dashed"></span> Prerequisite</span>
+      <span class="legend-item"><span class="legend-dot legend-current"></span> Current Topic</span>
+    </div>
+    <span class="legend-hint">Click any card to open topic</span>
+  </div>
+</div>

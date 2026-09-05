@@ -16,18 +16,19 @@
     </select>
   </div>
   <ol class="mt-8 space-y-3">
-    @for (it of items(); track it.slug + it.q; let i = $index) {
+    @for (it of paged(); track it.slug + it.q; let i = $index) {
       <li class="rounded-lg border border-border bg-surface px-4 py-3">
         <p class="text-[11px] text-muted">
-          {{ i + 1 }}.
+          {{ (page() - 1) * pageSize + i + 1 }}.
           <a [routerLink]="topicHref(it.slug)" class="hover:underline">{{ it.title }}</a>
         </p>
         <details>
           <summary class="cursor-pointer text-sm font-medium">{{ it.q }}</summary>
           <p class="mt-2 text-sm text-muted">{{ it.a }}</p>
         </details>
-        <span class="mt-2 inline-flex items-center rounded-full bg-surface-2 px-2 py-0.5 text-[11px] text-muted">{{ it.level }}</span>
+        <cs-badge [value]="it.level" />
       </li>
     }
   </ol>
+  <cs-pagination [total]="items().length" [pageSize]="pageSize" [(page)]="page" />
 </div>

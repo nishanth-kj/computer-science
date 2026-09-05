@@ -3,7 +3,7 @@
     <h1 class="font-display text-4xl tracking-tight">{{ path()!.title }}</h1>
     <p class="mt-2 text-muted">{{ path()!.blurb }}</p>
     <ol class="mt-8 space-y-2">
-      @for (slug of path()!.slugs; track slug; let i = $index) {
+      @for (slug of paged(); track slug; let i = $index) {
         <li>
           <a
             [routerLink]="topicHref(slug)"
@@ -11,7 +11,7 @@
             [class.border-ok/40]="visited().includes(slug)"
             [class.border-border]="!visited().includes(slug)"
           >
-            <span class="w-8 font-mono text-xs text-subtle tabular-nums">{{ pad(i + 1) }}</span>
+            <span class="w-8 font-mono text-xs text-subtle tabular-nums">{{ pad((page() - 1) * pageSize + i + 1) }}</span>
             <span>
               <span class="block text-sm font-medium">{{ getTopic(slug)?.title ?? slug }}</span>
               <span class="block text-xs text-muted">{{ getTopic(slug)?.summary }}</span>
@@ -20,6 +20,7 @@
         </li>
       }
     </ol>
+    <cs-pagination [total]="slugs().length" [pageSize]="pageSize" [(page)]="page" />
   </div>
 } @else {
   <div class="mx-auto max-w-lg px-4 py-24 text-center">

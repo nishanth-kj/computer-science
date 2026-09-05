@@ -1,15 +1,16 @@
 import { Component } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { ALL_NAV, PATHS, SECTION_BY_ID, SECTION_GROUPS, STATS, getTopic, topicHref } from "@/lib/content";
+import { ALL_NAV, PATHS, SECTION_BY_ID, SECTION_GROUPS, STATS, getTopic, graphData, topicHref } from "@/lib/content";
 import type { SectionId } from "@/lib/content/types";
 import { Icon } from "@/app/components/ui/icon";
+import { GraphView } from "@/app/components/ui/graph/graph";
 
 const START = ["what-is-programming", "processes", "osi-model", "sql", "arrays", "cpu"] as const;
 const HUBS = new Set(["programming", "systems", "software", "security", "intelligence"]);
 
 @Component({
   selector: "cs-home",
-  imports: [RouterLink, Icon],
+  imports: [RouterLink, Icon, GraphView],
   templateUrl: "./home.html",
   styleUrl: "./home.css",
 })
@@ -33,4 +34,18 @@ export class Home {
     { n: "02", title: "A path, not a pile", text: "Beginner through interview, backend, and AI. Each step is a real page with a next link." },
     { n: "03", title: "See how it connects", text: "Every page sits on a map of prerequisites and neighbors. Follow the graph while you read." },
   ] as const;
+  readonly graph = (() => {
+    const data = graphData();
+    const seeds = new Set<string>(START);
+    const extra = new Set<string>();
+    for (const e of data.edges) {
+      if (seeds.has(e.from)) extra.add(e.to);
+      if (seeds.has(e.to)) extra.add(e.from);
+    }
+    const keep = new Set([...seeds, ...[...extra].slice(0, 16)]);
+    return {
+      nodes: data.nodes.filter((n) => keep.has(n.id)).map((n) => ({ id: n.id, title: n.title })),
+      edges: data.edges.filter((e) => keep.has(e.from) && keep.has(e.to)),
+    };
+  })();
 }
