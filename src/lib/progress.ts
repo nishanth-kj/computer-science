@@ -33,7 +33,7 @@ export class ProgressService {
     return Math.min(100, Math.round((this.state().visited.length / this.totalTopics) * 100));
   });
 
-  private save(next: Persist) {
+  private save(next: Persist): void {
     this.state.set(next);
     try {
       localStorage.setItem(KEY, JSON.stringify({ state: next, version: 0 }));
@@ -42,13 +42,13 @@ export class ProgressService {
     }
   }
 
-  markVisited(slug: string) {
+  markVisited(slug: string): void {
     const s = this.state();
     if (s.visited.includes(slug)) return;
     this.save({ ...s, visited: [...s.visited, slug] });
   }
 
-  toggleVisited(slug: string) {
+  toggleVisited(slug: string): void {
     const s = this.state();
     const visited = s.visited.includes(slug)
       ? s.visited.filter((x) => x !== slug)
@@ -56,11 +56,11 @@ export class ProgressService {
     this.save({ ...s, visited });
   }
 
-  isVisited(slug: string) {
+  isVisited(slug: string): boolean {
     return this.state().visited.includes(slug);
   }
 
-  toggleBookmark(slug: string) {
+  toggleBookmark(slug: string): void {
     const s = this.state();
     const bookmarks = s.bookmarks.includes(slug)
       ? s.bookmarks.filter((x) => x !== slug)
@@ -68,11 +68,11 @@ export class ProgressService {
     this.save({ ...s, bookmarks });
   }
 
-  isBookmarked(slug: string) {
+  isBookmarked(slug: string): boolean {
     return this.state().bookmarks.includes(slug);
   }
 
-  reset() {
+  reset(): void {
     this.save({ visited: [], bookmarks: [] });
   }
 }

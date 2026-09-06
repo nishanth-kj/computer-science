@@ -16,6 +16,7 @@ export class TopicView {
   readonly slug = input.required<string>();
   readonly progress = inject(ProgressService);
   readonly topic = computed(() => getTopic(this.slug()));
+  readonly bookmarked = computed(() => this.progress.isBookmarked(this.slug()));
 
   constructor() {
     effect(() => {
@@ -26,19 +27,7 @@ export class TopicView {
     });
   }
 
-  isVisited() {
-    return this.progress.isVisited(this.slug());
-  }
-
-  toggleVisited() {
-    this.progress.toggleVisited(this.slug());
-  }
-
-  bookmarked() {
-    return this.progress.isBookmarked(this.slug());
-  }
-
-  toggleBookmark() {
+  toggleBookmark(): void {
     this.progress.toggleBookmark(this.slug());
   }
 }
