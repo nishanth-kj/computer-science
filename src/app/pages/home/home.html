@@ -16,6 +16,36 @@
         <li><b>{{ stats.sections }}</b> fields</li>
         <li><b>{{ stats.paths }}</b> paths</li>
       </ul>
+      <div class="mt-8 max-w-md rounded-xl border border-border bg-surface-2/40 p-4">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span
+              class="inline-flex size-2 rounded-full"
+              [class.bg-emerald-500]="progress.visitedCount() > 0"
+              [class.bg-subtle]="progress.visitedCount() === 0"
+            ></span>
+            <span class="text-xs font-semibold tracking-wider uppercase text-fg">Your Progress</span>
+          </div>
+          <span class="font-mono text-xs font-medium tabular-nums text-muted">
+            {{ progress.visitedCount() }} / {{ progress.totalTopics }} ({{ progress.progressPercent() }}%)
+          </span>
+        </div>
+        <div class="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-surface border border-border/50">
+          <div
+            class="h-full bg-emerald-500 rounded-full transition-all duration-500"
+            [style.width.%]="progress.progressPercent()"
+          ></div>
+        </div>
+        <div class="mt-2.5 flex items-center justify-between text-xs text-muted">
+          @if (progress.visitedCount() > 0) {
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Keep it up!</span>
+            <a routerLink="/paths" class="text-link hover:underline">View learning paths &rarr;</a>
+          } @else {
+            <span>Progress updates as you read</span>
+            <a routerLink="/paths/beginner" class="text-link hover:underline">Start with beginner path &rarr;</a>
+          }
+        </div>
+      </div>
     </div>
     <div class="hero__panel" aria-label="Curriculum spine">
       <p class="kicker">The spine</p>
@@ -94,8 +124,19 @@
     </header>
     <div class="found">
       @for (t of start; track t.slug; let i = $index) {
-        <a [routerLink]="topicHref(t.slug)" class="found__card">
-          <span>{{ i + 1 }}</span>
+        <a
+          [routerLink]="topicHref(t.slug)"
+          class="found__card"
+          [class.border-emerald-500/40]="progress.isVisited(t.slug)"
+        >
+          <div class="flex items-center justify-between">
+            <span>{{ i + 1 }}</span>
+            @if (progress.isVisited(t.slug)) {
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+                <cs-icon name="check" /> Done
+              </span>
+            }
+          </div>
           <h3>{{ t.title }}</h3>
           <p>{{ t.summary }}</p>
         </a>

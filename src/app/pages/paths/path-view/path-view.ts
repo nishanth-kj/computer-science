@@ -3,12 +3,13 @@ import { RouterLink } from "@angular/router";
 import { PATH_BY_ID, getTopic, topicHref } from "@/lib/content";
 import { ProgressService } from "@/lib/progress";
 import { Pagination } from "@/app/components/ui/pagination/pagination";
+import { Icon } from "@/app/components/ui/icon";
 
 const PAGE_SIZE = 20;
 
 @Component({
   selector: "cs-path-view",
-  imports: [RouterLink, Pagination],
+  imports: [RouterLink, Pagination, Icon],
   templateUrl: "./path-view.html",
   styleUrl: "./path-view.css",
 })
@@ -22,6 +23,14 @@ export class PathView {
   readonly path = computed(() => PATH_BY_ID[this.id()]);
   readonly visited = this.progress.visited;
   readonly slugs = computed(() => this.path()?.slugs ?? []);
+  readonly completedCount = computed(() => {
+    const visitedSet = new Set(this.visited());
+    return this.slugs().filter((s) => visitedSet.has(s)).length;
+  });
+  readonly completedPercent = computed(() => {
+    const total = this.slugs().length;
+    return total ? Math.min(100, Math.round((this.completedCount() / total) * 100)) : 0;
+  });
   readonly paged = computed(() => {
     const start = (this.page() - 1) * PAGE_SIZE;
     return this.slugs().slice(start, start + PAGE_SIZE);

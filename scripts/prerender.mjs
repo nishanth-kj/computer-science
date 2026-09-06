@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const ORIGIN = (process.env.SITE_ORIGIN || "https://nishanth-kj.github.io/computer-science").replace(/\/$/, "");
+const ORIGIN = (process.env.SITE_ORIGIN || "https://neuro-kodes.github.io/computer-science").replace(/\/$/, "");
 const PROGRAMMING = new Set(["languages", "fundamentals", "oop", "dsa", "discrete-math"]);
 
 function parseNav(file) {
@@ -103,7 +103,7 @@ const staticPages = [
   {
     path: "/contact",
     title: "Contact Us · CS",
-    desc: "Get in touch with the CS editorial and maintainer team for corrections, feedback, or inquiries.",
+    desc: "Get in touch with the CS editorial and maintainer team at neurokodes@gmail.com for corrections, feedback, or inquiries.",
     h1: "Contact Us",
   },
 ];
@@ -188,6 +188,7 @@ for (const page of staticPages) {
     <div style="max-width: 44rem; margin: 0 auto; padding: 3rem 1.5rem;">
       <h1 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 1rem;">${escapeHtml(page.h1)}</h1>
       <p style="font-size: 1.1rem; color: #888; line-height: 1.6;">${escapeHtml(page.desc)}</p>
+      ${page.path === "/contact" ? '<p style="margin-top: 1.5rem; font-size: 1.1rem;"><a href="mailto:neurokodes@gmail.com" style="color: #7ea8c4;">neurokodes@gmail.com</a></p>' : ""}
     </div>
   `;
 

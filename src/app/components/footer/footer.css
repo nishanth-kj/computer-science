@@ -4,14 +4,30 @@
 }
 
 .site-footer {
-  padding: 2.5rem 1rem 1.5rem;
   border-top: 1px solid var(--border);
   background: color-mix(in oklab, var(--surface) 70%, transparent);
 }
 
+.site-footer__inner {
+  width: 100%;
+  padding: 2.5rem 1rem 1.5rem;
+}
+
 @media (min-width: 640px) {
-  .site-footer {
+  .site-footer__inner {
+    padding: 2.75rem 1.5rem 1.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .site-footer__inner {
     padding: 2.75rem 2rem 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-footer__inner {
+    padding: 2.75rem 3rem 1.75rem;
   }
 }
 

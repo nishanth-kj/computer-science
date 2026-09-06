@@ -3,14 +3,25 @@
 }
 
 .group {
-  max-width: 56rem;
-  margin: 0 auto;
+  width: 100%;
   padding: 2.5rem 1rem 3rem;
 }
 
 @media (min-width: 640px) {
   .group {
-    padding: 3rem 2rem 4rem;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .group {
+    padding: 2.5rem 2rem 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .group {
+    padding: 2.5rem 3rem 4rem;
   }
 }
 
@@ -47,6 +58,12 @@
 @media (min-width: 640px) {
   .group__grid {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .group__grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

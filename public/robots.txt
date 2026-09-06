@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nishanth-kj.github.io/computer-science/sitemap.xml
+Sitemap: https://neuro-kodes.github.io/computer-science/sitemap.xml

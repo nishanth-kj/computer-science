@@ -6,12 +6,12 @@ import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS } from "@/lib/content";
   selector: "cs-programming-page",
   imports: [RouterLink],
   template: `
-    <div class="mx-auto max-w-5xl px-4 py-10">
+    <div class="w-full px-4 py-8 sm:px-6 md:px-8 lg:px-12">
       <h1 class="font-display text-4xl tracking-tight">Programming</h1>
       <p class="mt-3 max-w-2xl text-lg leading-relaxed text-muted">
         Languages, fundamentals, object-oriented design, data structures, and discrete mathematics.
       </p>
-      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         @for (sec of group.sections; track sec) {
           <a [routerLink]="'/' + sec" class="block">
             <div class="h-full rounded-xl border border-border bg-surface p-5 shadow-[var(--shadow-border)] transition-colors hover:bg-surface-2">

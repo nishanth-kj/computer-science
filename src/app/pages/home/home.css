@@ -3,11 +3,29 @@
 }
 
 .lp {
-  --pad: clamp(1.25rem, 3vw, 2.75rem);
   position: relative;
   isolation: isolate;
-  padding: 0 var(--pad) 4.5rem;
+  width: 100%;
+  padding: 0 1rem 4.5rem;
   overflow: clip;
+}
+
+@media (min-width: 640px) {
+  .lp {
+    padding: 0 1.5rem 4.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .lp {
+    padding: 0 2rem 4.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lp {
+    padding: 0 3rem 4.5rem;
+  }
 }
 
 .lp::before {

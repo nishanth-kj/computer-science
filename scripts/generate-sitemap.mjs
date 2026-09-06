@@ -1,6 +1,6 @@
 import fs from "node:fs";
 
-const ORIGIN = (process.env.SITE_ORIGIN || "https://nishanth-kj.github.io/computer-science").replace(/\/$/, "");
+const ORIGIN = (process.env.SITE_ORIGIN || "https://neuro-kodes.github.io/computer-science").replace(/\/$/, "");
 const TODAY = new Date().toISOString().slice(0, 10);
 const PROGRAMMING = new Set(["languages", "fundamentals", "oop", "dsa", "discrete-math"]);
 

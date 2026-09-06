@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  siteUrl: "https://nishanth-kj.github.io/computer-science",
+  siteUrl: "https://neuro-kodes.github.io/computer-science",
 };

@@ -3,14 +3,25 @@
 }
 
 .prose {
-  max-width: 40rem;
-  margin: 0 auto;
+  max-width: 52rem;
   padding: 2.5rem 1rem 4rem;
 }
 
 @media (min-width: 640px) {
   .prose {
-    padding: 3rem 2rem 5rem;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .prose {
+    padding: 2.5rem 2rem 5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .prose {
+    padding: 2.5rem 3rem 5rem;
   }
 }
 

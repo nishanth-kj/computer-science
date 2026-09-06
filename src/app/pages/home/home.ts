@@ -1,9 +1,10 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ALL_NAV, PATHS, SECTION_BY_ID, SECTION_GROUPS, STATS, getTopic, graphData, topicHref } from "@/lib/content";
 import type { SectionId } from "@/lib/content/types";
 import { Icon } from "@/app/components/ui/icon";
 import { GraphView } from "@/app/components/ui/graph/graph";
+import { ProgressService } from "@/lib/progress";
 
 const START = ["what-is-programming", "processes", "osi-model", "sql", "arrays", "cpu"] as const;
 const HUBS = new Set(["programming", "systems", "software", "security", "intelligence"]);
@@ -15,6 +16,7 @@ const HUBS = new Set(["programming", "systems", "software", "security", "intelli
   styleUrl: "./home.css",
 })
 export class Home {
+  readonly progress = inject(ProgressService);
   readonly stats = STATS;
   readonly paths = PATHS;
   readonly topicHref = topicHref;

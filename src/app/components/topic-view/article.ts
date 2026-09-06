@@ -17,7 +17,7 @@ import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
   selector: "cs-article",
   imports: [RouterLink, Callout, CodeBlock, Pipeline, Viz, Badge, Table, GraphView, AdSlot],
   template: `
-    <article class="mx-auto max-w-3xl pb-24">
+    <article class="w-full pb-24">
       <p class="mb-3 text-xs tracking-wide text-muted uppercase">
         <a [routerLink]="'/' + topic().section" class="hover:text-fg">{{ sectionTitle() }}</a>
       </p>
