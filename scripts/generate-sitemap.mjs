@@ -2,21 +2,14 @@ import fs from "node:fs";
 
 const ORIGIN = (process.env.SITE_ORIGIN || "https://neuro-kodes.github.io/computer-science").replace(/\/$/, "");
 const TODAY = new Date().toISOString().slice(0, 10);
-const PROGRAMMING = new Set(["languages", "fundamentals", "oop", "dsa", "discrete-math"]);
 
-function slugsFrom(file) {
-  const src = fs.readFileSync(file, "utf8");
-  const out = [];
-  const re = /\["([^"]+)",\s*"([^"]+)",\s*"([^"]+)"/g;
-  let match;
-  while ((match = re.exec(src))) out.push({ slug: match[1], section: match[2] });
-  return out;
-}
+const nav = JSON.parse(fs.readFileSync("src/data/content/nav.json", "utf8"));
+const navRest = JSON.parse(fs.readFileSync("src/data/content/nav-rest.json", "utf8"));
+const topics = [...nav, ...navRest];
+const paths = JSON.parse(fs.readFileSync("src/data/content/paths.json", "utf8"));
+const sectionGroups = JSON.parse(fs.readFileSync("src/data/content/section-groups.json", "utf8"));
 
-function idsFrom(file) {
-  const src = fs.readFileSync(file, "utf8");
-  return [...src.matchAll(/^\s+id: "([^"]+)"/gm)].map((m) => m[1]);
-}
+const PROGRAMMING = new Set(sectionGroups.find((g) => g.id === "programming")?.sections ?? []);
 
 function topicPath(slug, section) {
   if (PROGRAMMING.has(section)) return `/programming/${section}/${slug}`;
@@ -28,27 +21,19 @@ function sectionPath(section) {
   return `/${section}`;
 }
 
-const topics = [...slugsFrom("src/lib/content/nav.ts"), ...slugsFrom("src/lib/content/nav-rest.ts")];
 const sections = [...new Set(topics.map((t) => t.section))];
-const paths = idsFrom("src/lib/content/paths.ts");
 
 const urls = [
   { loc: "/", priority: "1.0", changefreq: "weekly" },
   { loc: "/library", priority: "0.9", changefreq: "weekly" },
-  { loc: "/programming", priority: "0.8", changefreq: "weekly" },
   { loc: "/paths", priority: "0.8", changefreq: "weekly" },
-  { loc: "/quiz", priority: "0.6", changefreq: "monthly" },
-  { loc: "/systems", priority: "0.8", changefreq: "weekly" },
-  { loc: "/software", priority: "0.8", changefreq: "weekly" },
-  { loc: "/security", priority: "0.8", changefreq: "weekly" },
-  { loc: "/intelligence", priority: "0.8", changefreq: "weekly" },
   { loc: "/about", priority: "0.4", changefreq: "yearly" },
   { loc: "/privacy", priority: "0.3", changefreq: "yearly" },
   { loc: "/terms", priority: "0.3", changefreq: "yearly" },
   { loc: "/contact", priority: "0.4", changefreq: "yearly" },
   ...sections.map((s) => ({ loc: sectionPath(s), priority: "0.8", changefreq: "weekly" })),
   ...topics.map((t) => ({ loc: topicPath(t.slug, t.section), priority: "0.7", changefreq: "monthly" })),
-  ...paths.map((id) => ({ loc: `/paths/${id}`, priority: "0.6", changefreq: "monthly" })),
+  ...paths.map((p) => ({ loc: `/paths/${p.id}`, priority: "0.6", changefreq: "monthly" })),
 ];
 
 const seen = new Set();

@@ -2,35 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 
 const ORIGIN = (process.env.SITE_ORIGIN || "https://neuro-kodes.github.io/computer-science").replace(/\/$/, "");
-const PROGRAMMING = new Set(["languages", "fundamentals", "oop", "dsa", "discrete-math"]);
+const sectionGroups = JSON.parse(fs.readFileSync("src/data/content/section-groups.json", "utf8"));
+const PROGRAMMING = new Set(sectionGroups.find((g) => g.id === "programming")?.sections ?? []);
 
 function parseNav(file) {
-  const content = fs.readFileSync(file, "utf8");
-  const items = [];
-  // Pattern matches: ["slug", "section", "Title", "Summary", "level", ...]
-  const re = /\["([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)"/g;
-  let m;
-  while ((m = re.exec(content))) {
-    items.push({
-      slug: m[1],
-      section: m[2],
-      title: m[3],
-      summary: m[4],
-      level: m[5],
-    });
-  }
-  return items;
+  return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 
 function parsePaths(file) {
-  const content = fs.readFileSync(file, "utf8");
-  const paths = [];
-  const re = /id:\s*"([^"]+)",\s*title:\s*"([^"]+)",\s*blurb:\s*"([^"]+)"/g;
-  let m;
-  while ((m = re.exec(content))) {
-    paths.push({ id: m[1], title: m[2], blurb: m[3] });
-  }
-  return paths;
+  return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 
 function topicUrl(slug, section) {
@@ -51,10 +31,10 @@ if (!fs.existsSync(templatePath)) {
 const template = fs.readFileSync(templatePath, "utf8");
 
 const navItems = [
-  ...parseNav("src/lib/content/nav.ts"),
-  ...parseNav("src/lib/content/nav-rest.ts"),
+  ...parseNav("src/data/content/nav.json"),
+  ...parseNav("src/data/content/nav-rest.json"),
 ];
-const pathsList = parsePaths("src/lib/content/paths.ts");
+const pathsList = parsePaths("src/data/content/paths.json");
 const sectionsList = [...new Set(navItems.map((n) => n.section))];
 
 const staticPages = [
@@ -67,20 +47,14 @@ const staticPages = [
   {
     path: "/library",
     title: "Library · CS",
-    desc: "The full computer science catalog. 700+ in-depth topics covering programming, systems, networks, databases, and AI.",
+    desc: "The full computer science catalog covering networking, operating systems, and databases in depth.",
     h1: "Library",
   },
   {
     path: "/paths",
     title: "Learning Paths · CS",
-    desc: "Curated learning paths through computer science from beginner to advanced systems and AI engineering.",
+    desc: "Curated learning paths through computer science, from beginner to backend engineering.",
     h1: "Learning Paths",
-  },
-  {
-    path: "/quiz",
-    title: "Interview Mode · CS",
-    desc: "Technical interview questions, conceptual trade-offs, and solutions drawn from the computer science handbook.",
-    h1: "Interview Mode",
   },
   {
     path: "/about",
@@ -263,7 +237,7 @@ for (const s of sectionsList) {
   count++;
 }
 
-// 4. Topics (All 712 Pages)
+// 4. Topics
 for (const t of navItems) {
   const routePath = topicUrl(t.slug, t.section);
   const routeDir = path.join("dist", routePath.replace(/^\//, ""));

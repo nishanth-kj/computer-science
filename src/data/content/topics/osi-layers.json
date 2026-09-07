@@ -112,10 +112,7 @@
     "prereqs": [
       "osi-model"
     ],
-    "related": [
-      "tls",
-      "encryption"
-    ],
+    "related": [],
     "next": "l5-session",
     "tags": [
       "networks"
@@ -170,7 +167,6 @@
       "osi-model"
     ],
     "related": [
-      "rpc",
       "tcp"
     ],
     "next": "l4-transport",

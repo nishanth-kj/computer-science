@@ -1,16 +1,5 @@
 [
   {
-    "id": "programming",
-    "title": "Programming",
-    "sections": [
-      "languages",
-      "fundamentals",
-      "oop",
-      "dsa",
-      "discrete-math"
-    ]
-  },
-  {
     "id": "networks",
     "title": "Networks",
     "sections": [
@@ -29,66 +18,6 @@
     "title": "Databases",
     "sections": [
       "dbms"
-    ]
-  },
-  {
-    "id": "systems",
-    "title": "Systems",
-    "sections": [
-      "architecture",
-      "linux",
-      "parallel"
-    ]
-  },
-  {
-    "id": "software",
-    "title": "Software",
-    "sections": [
-      "software-engineering",
-      "web",
-      "compilers",
-      "mobile"
-    ]
-  },
-  {
-    "id": "security",
-    "title": "Security & Cloud",
-    "sections": [
-      "cybersecurity",
-      "cloud",
-      "devops"
-    ]
-  },
-  {
-    "id": "distributed",
-    "title": "Distributed & Design",
-    "sections": [
-      "distributed",
-      "system-design"
-    ]
-  },
-  {
-    "id": "intelligence",
-    "title": "Intelligence",
-    "sections": [
-      "ai",
-      "ml",
-      "deep-learning",
-      "llm",
-      "nlp",
-      "vision",
-      "graphics",
-      "robotics"
-    ]
-  },
-  {
-    "id": "theory",
-    "title": "Theory & Practice",
-    "sections": [
-      "theory",
-      "ir",
-      "research",
-      "interview"
     ]
   }
 ]
