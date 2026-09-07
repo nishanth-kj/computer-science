@@ -1,0 +1,72 @@
+{
+  "variables": {
+    "lang": "python",
+    "title": "Binding a name",
+    "code": "n = 3          # name n points at int 3\nn = n + 1      # new object 4; name rebound\nnums = [1, 2]  # mutable: the list object changes in place"
+  },
+  "loops": {
+    "lang": "python",
+    "title": "for and while",
+    "code": "for x in [1, 2, 3]:\n    print(x)\ni = 0\nwhile i < 3:\n    i += 1"
+  },
+  "functions": {
+    "lang": "python",
+    "title": "A function is a named computation",
+    "code": "def area(w: float, h: float) -> float:\n    return w * h\n\nprint(area(3, 4))"
+  },
+  "recursion": {
+    "lang": "python",
+    "title": "Base case, then a smaller call",
+    "code": "def fact(n: int) -> int:\n    if n <= 1:\n        return 1\n    return n * fact(n - 1)"
+  },
+  "pointers": {
+    "lang": "c",
+    "title": "An address is a value",
+    "code": "int x = 7;\nint *p = &x;   /* p holds the address of x */\n*p = 8;        /* x is now 8 */"
+  },
+  "arrays": {
+    "lang": "python",
+    "title": "Contiguous, indexable",
+    "code": "a = [4, 1, 9]\na[1] = 2          # O(1)\na.append(5)       # amortized O(1) at the end\n# insert at 0 is O(n): everything slides"
+  },
+  "linked-lists": {
+    "lang": "python",
+    "title": "A node and a next",
+    "code": "class Node:\n    def __init__(self, v, nxt=None):\n        self.v, self.next = v, nxt\n\ndef prepend(head, v):\n    return Node(v, head)"
+  },
+  "stack-ds": {
+    "lang": "python",
+    "title": "LIFO with a list",
+    "code": "stack = []\nstack.append(1)   # push\nstack.append(2)\nx = stack.pop()   # 2"
+  },
+  "queue": {
+    "lang": "python",
+    "title": "FIFO",
+    "code": "from collections import deque\nq = deque()\nq.append(1)     # enqueue\nq.append(2)\nx = q.popleft() # 1"
+  },
+  "dynamic-programming": {
+    "lang": "python",
+    "title": "Fibonacci with a table",
+    "code": "def fib(n: int) -> int:\n    if n < 2:\n        return n\n    dp = [0, 1]\n    for i in range(2, n + 1):\n        dp.append(dp[i - 1] + dp[i - 2])\n    return dp[n]"
+  },
+  "mutex": {
+    "lang": "c",
+    "title": "Hold the lock, then the data",
+    "code": "pthread_mutex_lock(&m);\nbalance -= 10;     /* critical section */\npthread_mutex_unlock(&m);"
+  },
+  "joins": {
+    "lang": "sql",
+    "title": "Inner join",
+    "code": "SELECT u.name, o.amount\nFROM users u\nJOIN orders o ON o.user_id = u.id;"
+  },
+  "rest": {
+    "lang": "http",
+    "title": "A resource, a verb, a representation",
+    "code": "GET /v1/orders/42 HTTP/1.1\nHost: api.example.com\nAccept: application/json"
+  },
+  "git": {
+    "lang": "bash",
+    "title": "Snapshot, then share",
+    "code": "git switch -c fix/paging\ngit add src/page.ts\ngit commit -m \"Fix off-by-one in page walk\"\ngit push -u origin HEAD"
+  }
+}

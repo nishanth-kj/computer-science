@@ -3,17 +3,19 @@
     <div class="flex items-start gap-8 xl:gap-14">
       <div class="min-w-0 flex-1 max-w-4xl">
         <div class="mb-5 flex items-center justify-end border-b border-border/70 pb-3.5">
-          <button
-            type="button"
-            class="inline-flex h-8 items-center gap-1.5 rounded-md border border-border px-3 text-xs text-muted hover:bg-surface-2 hover:text-fg transition-colors"
-            [class.bg-surface-2]="bookmarked()"
-            [class.text-fg]="bookmarked()"
-            (click)="toggleBookmark()"
-            title="Bookmark this topic"
-          >
-            <cs-icon name="bookmark" class="size-3.5" />
-            {{ bookmarked() ? "Saved" : "Save" }}
-          </button>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="inline-flex h-8 items-center gap-1.5 rounded-md border border-border px-3 text-xs text-muted hover:bg-surface-2 hover:text-fg transition-colors"
+              [class.bg-surface-2]="bookmarked()"
+              [class.text-fg]="bookmarked()"
+              (click)="toggleBookmark()"
+              title="Bookmark this topic"
+            >
+              <cs-icon name="bookmark" class="size-3.5" />
+              {{ bookmarked() ? "Saved" : "Save" }}
+            </button>
+          </div>
         </div>
         <cs-article [topic]="topic()!" />
       </div>

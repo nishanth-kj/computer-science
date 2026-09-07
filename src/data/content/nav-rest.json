@@ -1,0 +1,5769 @@
+[
+  {
+    "slug": "database-fundamentals",
+    "section": "dbms",
+    "title": "Database Fundamentals",
+    "summary": "A database is a managed collection of data with a query language, integrity rules, and a storage engine.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "relational-databases"
+    ],
+    "next": "relational-databases"
+  },
+  {
+    "slug": "relational-databases",
+    "section": "dbms",
+    "title": "Relational Databases",
+    "summary": "Data as relations (tables), queried with algebra/calculus, constrained by keys.",
+    "level": "beginner",
+    "prereqs": [
+      "database-fundamentals"
+    ],
+    "related": [
+      "sql",
+      "tables"
+    ],
+    "next": "sql"
+  },
+  {
+    "slug": "sql",
+    "section": "dbms",
+    "title": "SQL",
+    "summary": "The declarative language of relational databases: SELECT describes the result, not the plan.",
+    "level": "beginner",
+    "prereqs": [
+      "relational-databases"
+    ],
+    "related": [
+      "joins",
+      "indexes"
+    ],
+    "next": "tables",
+    "viz": "sql-playground",
+    "lab": "sql-playground"
+  },
+  {
+    "slug": "tables",
+    "section": "dbms",
+    "title": "Tables",
+    "summary": "Named relations: a heading of columns and a body of rows. Duplicates depend on whether you mean bag or set.",
+    "level": "beginner",
+    "prereqs": [
+      "sql"
+    ],
+    "related": [
+      "primary-keys"
+    ],
+    "next": "primary-keys"
+  },
+  {
+    "slug": "primary-keys",
+    "section": "dbms",
+    "title": "Primary Keys",
+    "summary": "A column (or set) that uniquely identifies a row. The handle the rest of the schema points at.",
+    "level": "beginner",
+    "prereqs": [
+      "tables"
+    ],
+    "related": [
+      "foreign-keys",
+      "constraints"
+    ],
+    "next": "foreign-keys"
+  },
+  {
+    "slug": "foreign-keys",
+    "section": "dbms",
+    "title": "Foreign Keys",
+    "summary": "A column that must match a key in another table. Referential integrity as a constraint, not a hope.",
+    "level": "beginner",
+    "prereqs": [
+      "primary-keys"
+    ],
+    "related": [
+      "constraints",
+      "joins"
+    ],
+    "next": "constraints"
+  },
+  {
+    "slug": "constraints",
+    "section": "dbms",
+    "title": "Constraints",
+    "summary": "Declarations the engine enforces: NOT NULL, UNIQUE, CHECK, FK — integrity that survives a bad insert.",
+    "level": "beginner",
+    "prereqs": [
+      "tables"
+    ],
+    "related": [
+      "primary-keys"
+    ],
+    "next": "joins"
+  },
+  {
+    "slug": "joins",
+    "section": "dbms",
+    "title": "Joins",
+    "summary": "Combining rows from two relations by a predicate: inner, left, right, full, cross, and the nested-loop vs hash implementations.",
+    "level": "intermediate",
+    "prereqs": [
+      "sql",
+      "foreign-keys"
+    ],
+    "related": [
+      "subqueries"
+    ],
+    "next": "dbms-aggregation",
+    "viz": "sql-playground",
+    "lab": "sql-playground"
+  },
+  {
+    "slug": "dbms-aggregation",
+    "section": "dbms",
+    "title": "Aggregation",
+    "summary": "GROUP BY, HAVING, and the reduction of many rows to a statistic.",
+    "level": "beginner",
+    "prereqs": [
+      "sql"
+    ],
+    "related": [
+      "joins"
+    ],
+    "next": "subqueries",
+    "viz": "sql-playground",
+    "lab": "sql-playground"
+  },
+  {
+    "slug": "subqueries",
+    "section": "dbms",
+    "title": "Subqueries",
+    "summary": "A query used as a value, a table, or a predicate. Correlated vs uncorrelated is the performance fork.",
+    "level": "intermediate",
+    "prereqs": [
+      "sql",
+      "joins"
+    ],
+    "related": [
+      "query-optimization"
+    ],
+    "next": "indexes"
+  },
+  {
+    "slug": "indexes",
+    "section": "dbms",
+    "title": "Indexes",
+    "summary": "Auxiliary structures (usually B+ trees) that make predicates cheap at the cost of writes and space.",
+    "level": "intermediate",
+    "prereqs": [
+      "sql",
+      "bplus-trees"
+    ],
+    "related": [
+      "query-optimization",
+      "b-trees"
+    ],
+    "next": "views",
+    "viz": "bplus-tree",
+    "lab": "bplus-tree"
+  },
+  {
+    "slug": "views",
+    "section": "dbms",
+    "title": "Views",
+    "summary": "Named queries. Virtual by default; materialized when you cache the result.",
+    "level": "beginner",
+    "prereqs": [
+      "sql"
+    ],
+    "related": [
+      "indexes"
+    ],
+    "next": "transactions"
+  },
+  {
+    "slug": "transactions",
+    "section": "dbms",
+    "title": "Transactions",
+    "summary": "A grouping of reads and writes that should succeed or fail as a unit.",
+    "level": "intermediate",
+    "prereqs": [
+      "sql"
+    ],
+    "related": [
+      "acid",
+      "isolation-levels"
+    ],
+    "next": "acid",
+    "viz": "transaction-simulator",
+    "lab": "transaction-simulator"
+  },
+  {
+    "slug": "acid",
+    "section": "dbms",
+    "title": "ACID",
+    "summary": "Atomicity, Consistency, Isolation, Durability — the classical transaction contract.",
+    "level": "intermediate",
+    "prereqs": [
+      "transactions"
+    ],
+    "related": [
+      "isolation-levels",
+      "wal"
+    ],
+    "next": "isolation-levels"
+  },
+  {
+    "slug": "isolation-levels",
+    "section": "dbms",
+    "title": "Isolation Levels",
+    "summary": "Read uncommitted through serializable: which anomalies you tolerate for concurrency.",
+    "level": "advanced",
+    "prereqs": [
+      "acid",
+      "transactions"
+    ],
+    "related": [
+      "mvcc",
+      "locks-db"
+    ],
+    "next": "locks-db",
+    "viz": "transaction-simulator",
+    "lab": "transaction-simulator"
+  },
+  {
+    "slug": "locks-db",
+    "section": "dbms",
+    "title": "Locks (DB)",
+    "summary": "Shared/exclusive, row/table, intention locks. Two-phase locking as a correctness argument.",
+    "level": "advanced",
+    "prereqs": [
+      "transactions"
+    ],
+    "related": [
+      "mvcc",
+      "deadlocks"
+    ],
+    "next": "mvcc"
+  },
+  {
+    "slug": "mvcc",
+    "section": "dbms",
+    "title": "MVCC",
+    "summary": "Readers see a snapshot; writers create versions. Postgres and InnoDB's answer to blocking reads.",
+    "level": "advanced",
+    "prereqs": [
+      "isolation-levels"
+    ],
+    "related": [
+      "locks-db",
+      "wal"
+    ],
+    "next": "concurrency-db"
+  },
+  {
+    "slug": "concurrency-db",
+    "section": "dbms",
+    "title": "Database Concurrency",
+    "summary": "Interleaving transactions without losing integrity. Conflict serializability is the theory.",
+    "level": "advanced",
+    "prereqs": [
+      "transactions"
+    ],
+    "related": [
+      "mvcc",
+      "locks-db"
+    ],
+    "next": "normalization"
+  },
+  {
+    "slug": "normalization",
+    "section": "dbms",
+    "title": "Normalization",
+    "summary": "Decomposing schemas to remove redundancy. Normal forms are tests, not decorations.",
+    "level": "intermediate",
+    "prereqs": [
+      "relational-databases"
+    ],
+    "related": [
+      "1nf",
+      "bcnf"
+    ],
+    "next": "1nf"
+  },
+  {
+    "slug": "1nf",
+    "section": "dbms",
+    "title": "1NF",
+    "summary": "Atomic values in cells; no repeating groups. The floor of the relational model.",
+    "level": "beginner",
+    "prereqs": [
+      "normalization"
+    ],
+    "related": [
+      "2nf"
+    ],
+    "next": "2nf"
+  },
+  {
+    "slug": "2nf",
+    "section": "dbms",
+    "title": "2NF",
+    "summary": "1NF plus no partial dependence of a non-key attribute on part of a composite key.",
+    "level": "intermediate",
+    "prereqs": [
+      "1nf"
+    ],
+    "related": [
+      "3nf"
+    ],
+    "next": "3nf"
+  },
+  {
+    "slug": "3nf",
+    "section": "dbms",
+    "title": "3NF",
+    "summary": "2NF plus no transitive dependence of a non-key attribute on the key.",
+    "level": "intermediate",
+    "prereqs": [
+      "2nf"
+    ],
+    "related": [
+      "bcnf"
+    ],
+    "next": "bcnf"
+  },
+  {
+    "slug": "bcnf",
+    "section": "dbms",
+    "title": "BCNF",
+    "summary": "Every determinant is a candidate key. Stricter than 3NF; sometimes you lose a dependency.",
+    "level": "intermediate",
+    "prereqs": [
+      "3nf"
+    ],
+    "related": [
+      "normalization"
+    ],
+    "next": "query-optimization"
+  },
+  {
+    "slug": "query-optimization",
+    "section": "dbms",
+    "title": "Query Optimization",
+    "summary": "Turning SQL into a cheap plan: statistics, join order, and access paths.",
+    "level": "advanced",
+    "prereqs": [
+      "sql",
+      "indexes"
+    ],
+    "related": [
+      "query-planners"
+    ],
+    "next": "query-planners"
+  },
+  {
+    "slug": "query-planners",
+    "section": "dbms",
+    "title": "Query Planners",
+    "summary": "Cost-based vs rule-based planners, EXPLAIN, and why the optimizer is the real engine.",
+    "level": "advanced",
+    "prereqs": [
+      "query-optimization"
+    ],
+    "related": [
+      "storage-engines"
+    ],
+    "next": "storage-engines"
+  },
+  {
+    "slug": "storage-engines",
+    "section": "dbms",
+    "title": "Storage Engines",
+    "summary": "The physical implementation: heap files, clustered indexes, InnoDB vs MyISAM vs LSM.",
+    "level": "advanced",
+    "prereqs": [
+      "database-fundamentals"
+    ],
+    "related": [
+      "buffer-pool",
+      "wal"
+    ],
+    "next": "buffer-pool"
+  },
+  {
+    "slug": "buffer-pool",
+    "section": "dbms",
+    "title": "Buffer Pool",
+    "summary": "The database's cache of disk pages. Replacement policy, dirty pages, and checkpoints.",
+    "level": "advanced",
+    "prereqs": [
+      "storage-engines",
+      "cache"
+    ],
+    "related": [
+      "wal"
+    ],
+    "next": "wal"
+  },
+  {
+    "slug": "wal",
+    "section": "dbms",
+    "title": "Write-Ahead Log",
+    "summary": "Log the change before the page. Redo/undo, crash recovery, and replication's raw feed.",
+    "level": "advanced",
+    "prereqs": [
+      "acid",
+      "storage-engines"
+    ],
+    "related": [
+      "replication-db"
+    ],
+    "next": "b-trees"
+  },
+  {
+    "slug": "b-trees",
+    "section": "dbms",
+    "title": "B-Trees",
+    "summary": "Balanced multiway trees. Internal nodes hold keys and children; used widely in filesystems and DBs.",
+    "level": "intermediate",
+    "prereqs": [
+      "trees"
+    ],
+    "related": [
+      "bplus-trees",
+      "indexes"
+    ],
+    "next": "bplus-trees"
+  },
+  {
+    "slug": "bplus-trees",
+    "section": "dbms",
+    "title": "B+ Trees",
+    "summary": "All values in leaves, leaves linked. The index structure behind almost every relational PK.",
+    "level": "intermediate",
+    "prereqs": [
+      "b-trees",
+      "indexes"
+    ],
+    "related": [
+      "indexes"
+    ],
+    "next": "replication-db",
+    "viz": "bplus-tree",
+    "lab": "bplus-tree"
+  },
+  {
+    "slug": "replication-db",
+    "section": "dbms",
+    "title": "Replication (DB)",
+    "summary": "Copying data to other nodes: statement vs row, sync vs async, failover.",
+    "level": "advanced",
+    "prereqs": [
+      "wal"
+    ],
+    "related": [
+      "sharding",
+      "replication-dist"
+    ],
+    "next": "sharding"
+  },
+  {
+    "slug": "sharding",
+    "section": "dbms",
+    "title": "Sharding",
+    "summary": "Partitioning rows across machines by a key. Hotspots and resharding are the cost.",
+    "level": "advanced",
+    "prereqs": [
+      "replication-db"
+    ],
+    "related": [
+      "partitioning",
+      "consistent-hashing"
+    ],
+    "next": "partitioning"
+  },
+  {
+    "slug": "partitioning",
+    "section": "dbms",
+    "title": "Partitioning",
+    "summary": "Splitting a table by range, list, or hash — within one instance or across them.",
+    "level": "intermediate",
+    "prereqs": [
+      "tables"
+    ],
+    "related": [
+      "sharding"
+    ],
+    "next": "key-value"
+  },
+  {
+    "slug": "key-value",
+    "section": "dbms",
+    "title": "Key-Value Stores",
+    "summary": "The simplest NoSQL: get/put by key. Redis, Dynamo-style systems.",
+    "level": "intermediate",
+    "prereqs": [
+      "database-fundamentals"
+    ],
+    "related": [
+      "document-stores"
+    ],
+    "next": "document-stores"
+  },
+  {
+    "slug": "document-stores",
+    "section": "dbms",
+    "title": "Document Stores",
+    "summary": "JSON/BSON documents with secondary indexes. Schema-on-read, query-on-fields.",
+    "level": "intermediate",
+    "prereqs": [
+      "key-value"
+    ],
+    "related": [
+      "column-stores"
+    ],
+    "next": "column-stores"
+  },
+  {
+    "slug": "column-stores",
+    "section": "dbms",
+    "title": "Column Stores",
+    "summary": "Values stored by column, not row. Analytics, compression, and vectorized execution.",
+    "level": "intermediate",
+    "prereqs": [
+      "database-fundamentals"
+    ],
+    "related": [
+      "graph-databases"
+    ],
+    "next": "graph-databases"
+  },
+  {
+    "slug": "graph-databases",
+    "section": "dbms",
+    "title": "Graph Databases",
+    "summary": "First-class nodes and edges. Index-free adjacency and graph query languages.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs"
+    ],
+    "related": [
+      "document-stores"
+    ],
+    "next": "classes"
+  },
+  {
+    "slug": "classes",
+    "section": "oop",
+    "title": "Classes",
+    "summary": "A template for objects: fields, methods, and the invariants that should hold.",
+    "level": "beginner",
+    "prereqs": [
+      "functions"
+    ],
+    "related": [
+      "objects"
+    ],
+    "next": "objects"
+  },
+  {
+    "slug": "objects",
+    "section": "oop",
+    "title": "Objects",
+    "summary": "A bundle of state and behavior at run time. Identity, state, behavior.",
+    "level": "beginner",
+    "prereqs": [
+      "classes"
+    ],
+    "related": [
+      "encapsulation"
+    ],
+    "next": "encapsulation"
+  },
+  {
+    "slug": "encapsulation",
+    "section": "oop",
+    "title": "Encapsulation",
+    "summary": "Hiding representation behind an interface so clients do not depend on internals.",
+    "level": "beginner",
+    "prereqs": [
+      "objects"
+    ],
+    "related": [
+      "abstraction"
+    ],
+    "next": "abstraction"
+  },
+  {
+    "slug": "abstraction",
+    "section": "oop",
+    "title": "Abstraction",
+    "summary": "Showing the essential operations and hiding the rest. Types are the usual vehicle.",
+    "level": "beginner",
+    "prereqs": [
+      "encapsulation"
+    ],
+    "related": [
+      "interfaces"
+    ],
+    "next": "inheritance"
+  },
+  {
+    "slug": "inheritance",
+    "section": "oop",
+    "title": "Inheritance",
+    "summary": "A subclass reuses and specializes a superclass. Easy to overuse; composition is often healthier.",
+    "level": "beginner",
+    "prereqs": [
+      "classes"
+    ],
+    "related": [
+      "polymorphism",
+      "composition"
+    ],
+    "next": "polymorphism"
+  },
+  {
+    "slug": "polymorphism",
+    "section": "oop",
+    "title": "Polymorphism",
+    "summary": "The same operation, many implementations. Subtype, parametric, and ad-hoc.",
+    "level": "intermediate",
+    "prereqs": [
+      "inheritance",
+      "interfaces"
+    ],
+    "related": [
+      "interfaces"
+    ],
+    "next": "interfaces"
+  },
+  {
+    "slug": "interfaces",
+    "section": "oop",
+    "title": "Interfaces",
+    "summary": "A named set of operations without a single implementation. The seam for substitution.",
+    "level": "beginner",
+    "prereqs": [
+      "abstraction"
+    ],
+    "related": [
+      "polymorphism"
+    ],
+    "next": "composition"
+  },
+  {
+    "slug": "composition",
+    "section": "oop",
+    "title": "Composition",
+    "summary": "Has-a: an object owns or uses another to get work done. Prefer this over deep inheritance.",
+    "level": "beginner",
+    "prereqs": [
+      "objects"
+    ],
+    "related": [
+      "aggregation",
+      "inheritance"
+    ],
+    "next": "aggregation"
+  },
+  {
+    "slug": "aggregation",
+    "section": "oop",
+    "title": "Aggregation",
+    "summary": "A weaker has-a: parts can outlive the whole. UML's hollow diamond.",
+    "level": "beginner",
+    "prereqs": [
+      "composition"
+    ],
+    "related": [
+      "association"
+    ],
+    "next": "association"
+  },
+  {
+    "slug": "association",
+    "section": "oop",
+    "title": "Association",
+    "summary": "A structural relationship between objects, with multiplicity and direction.",
+    "level": "beginner",
+    "prereqs": [
+      "objects"
+    ],
+    "related": [
+      "aggregation"
+    ],
+    "next": "coupling"
+  },
+  {
+    "slug": "coupling",
+    "section": "oop",
+    "title": "Coupling",
+    "summary": "How much one module knows about another. High coupling is change contagion.",
+    "level": "intermediate",
+    "prereqs": [
+      "modules"
+    ],
+    "related": [
+      "cohesion"
+    ],
+    "next": "cohesion"
+  },
+  {
+    "slug": "cohesion",
+    "section": "oop",
+    "title": "Cohesion",
+    "summary": "How strongly a module's pieces belong together. High cohesion, low coupling is the cliché because it is true.",
+    "level": "intermediate",
+    "prereqs": [
+      "coupling"
+    ],
+    "related": [
+      "solid"
+    ],
+    "next": "solid"
+  },
+  {
+    "slug": "solid",
+    "section": "oop",
+    "title": "SOLID",
+    "summary": "Five design heuristics: SRP, OCP, LSP, ISP, DIP. Tools, not commandments.",
+    "level": "intermediate",
+    "prereqs": [
+      "interfaces",
+      "coupling"
+    ],
+    "related": [
+      "factory",
+      "strategy"
+    ],
+    "next": "factory"
+  },
+  {
+    "slug": "factory",
+    "section": "oop",
+    "title": "Factory",
+    "summary": "A method or object whose job is to create other objects without the caller naming the class.",
+    "level": "intermediate",
+    "prereqs": [
+      "interfaces"
+    ],
+    "related": [
+      "builder",
+      "solid"
+    ],
+    "next": "builder"
+  },
+  {
+    "slug": "builder",
+    "section": "oop",
+    "title": "Builder",
+    "summary": "Stepwise construction of a complex object, often with a fluent interface.",
+    "level": "intermediate",
+    "prereqs": [
+      "factory"
+    ],
+    "related": [
+      "singleton"
+    ],
+    "next": "singleton"
+  },
+  {
+    "slug": "singleton",
+    "section": "oop",
+    "title": "Singleton",
+    "summary": "One instance, globally reachable. Easy to write, hard to test, often a hidden service locator.",
+    "level": "intermediate",
+    "prereqs": [
+      "classes"
+    ],
+    "related": [
+      "factory"
+    ],
+    "next": "adapter"
+  },
+  {
+    "slug": "adapter",
+    "section": "oop",
+    "title": "Adapter",
+    "summary": "A wrapper that makes an existing interface look like the one a client already knows.",
+    "level": "intermediate",
+    "prereqs": [
+      "interfaces"
+    ],
+    "related": [
+      "decorator"
+    ],
+    "next": "decorator"
+  },
+  {
+    "slug": "decorator",
+    "section": "oop",
+    "title": "Decorator",
+    "summary": "Add behavior by wrapping, without changing the wrapped object's class.",
+    "level": "intermediate",
+    "prereqs": [
+      "composition"
+    ],
+    "related": [
+      "proxy"
+    ],
+    "next": "observer"
+  },
+  {
+    "slug": "observer",
+    "section": "oop",
+    "title": "Observer",
+    "summary": "Subscribers register for events; the subject notifies without knowing who they are.",
+    "level": "intermediate",
+    "prereqs": [
+      "interfaces"
+    ],
+    "related": [
+      "pubsub"
+    ],
+    "next": "strategy"
+  },
+  {
+    "slug": "strategy",
+    "section": "oop",
+    "title": "Strategy",
+    "summary": "A family of interchangeable algorithms behind one interface, chosen at run time.",
+    "level": "intermediate",
+    "prereqs": [
+      "interfaces"
+    ],
+    "related": [
+      "solid"
+    ],
+    "next": "command"
+  },
+  {
+    "slug": "command",
+    "section": "oop",
+    "title": "Command",
+    "summary": "An object that represents a request: execute, undo, queue, log.",
+    "level": "intermediate",
+    "prereqs": [
+      "objects"
+    ],
+    "related": [
+      "strategy"
+    ],
+    "next": "state-pattern"
+  },
+  {
+    "slug": "state-pattern",
+    "section": "oop",
+    "title": "State Pattern",
+    "summary": "An object whose behavior changes with an explicit state object, instead of a thick switch.",
+    "level": "intermediate",
+    "prereqs": [
+      "strategy"
+    ],
+    "related": [
+      "command"
+    ],
+    "next": "proxy"
+  },
+  {
+    "slug": "proxy",
+    "section": "oop",
+    "title": "Proxy",
+    "summary": "A stand-in that controls access: lazy load, remote, access control, virtual.",
+    "level": "intermediate",
+    "prereqs": [
+      "interfaces"
+    ],
+    "related": [
+      "decorator"
+    ],
+    "next": "repository"
+  },
+  {
+    "slug": "repository",
+    "section": "oop",
+    "title": "Repository",
+    "summary": "A collection-like interface over persistent storage, so the domain does not speak SQL.",
+    "level": "intermediate",
+    "prereqs": [
+      "interfaces"
+    ],
+    "related": [
+      "factory"
+    ],
+    "next": "sdlc"
+  },
+  {
+    "slug": "sdlc",
+    "section": "software-engineering",
+    "title": "SDLC",
+    "summary": "The life of software: idea, requirements, design, build, test, deploy, operate, retire.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "requirements",
+      "agile"
+    ],
+    "next": "requirements"
+  },
+  {
+    "slug": "requirements",
+    "section": "software-engineering",
+    "title": "Requirements",
+    "summary": "What the system must do, and how you will know. Ambiguity here becomes defects later.",
+    "level": "beginner",
+    "prereqs": [
+      "sdlc"
+    ],
+    "related": [
+      "architecture-se"
+    ],
+    "next": "architecture-se"
+  },
+  {
+    "slug": "architecture-se",
+    "section": "software-engineering",
+    "title": "Software Architecture",
+    "summary": "The load-bearing decisions: module boundaries, quality attributes, and the trade-offs you will live with.",
+    "level": "intermediate",
+    "prereqs": [
+      "requirements"
+    ],
+    "related": [
+      "system-design"
+    ],
+    "next": "agile"
+  },
+  {
+    "slug": "agile",
+    "section": "software-engineering",
+    "title": "Agile",
+    "summary": "Short feedback loops, working software, and a willingness to change the plan.",
+    "level": "beginner",
+    "prereqs": [
+      "sdlc"
+    ],
+    "related": [
+      "scrum"
+    ],
+    "next": "scrum"
+  },
+  {
+    "slug": "scrum",
+    "section": "software-engineering",
+    "title": "Scrum",
+    "summary": "A particular agile process: sprints, a backlog, a daily, and three roles.",
+    "level": "beginner",
+    "prereqs": [
+      "agile"
+    ],
+    "related": [
+      "agile"
+    ],
+    "next": "git"
+  },
+  {
+    "slug": "git",
+    "section": "software-engineering",
+    "title": "Git",
+    "summary": "A content-addressed snapshot database that happens to be a version control system.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "github",
+      "version-control"
+    ],
+    "next": "github"
+  },
+  {
+    "slug": "github",
+    "section": "software-engineering",
+    "title": "GitHub",
+    "summary": "Hosted Git plus the social layer: PRs, issues, actions, and code review.",
+    "level": "beginner",
+    "prereqs": [
+      "git"
+    ],
+    "related": [
+      "code-review",
+      "cicd"
+    ],
+    "next": "version-control"
+  },
+  {
+    "slug": "version-control",
+    "section": "software-engineering",
+    "title": "Version Control",
+    "summary": "The practice of recording history so you can collaborate, blame, and revert.",
+    "level": "beginner",
+    "prereqs": [
+      "git"
+    ],
+    "related": [
+      "git"
+    ],
+    "next": "code-review"
+  },
+  {
+    "slug": "code-review",
+    "section": "software-engineering",
+    "title": "Code Review",
+    "summary": "A second brain on the diff: correctness, design, and the shared standard of the codebase.",
+    "level": "beginner",
+    "prereqs": [
+      "git"
+    ],
+    "related": [
+      "testing"
+    ],
+    "next": "testing"
+  },
+  {
+    "slug": "testing",
+    "section": "software-engineering",
+    "title": "Testing",
+    "summary": "Executing a program to find discrepancies with an intended spec. Strategy, not just tools.",
+    "level": "beginner",
+    "prereqs": [
+      "functions"
+    ],
+    "related": [
+      "unit-testing"
+    ],
+    "next": "unit-testing"
+  },
+  {
+    "slug": "unit-testing",
+    "section": "software-engineering",
+    "title": "Unit Testing",
+    "summary": "Fast, isolated tests of a small unit. Mocks are a tool, not the point.",
+    "level": "beginner",
+    "prereqs": [
+      "testing"
+    ],
+    "related": [
+      "integration-testing"
+    ],
+    "next": "integration-testing"
+  },
+  {
+    "slug": "integration-testing",
+    "section": "software-engineering",
+    "title": "Integration Testing",
+    "summary": "Tests that several components together still honor the contract.",
+    "level": "intermediate",
+    "prereqs": [
+      "unit-testing"
+    ],
+    "related": [
+      "e2e-testing"
+    ],
+    "next": "e2e-testing"
+  },
+  {
+    "slug": "e2e-testing",
+    "section": "software-engineering",
+    "title": "End-to-End Testing",
+    "summary": "Drive the system as a user would. Slow, valuable, and easy to make flaky.",
+    "level": "intermediate",
+    "prereqs": [
+      "integration-testing"
+    ],
+    "related": [
+      "testing"
+    ],
+    "next": "cicd"
+  },
+  {
+    "slug": "cicd",
+    "section": "software-engineering",
+    "title": "CI/CD",
+    "summary": "Every change is built, tested, and (if you mean it) delivered by a machine.",
+    "level": "intermediate",
+    "prereqs": [
+      "testing",
+      "git"
+    ],
+    "related": [
+      "deployment-strategies"
+    ],
+    "next": "refactoring"
+  },
+  {
+    "slug": "refactoring",
+    "section": "software-engineering",
+    "title": "Refactoring",
+    "summary": "Changing structure without changing behavior, in small safe steps, with tests as the net.",
+    "level": "intermediate",
+    "prereqs": [
+      "testing"
+    ],
+    "related": [
+      "clean-code"
+    ],
+    "next": "clean-code"
+  },
+  {
+    "slug": "clean-code",
+    "section": "software-engineering",
+    "title": "Clean Code",
+    "summary": "Names, size, and structure that make the next change cheaper. Subjective, but not meaningless.",
+    "level": "beginner",
+    "prereqs": [
+      "refactoring"
+    ],
+    "related": [
+      "technical-debt"
+    ],
+    "next": "technical-debt"
+  },
+  {
+    "slug": "technical-debt",
+    "section": "software-engineering",
+    "title": "Technical Debt",
+    "summary": "A shortcut that saves now and taxes later. Interest is real; so is overpaying it.",
+    "level": "intermediate",
+    "prereqs": [
+      "clean-code"
+    ],
+    "related": [
+      "refactoring"
+    ],
+    "next": "documentation-se"
+  },
+  {
+    "slug": "documentation-se",
+    "section": "software-engineering",
+    "title": "Documentation",
+    "summary": "The artifact that lets a stranger (including future you) use or change the system.",
+    "level": "beginner",
+    "prereqs": [
+      "apis"
+    ],
+    "related": [
+      "code-review"
+    ],
+    "next": "observability"
+  },
+  {
+    "slug": "observability",
+    "section": "software-engineering",
+    "title": "Observability",
+    "summary": "Logs, metrics, traces — enough telemetry to ask new questions of a running system.",
+    "level": "intermediate",
+    "prereqs": [
+      "cicd"
+    ],
+    "related": [
+      "metrics",
+      "tracing"
+    ],
+    "next": "browser-architecture"
+  },
+  {
+    "slug": "browser-architecture",
+    "section": "web",
+    "title": "Browser Architecture",
+    "summary": "Processes, the rendering engine, the JS engine, and the network stack in one product.",
+    "level": "intermediate",
+    "prereqs": [
+      "http"
+    ],
+    "related": [
+      "dom",
+      "javascript-engine"
+    ],
+    "next": "dom"
+  },
+  {
+    "slug": "dom",
+    "section": "web",
+    "title": "DOM",
+    "summary": "The tree of objects representing a document. JavaScript mutates this; the renderer paints it.",
+    "level": "beginner",
+    "prereqs": [
+      "html"
+    ],
+    "related": [
+      "cssom",
+      "rendering"
+    ],
+    "next": "cssom"
+  },
+  {
+    "slug": "cssom",
+    "section": "web",
+    "title": "CSSOM",
+    "summary": "The CSS object model: parsed styles as a tree the renderer can query.",
+    "level": "intermediate",
+    "prereqs": [
+      "css",
+      "dom"
+    ],
+    "related": [
+      "rendering"
+    ],
+    "next": "rendering"
+  },
+  {
+    "slug": "rendering",
+    "section": "web",
+    "title": "Rendering",
+    "summary": "Style, layout, paint, composite. The critical path of a frame, and what makes it jank.",
+    "level": "intermediate",
+    "prereqs": [
+      "dom",
+      "cssom"
+    ],
+    "related": [
+      "performance-web"
+    ],
+    "next": "javascript-engine"
+  },
+  {
+    "slug": "javascript-engine",
+    "section": "web",
+    "title": "JavaScript Engine",
+    "summary": "Parse, compile (often JIT), optimize, garbage-collect. V8 as the usual example.",
+    "level": "intermediate",
+    "prereqs": [
+      "javascript"
+    ],
+    "related": [
+      "event-loop"
+    ],
+    "next": "event-loop"
+  },
+  {
+    "slug": "event-loop",
+    "section": "web",
+    "title": "Event Loop",
+    "summary": "A queue of tasks and a stack. JavaScript is single-threaded; concurrency is scheduling.",
+    "level": "intermediate",
+    "prereqs": [
+      "javascript"
+    ],
+    "related": [
+      "web-apis"
+    ],
+    "next": "web-apis"
+  },
+  {
+    "slug": "web-apis",
+    "section": "web",
+    "title": "Web APIs",
+    "summary": "The interfaces the browser offers JS: DOM, fetch, storage, workers, observers.",
+    "level": "beginner",
+    "prereqs": [
+      "javascript"
+    ],
+    "related": [
+      "event-loop"
+    ],
+    "next": "browser-storage"
+  },
+  {
+    "slug": "browser-storage",
+    "section": "web",
+    "title": "Browser Storage",
+    "summary": "Cookies, localStorage, sessionStorage, IndexedDB — different lifetimes, different threat models.",
+    "level": "beginner",
+    "prereqs": [
+      "web-apis"
+    ],
+    "related": [
+      "cookies"
+    ],
+    "next": "cookies"
+  },
+  {
+    "slug": "cookies",
+    "section": "web",
+    "title": "Cookies",
+    "summary": "Small data the browser stores and sends. HttpOnly, Secure, SameSite are the real topic.",
+    "level": "beginner",
+    "prereqs": [
+      "http"
+    ],
+    "related": [
+      "browser-storage",
+      "csrf"
+    ],
+    "next": "cache-web"
+  },
+  {
+    "slug": "cache-web",
+    "section": "web",
+    "title": "HTTP Caching",
+    "summary": "Freshness, validators, and Cache-Control. The cheapest request is the one you do not make.",
+    "level": "intermediate",
+    "prereqs": [
+      "http"
+    ],
+    "related": [
+      "cdns"
+    ],
+    "next": "html"
+  },
+  {
+    "slug": "html",
+    "section": "web",
+    "title": "HTML",
+    "summary": "The markup language of documents: elements, accessibility tree, and forms.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "css",
+      "dom"
+    ],
+    "next": "css"
+  },
+  {
+    "slug": "css",
+    "section": "web",
+    "title": "CSS",
+    "summary": "Selectors, cascade, specificity, layout modes. Visual design as a constraint solver.",
+    "level": "beginner",
+    "prereqs": [
+      "html"
+    ],
+    "related": [
+      "rendering"
+    ],
+    "next": "javascript-web"
+  },
+  {
+    "slug": "javascript-web",
+    "section": "web",
+    "title": "JavaScript on the Web",
+    "summary": "Scripts, modules, bundlers, and the rules of the browser as a runtime.",
+    "level": "beginner",
+    "prereqs": [
+      "javascript",
+      "html"
+    ],
+    "related": [
+      "typescript-web"
+    ],
+    "next": "typescript-web"
+  },
+  {
+    "slug": "typescript-web",
+    "section": "web",
+    "title": "TypeScript on the Web",
+    "summary": "Types that vanish before the network. Tooling is the product.",
+    "level": "beginner",
+    "prereqs": [
+      "typescript",
+      "javascript-web"
+    ],
+    "related": [
+      "react"
+    ],
+    "next": "react"
+  },
+  {
+    "slug": "react",
+    "section": "web",
+    "title": "React",
+    "summary": "UI as a function of state. Reconciliation, hooks, and the cost of renders.",
+    "level": "intermediate",
+    "prereqs": [
+      "javascript-web"
+    ],
+    "related": [
+      "performance-web"
+    ],
+    "next": "accessibility"
+  },
+  {
+    "slug": "accessibility",
+    "section": "web",
+    "title": "Accessibility",
+    "summary": "Designing so people can perceive and operate the UI. Semantics, keyboard, contrast.",
+    "level": "beginner",
+    "prereqs": [
+      "html"
+    ],
+    "related": [
+      "html"
+    ],
+    "next": "performance-web"
+  },
+  {
+    "slug": "performance-web",
+    "section": "web",
+    "title": "Web Performance",
+    "summary": "Core Web Vitals, payload, main-thread work, and measuring instead of guessing.",
+    "level": "intermediate",
+    "prereqs": [
+      "rendering"
+    ],
+    "related": [
+      "cache-web",
+      "cdns"
+    ],
+    "next": "rest"
+  },
+  {
+    "slug": "rest",
+    "section": "web",
+    "title": "REST",
+    "summary": "Resources, representations, and uniform verbs. More than 'JSON over HTTP'.",
+    "level": "intermediate",
+    "prereqs": [
+      "http"
+    ],
+    "related": [
+      "graphql",
+      "apis-web"
+    ],
+    "next": "graphql"
+  },
+  {
+    "slug": "graphql",
+    "section": "web",
+    "title": "GraphQL",
+    "summary": "A query language for an application graph. Clients ask for fields; the server resolves them.",
+    "level": "intermediate",
+    "prereqs": [
+      "rest"
+    ],
+    "related": [
+      "apis-web"
+    ],
+    "next": "apis-web"
+  },
+  {
+    "slug": "apis-web",
+    "section": "web",
+    "title": "Web APIs (HTTP)",
+    "summary": "Designing HTTP APIs: versioning, errors, idempotency, pagination, authn.",
+    "level": "intermediate",
+    "prereqs": [
+      "rest",
+      "http"
+    ],
+    "related": [
+      "authentication"
+    ],
+    "next": "authentication"
+  },
+  {
+    "slug": "authentication",
+    "section": "web",
+    "title": "Authentication",
+    "summary": "Proving who is calling. Sessions, tokens, and the difference from authorization.",
+    "level": "intermediate",
+    "prereqs": [
+      "http"
+    ],
+    "related": [
+      "authorization",
+      "jwt"
+    ],
+    "next": "authorization"
+  },
+  {
+    "slug": "authorization",
+    "section": "web",
+    "title": "Authorization",
+    "summary": "What an authenticated principal is allowed to do. RBAC, ABAC, and the default deny.",
+    "level": "intermediate",
+    "prereqs": [
+      "authentication"
+    ],
+    "related": [
+      "jwt",
+      "oauth"
+    ],
+    "next": "jwt"
+  },
+  {
+    "slug": "jwt",
+    "section": "web",
+    "title": "JWT",
+    "summary": "A signed (sometimes encrypted) JSON claim set. Self-contained, revocable only with extra work.",
+    "level": "intermediate",
+    "prereqs": [
+      "authentication"
+    ],
+    "related": [
+      "oauth",
+      "sessions"
+    ],
+    "next": "oauth"
+  },
+  {
+    "slug": "oauth",
+    "section": "web",
+    "title": "OAuth",
+    "summary": "Delegated authorization. Access tokens, refresh tokens, and PKCE for public clients.",
+    "level": "intermediate",
+    "prereqs": [
+      "authentication"
+    ],
+    "related": [
+      "jwt"
+    ],
+    "next": "sessions"
+  },
+  {
+    "slug": "sessions",
+    "section": "web",
+    "title": "Sessions",
+    "summary": "Server-side (or coordinated) state bound to a client via a cookie or token.",
+    "level": "beginner",
+    "prereqs": [
+      "cookies",
+      "authentication"
+    ],
+    "related": [
+      "jwt"
+    ],
+    "next": "websockets-web"
+  },
+  {
+    "slug": "websockets-web",
+    "section": "web",
+    "title": "WebSockets (Web)",
+    "summary": "Push from the server without polling. Still TCP, still an origin, still auth.",
+    "level": "intermediate",
+    "prereqs": [
+      "websockets",
+      "http"
+    ],
+    "related": [
+      "microservices-web"
+    ],
+    "next": "microservices-web"
+  },
+  {
+    "slug": "microservices-web",
+    "section": "web",
+    "title": "Microservices",
+    "summary": "Multiple deployable services, aligned to domains, talking over the network. Ops cost included.",
+    "level": "advanced",
+    "prereqs": [
+      "apis-web"
+    ],
+    "related": [
+      "distributed-fundamentals"
+    ],
+    "next": "cia-triad"
+  },
+  {
+    "slug": "cia-triad",
+    "section": "cybersecurity",
+    "title": "CIA Triad",
+    "summary": "Confidentiality, integrity, availability. The three axes every control is arguing about.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "authentication-sec",
+      "encryption"
+    ],
+    "next": "authentication-sec"
+  },
+  {
+    "slug": "authentication-sec",
+    "section": "cybersecurity",
+    "title": "Authentication (Security)",
+    "summary": "Verifying identity: something you know, have, are — and why MFA exists.",
+    "level": "beginner",
+    "prereqs": [
+      "cia-triad"
+    ],
+    "related": [
+      "authorization-sec",
+      "password-security"
+    ],
+    "next": "authorization-sec"
+  },
+  {
+    "slug": "authorization-sec",
+    "section": "cybersecurity",
+    "title": "Authorization (Security)",
+    "summary": "Policy after identity. Confused deputies and over-broad tokens are the usual bugs.",
+    "level": "beginner",
+    "prereqs": [
+      "authentication-sec"
+    ],
+    "related": [
+      "identity-management"
+    ],
+    "next": "encryption"
+  },
+  {
+    "slug": "encryption",
+    "section": "cybersecurity",
+    "title": "Encryption",
+    "summary": "Making confidentiality a key-management problem. Reversible with the right secret.",
+    "level": "beginner",
+    "prereqs": [
+      "cia-triad"
+    ],
+    "related": [
+      "symmetric",
+      "asymmetric"
+    ],
+    "next": "hashing"
+  },
+  {
+    "slug": "hashing",
+    "section": "cybersecurity",
+    "title": "Hashing",
+    "summary": "One-way mixing. Integrity checks, password storage (with salt and a KDF), and content addressing.",
+    "level": "beginner",
+    "prereqs": [
+      "cia-triad"
+    ],
+    "related": [
+      "password-security",
+      "encryption"
+    ],
+    "next": "symmetric"
+  },
+  {
+    "slug": "symmetric",
+    "section": "cybersecurity",
+    "title": "Symmetric Encryption",
+    "summary": "One key for both directions. AES-GCM as the modern default mode of thought.",
+    "level": "intermediate",
+    "prereqs": [
+      "encryption"
+    ],
+    "related": [
+      "asymmetric",
+      "tls"
+    ],
+    "next": "asymmetric"
+  },
+  {
+    "slug": "asymmetric",
+    "section": "cybersecurity",
+    "title": "Asymmetric Encryption",
+    "summary": "A key pair: encrypt to a public key, or sign with a private key. Slow, so we hybridize.",
+    "level": "intermediate",
+    "prereqs": [
+      "encryption"
+    ],
+    "related": [
+      "digital-signatures",
+      "tls"
+    ],
+    "next": "digital-signatures"
+  },
+  {
+    "slug": "digital-signatures",
+    "section": "cybersecurity",
+    "title": "Digital Signatures",
+    "summary": "Integrity plus authenticity of a message, verifiable with a public key.",
+    "level": "intermediate",
+    "prereqs": [
+      "asymmetric",
+      "hashing"
+    ],
+    "related": [
+      "certificates"
+    ],
+    "next": "certificates"
+  },
+  {
+    "slug": "certificates",
+    "section": "cybersecurity",
+    "title": "Certificates",
+    "summary": "A signed binding of a public key to a name. PKI, CAs, and what browsers actually check.",
+    "level": "intermediate",
+    "prereqs": [
+      "digital-signatures"
+    ],
+    "related": [
+      "tls"
+    ],
+    "next": "tls"
+  },
+  {
+    "slug": "tls",
+    "section": "cybersecurity",
+    "title": "TLS",
+    "summary": "The protocol under HTTPS: handshake, certificates, AEAD, and forward secrecy.",
+    "level": "intermediate",
+    "prereqs": [
+      "symmetric",
+      "certificates"
+    ],
+    "related": [
+      "https"
+    ],
+    "next": "password-security"
+  },
+  {
+    "slug": "password-security",
+    "section": "cybersecurity",
+    "title": "Password Security",
+    "summary": "Hashing with a slow KDF, unique salts, and never storing reversibly. Phishing is still the breach.",
+    "level": "beginner",
+    "prereqs": [
+      "hashing",
+      "authentication-sec"
+    ],
+    "related": [
+      "authentication-sec"
+    ],
+    "next": "sql-injection"
+  },
+  {
+    "slug": "sql-injection",
+    "section": "cybersecurity",
+    "title": "SQL Injection",
+    "summary": "Untrusted input becoming SQL. Parameterized queries are the fix, not filters.",
+    "level": "intermediate",
+    "prereqs": [
+      "sql"
+    ],
+    "related": [
+      "xss",
+      "owasp"
+    ],
+    "next": "xss"
+  },
+  {
+    "slug": "xss",
+    "section": "cybersecurity",
+    "title": "XSS",
+    "summary": "Injecting script into someone else's page. Encode on output; CSP as defense in depth.",
+    "level": "intermediate",
+    "prereqs": [
+      "html",
+      "javascript-web"
+    ],
+    "related": [
+      "csrf",
+      "owasp"
+    ],
+    "next": "csrf"
+  },
+  {
+    "slug": "csrf",
+    "section": "cybersecurity",
+    "title": "CSRF",
+    "summary": "A browser, already authenticated, tricked into a state-changing request. SameSite and tokens.",
+    "level": "intermediate",
+    "prereqs": [
+      "cookies",
+      "authentication"
+    ],
+    "related": [
+      "xss",
+      "cors"
+    ],
+    "next": "cors"
+  },
+  {
+    "slug": "cors",
+    "section": "cybersecurity",
+    "title": "CORS",
+    "summary": "A browser policy for cross-origin reads. Not an access-control system for your API.",
+    "level": "intermediate",
+    "prereqs": [
+      "http"
+    ],
+    "related": [
+      "csrf"
+    ],
+    "next": "owasp"
+  },
+  {
+    "slug": "owasp",
+    "section": "cybersecurity",
+    "title": "OWASP",
+    "summary": "A map of common web failures. The Top 10 is a syllabus, not a complete threat model.",
+    "level": "beginner",
+    "prereqs": [
+      "sql-injection",
+      "xss"
+    ],
+    "related": [
+      "secure-coding"
+    ],
+    "next": "secure-coding"
+  },
+  {
+    "slug": "secure-coding",
+    "section": "cybersecurity",
+    "title": "Secure Coding",
+    "summary": "Defaults that fail closed: validation, least privilege, memory safety, dependency hygiene.",
+    "level": "intermediate",
+    "prereqs": [
+      "owasp"
+    ],
+    "related": [
+      "network-security"
+    ],
+    "next": "network-security"
+  },
+  {
+    "slug": "network-security",
+    "section": "cybersecurity",
+    "title": "Network Security",
+    "summary": "Segmentation, firewalls, TLS everywhere, and the assumption that the LAN is hostile.",
+    "level": "intermediate",
+    "prereqs": [
+      "firewall",
+      "tls"
+    ],
+    "related": [
+      "identity-management"
+    ],
+    "next": "identity-management"
+  },
+  {
+    "slug": "identity-management",
+    "section": "cybersecurity",
+    "title": "Identity Management",
+    "summary": "Provisioning, SSO, lifecycle, and the directory as the real security boundary.",
+    "level": "intermediate",
+    "prereqs": [
+      "authentication-sec",
+      "oauth"
+    ],
+    "related": [
+      "oauth"
+    ],
+    "next": "compiler-design"
+  },
+  {
+    "slug": "compiler-design",
+    "section": "compilers",
+    "title": "Compiler Design",
+    "summary": "The architecture of a translator: front end, middle end, back end.",
+    "level": "intermediate",
+    "prereqs": [
+      "compiler"
+    ],
+    "related": [
+      "lexer",
+      "parser"
+    ],
+    "next": "lexer",
+    "viz": "compiler-explorer",
+    "lab": "compiler-explorer"
+  },
+  {
+    "slug": "interpreter-cmp",
+    "section": "compilers",
+    "title": "Interpreters (Design)",
+    "summary": "Tree-walk, bytecode VM, or JIT — executing without a native binary.",
+    "level": "intermediate",
+    "prereqs": [
+      "interpreter"
+    ],
+    "related": [
+      "runtime-cmp"
+    ],
+    "next": "lexer"
+  },
+  {
+    "slug": "lexer",
+    "section": "compilers",
+    "title": "Lexer",
+    "summary": "The scanner: source characters to tokens, with longest-match and keyword rules.",
+    "level": "intermediate",
+    "prereqs": [
+      "compiler-design",
+      "regular-expressions"
+    ],
+    "related": [
+      "compilers-tokens",
+      "parser"
+    ],
+    "next": "compilers-tokens",
+    "viz": "compiler-explorer",
+    "lab": "compiler-explorer"
+  },
+  {
+    "slug": "compilers-tokens",
+    "section": "compilers",
+    "title": "Tokens",
+    "summary": "The atomic words of a language: identifiers, literals, operators, punctuation.",
+    "level": "beginner",
+    "prereqs": [
+      "lexer"
+    ],
+    "related": [
+      "parser"
+    ],
+    "next": "parser"
+  },
+  {
+    "slug": "parser",
+    "section": "compilers",
+    "title": "Parser",
+    "summary": "Tokens to a tree. Recursive descent, Pratt, LR — all enforcing a grammar.",
+    "level": "intermediate",
+    "prereqs": [
+      "compilers-tokens",
+      "cfg"
+    ],
+    "related": [
+      "ast"
+    ],
+    "next": "ast",
+    "viz": "compiler-explorer",
+    "lab": "compiler-explorer"
+  },
+  {
+    "slug": "ast",
+    "section": "compilers",
+    "title": "AST",
+    "summary": "An abstract syntax tree: the program as nested structure, comments and punctuation gone.",
+    "level": "intermediate",
+    "prereqs": [
+      "parser"
+    ],
+    "related": [
+      "semantic-analysis"
+    ],
+    "next": "semantic-analysis",
+    "viz": "compiler-explorer",
+    "lab": "compiler-explorer"
+  },
+  {
+    "slug": "semantic-analysis",
+    "section": "compilers",
+    "title": "Semantic Analysis",
+    "summary": "Name resolution, types, definite assignment — the meaning a grammar cannot state.",
+    "level": "intermediate",
+    "prereqs": [
+      "ast"
+    ],
+    "related": [
+      "type-checking"
+    ],
+    "next": "type-checking"
+  },
+  {
+    "slug": "type-checking",
+    "section": "compilers",
+    "title": "Type Checking",
+    "summary": "Rejecting programs that would not make sense to execute. Inference vs annotation.",
+    "level": "intermediate",
+    "prereqs": [
+      "semantic-analysis",
+      "data-types"
+    ],
+    "related": [
+      "ir"
+    ],
+    "next": "ir"
+  },
+  {
+    "slug": "ir",
+    "section": "compilers",
+    "title": "Intermediate Representation",
+    "summary": "A compiler's private language: three-address code, SSA, and why optimization wants it.",
+    "level": "advanced",
+    "prereqs": [
+      "ast"
+    ],
+    "related": [
+      "optimization-cmp"
+    ],
+    "next": "optimization-cmp"
+  },
+  {
+    "slug": "optimization-cmp",
+    "section": "compilers",
+    "title": "Optimization",
+    "summary": "Rewrites that preserve semantics and improve a cost model: inlining, DCE, constant folding.",
+    "level": "advanced",
+    "prereqs": [
+      "ir"
+    ],
+    "related": [
+      "code-generation"
+    ],
+    "next": "code-generation"
+  },
+  {
+    "slug": "code-generation",
+    "section": "compilers",
+    "title": "Code Generation",
+    "summary": "IR to machine code or bytecode: instruction selection, register allocation, calling conventions.",
+    "level": "advanced",
+    "prereqs": [
+      "ir",
+      "isa"
+    ],
+    "related": [
+      "runtime-cmp"
+    ],
+    "next": "runtime-cmp"
+  },
+  {
+    "slug": "runtime-cmp",
+    "section": "compilers",
+    "title": "Language Runtime",
+    "summary": "The services compiled code expects: allocator, scheduler, unwinder, class loader.",
+    "level": "advanced",
+    "prereqs": [
+      "runtime",
+      "code-generation"
+    ],
+    "related": [
+      "gc-cmp"
+    ],
+    "next": "gc-cmp"
+  },
+  {
+    "slug": "gc-cmp",
+    "section": "compilers",
+    "title": "GC (Implementation)",
+    "summary": "Mark-sweep, copying, generational, concurrent. The mutator/collector contract.",
+    "level": "advanced",
+    "prereqs": [
+      "garbage-collection",
+      "runtime-cmp"
+    ],
+    "related": [
+      "runtime-cmp"
+    ],
+    "next": "formal-languages"
+  },
+  {
+    "slug": "formal-languages",
+    "section": "theory",
+    "title": "Formal Languages",
+    "summary": "Sets of strings over an alphabet, classified by the machines that recognize them.",
+    "level": "intermediate",
+    "prereqs": [
+      "sets"
+    ],
+    "related": [
+      "regular-expressions",
+      "cfg"
+    ],
+    "next": "regular-expressions"
+  },
+  {
+    "slug": "regular-expressions",
+    "section": "theory",
+    "title": "Regular Expressions",
+    "summary": "A notation for regular languages. In code they are often more powerful than the theory.",
+    "level": "beginner",
+    "prereqs": [
+      "formal-languages"
+    ],
+    "related": [
+      "dfa",
+      "nfa"
+    ],
+    "next": "dfa"
+  },
+  {
+    "slug": "dfa",
+    "section": "theory",
+    "title": "DFA",
+    "summary": "A deterministic finite automaton: one state, one next state, no extra memory.",
+    "level": "intermediate",
+    "prereqs": [
+      "regular-expressions"
+    ],
+    "related": [
+      "nfa",
+      "regular-languages"
+    ],
+    "next": "nfa",
+    "viz": "dfa-simulator",
+    "lab": "dfa-simulator"
+  },
+  {
+    "slug": "nfa",
+    "section": "theory",
+    "title": "NFA",
+    "summary": "Nondeterministic finite automata, ε-transitions, and the subset construction to a DFA.",
+    "level": "intermediate",
+    "prereqs": [
+      "dfa"
+    ],
+    "related": [
+      "regular-languages"
+    ],
+    "next": "regular-languages",
+    "viz": "dfa-simulator",
+    "lab": "dfa-simulator"
+  },
+  {
+    "slug": "regular-languages",
+    "section": "theory",
+    "title": "Regular Languages",
+    "summary": "The languages DFAs recognize. Closed under the usual operations; pumping lemma as a weapon.",
+    "level": "intermediate",
+    "prereqs": [
+      "dfa",
+      "nfa"
+    ],
+    "related": [
+      "cfg"
+    ],
+    "next": "cfg"
+  },
+  {
+    "slug": "cfg",
+    "section": "theory",
+    "title": "Context-Free Grammars",
+    "summary": "Productions with a single nonterminal on the left. Programming-language syntax lives here.",
+    "level": "intermediate",
+    "prereqs": [
+      "formal-languages"
+    ],
+    "related": [
+      "pda",
+      "parser"
+    ],
+    "next": "pda"
+  },
+  {
+    "slug": "pda",
+    "section": "theory",
+    "title": "Pushdown Automata",
+    "summary": "A finite automaton plus a stack. CFGs and PDAs define the same class.",
+    "level": "advanced",
+    "prereqs": [
+      "cfg",
+      "stack-ds"
+    ],
+    "related": [
+      "turing-machines"
+    ],
+    "next": "turing-machines"
+  },
+  {
+    "slug": "turing-machines",
+    "section": "theory",
+    "title": "Turing Machines",
+    "summary": "An infinite tape and a finite control. The standard model of 'computable'.",
+    "level": "advanced",
+    "prereqs": [
+      "dfa"
+    ],
+    "related": [
+      "decidability",
+      "halting-problem"
+    ],
+    "next": "decidability"
+  },
+  {
+    "slug": "decidability",
+    "section": "theory",
+    "title": "Decidability",
+    "summary": "A language is decidable if a TM halts on every input with yes or no.",
+    "level": "advanced",
+    "prereqs": [
+      "turing-machines"
+    ],
+    "related": [
+      "undecidability"
+    ],
+    "next": "undecidability"
+  },
+  {
+    "slug": "undecidability",
+    "section": "theory",
+    "title": "Undecidability",
+    "summary": "Problems no algorithm solves. Reduction is how you prove a new one is in the club.",
+    "level": "advanced",
+    "prereqs": [
+      "decidability"
+    ],
+    "related": [
+      "halting-problem"
+    ],
+    "next": "halting-problem"
+  },
+  {
+    "slug": "halting-problem",
+    "section": "theory",
+    "title": "Halting Problem",
+    "summary": "There is no TM that, given ⟨M, w⟩, decides whether M halts on w.",
+    "level": "advanced",
+    "prereqs": [
+      "turing-machines"
+    ],
+    "related": [
+      "undecidability"
+    ],
+    "next": "complexity-theory"
+  },
+  {
+    "slug": "complexity-theory",
+    "section": "theory",
+    "title": "Complexity Theory",
+    "summary": "Not 'can we compute it' but 'with what resources'. Time and space as functions of n.",
+    "level": "advanced",
+    "prereqs": [
+      "turing-machines",
+      "asymptotic-notation"
+    ],
+    "related": [
+      "p-complexity",
+      "np-complexity"
+    ],
+    "next": "p-complexity"
+  },
+  {
+    "slug": "p-complexity",
+    "section": "theory",
+    "title": "P",
+    "summary": "Languages decidable in polynomial time on a deterministic TM. 'Efficient' as a first cut.",
+    "level": "advanced",
+    "prereqs": [
+      "complexity-theory"
+    ],
+    "related": [
+      "np-complexity"
+    ],
+    "next": "np-complexity"
+  },
+  {
+    "slug": "np-complexity",
+    "section": "theory",
+    "title": "NP",
+    "summary": "Languages with polynomial-time verifiable certificates. Not 'non-polynomial'.",
+    "level": "advanced",
+    "prereqs": [
+      "p-complexity"
+    ],
+    "related": [
+      "np-complete"
+    ],
+    "next": "np-hard"
+  },
+  {
+    "slug": "np-hard",
+    "section": "theory",
+    "title": "NP-Hard",
+    "summary": "At least as hard as every problem in NP, via polynomial-time reductions.",
+    "level": "advanced",
+    "prereqs": [
+      "np-complexity"
+    ],
+    "related": [
+      "np-complete"
+    ],
+    "next": "np-complete"
+  },
+  {
+    "slug": "np-complete",
+    "section": "theory",
+    "title": "NP-Complete",
+    "summary": "In NP and NP-hard. SAT is the ancestor; Karp's 21 are the family.",
+    "level": "advanced",
+    "prereqs": [
+      "np-hard"
+    ],
+    "related": [
+      "p-complexity"
+    ],
+    "next": "distributed-fundamentals"
+  },
+  {
+    "slug": "distributed-fundamentals",
+    "section": "distributed",
+    "title": "Distributed Systems",
+    "summary": "Independent computers that appear, if you are lucky, as one. The network is the computer — and the failure.",
+    "level": "intermediate",
+    "prereqs": [
+      "tcp",
+      "processes"
+    ],
+    "related": [
+      "rpc",
+      "fault-tolerance"
+    ],
+    "next": "rpc"
+  },
+  {
+    "slug": "rpc",
+    "section": "distributed",
+    "title": "RPC",
+    "summary": "Calling a function that happens to run on another machine. Timeouts, retries, and idempotency follow.",
+    "level": "intermediate",
+    "prereqs": [
+      "apis",
+      "distributed-fundamentals"
+    ],
+    "related": [
+      "message-passing"
+    ],
+    "next": "message-passing"
+  },
+  {
+    "slug": "message-passing",
+    "section": "distributed",
+    "title": "Message Passing",
+    "summary": "No shared memory: send and receive. The model of actors, Kafka, and most microservices.",
+    "level": "intermediate",
+    "prereqs": [
+      "rpc"
+    ],
+    "related": [
+      "logical-clocks"
+    ],
+    "next": "logical-clocks"
+  },
+  {
+    "slug": "logical-clocks",
+    "section": "distributed",
+    "title": "Logical Clocks",
+    "summary": "Ordering events without synchronized wall clocks. Happens-before is the primitive.",
+    "level": "advanced",
+    "prereqs": [
+      "distributed-fundamentals"
+    ],
+    "related": [
+      "lamport-clocks",
+      "vector-clocks"
+    ],
+    "next": "lamport-clocks"
+  },
+  {
+    "slug": "lamport-clocks",
+    "section": "distributed",
+    "title": "Lamport Clocks",
+    "summary": "A counter per process, incremented on events and taking max+1 on receive.",
+    "level": "advanced",
+    "prereqs": [
+      "logical-clocks"
+    ],
+    "related": [
+      "vector-clocks"
+    ],
+    "next": "vector-clocks"
+  },
+  {
+    "slug": "vector-clocks",
+    "section": "distributed",
+    "title": "Vector Clocks",
+    "summary": "A timestamp per process so you can tell causality from concurrency.",
+    "level": "advanced",
+    "prereqs": [
+      "lamport-clocks"
+    ],
+    "related": [
+      "replication-dist"
+    ],
+    "next": "replication-dist"
+  },
+  {
+    "slug": "replication-dist",
+    "section": "distributed",
+    "title": "Replication",
+    "summary": "Several copies of the same state. Leader, quorum, and the conflict that follows a partition.",
+    "level": "advanced",
+    "prereqs": [
+      "distributed-fundamentals"
+    ],
+    "related": [
+      "quorum",
+      "consistency-models"
+    ],
+    "next": "quorum"
+  },
+  {
+    "slug": "quorum",
+    "section": "distributed",
+    "title": "Quorum",
+    "summary": "R + W > N so reads and writes overlap. The math behind many 'highly available' stores.",
+    "level": "advanced",
+    "prereqs": [
+      "replication-dist"
+    ],
+    "related": [
+      "consistency-models"
+    ],
+    "next": "consistency-models"
+  },
+  {
+    "slug": "consistency-models",
+    "section": "distributed",
+    "title": "Consistency Models",
+    "summary": "Linearizability, sequential, causal, eventual — what a read is allowed to return.",
+    "level": "advanced",
+    "prereqs": [
+      "replication-dist"
+    ],
+    "related": [
+      "eventual-consistency",
+      "cap-theorem"
+    ],
+    "next": "eventual-consistency"
+  },
+  {
+    "slug": "eventual-consistency",
+    "section": "distributed",
+    "title": "Eventual Consistency",
+    "summary": "If writes stop, replicas converge. Until then, you may see the past.",
+    "level": "intermediate",
+    "prereqs": [
+      "consistency-models"
+    ],
+    "related": [
+      "replication-dist"
+    ],
+    "next": "leader-election"
+  },
+  {
+    "slug": "leader-election",
+    "section": "distributed",
+    "title": "Leader Election",
+    "summary": "Picking one process to decide. Bully, Raft, and the lease that makes it real.",
+    "level": "advanced",
+    "prereqs": [
+      "distributed-fundamentals"
+    ],
+    "related": [
+      "raft",
+      "consensus"
+    ],
+    "next": "consensus",
+    "viz": "distributed-simulator",
+    "lab": "distributed-simulator"
+  },
+  {
+    "slug": "consensus",
+    "section": "distributed",
+    "title": "Consensus",
+    "summary": "Agreeing on a value despite failures. FLP, and why we still run Raft.",
+    "level": "advanced",
+    "prereqs": [
+      "leader-election"
+    ],
+    "related": [
+      "raft",
+      "paxos"
+    ],
+    "next": "raft"
+  },
+  {
+    "slug": "raft",
+    "section": "distributed",
+    "title": "Raft",
+    "summary": "A consensus protocol designed to be explainable: leader, log, terms, and majority.",
+    "level": "advanced",
+    "prereqs": [
+      "consensus"
+    ],
+    "related": [
+      "paxos",
+      "leader-election"
+    ],
+    "next": "paxos",
+    "viz": "distributed-simulator",
+    "lab": "distributed-simulator"
+  },
+  {
+    "slug": "paxos",
+    "section": "distributed",
+    "title": "Paxos",
+    "summary": "The classic consensus family. Prepare/accept, and Multi-Paxos as what people actually run.",
+    "level": "advanced",
+    "prereqs": [
+      "consensus"
+    ],
+    "related": [
+      "raft"
+    ],
+    "next": "distributed-transactions"
+  },
+  {
+    "slug": "distributed-transactions",
+    "section": "distributed",
+    "title": "Distributed Transactions",
+    "summary": "ACID across machines. 2PC is the starting point and often the ending warning.",
+    "level": "advanced",
+    "prereqs": [
+      "transactions",
+      "consensus"
+    ],
+    "related": [
+      "two-phase-commit"
+    ],
+    "next": "two-phase-commit"
+  },
+  {
+    "slug": "two-phase-commit",
+    "section": "distributed",
+    "title": "Two-Phase Commit",
+    "summary": "Prepare then commit. Blocking when the coordinator dies is the textbook cost.",
+    "level": "advanced",
+    "prereqs": [
+      "distributed-transactions"
+    ],
+    "related": [
+      "consensus"
+    ],
+    "next": "failure-detection"
+  },
+  {
+    "slug": "failure-detection",
+    "section": "distributed",
+    "title": "Failure Detection",
+    "summary": "Timeouts, heartbeats, and the fact that you cannot distinguish a slow node from a dead one.",
+    "level": "advanced",
+    "prereqs": [
+      "distributed-fundamentals"
+    ],
+    "related": [
+      "fault-tolerance"
+    ],
+    "next": "fault-tolerance"
+  },
+  {
+    "slug": "fault-tolerance",
+    "section": "distributed",
+    "title": "Fault Tolerance",
+    "summary": "Continuing (perhaps degraded) after a failure. Replication, retries, and failover.",
+    "level": "intermediate",
+    "prereqs": [
+      "failure-detection"
+    ],
+    "related": [
+      "network-partitions"
+    ],
+    "next": "network-partitions",
+    "viz": "distributed-simulator",
+    "lab": "distributed-simulator"
+  },
+  {
+    "slug": "network-partitions",
+    "section": "distributed",
+    "title": "Network Partitions",
+    "summary": "The network splits. CAP is the slogan; your timeout is the reality.",
+    "level": "advanced",
+    "prereqs": [
+      "fault-tolerance",
+      "cap-theorem"
+    ],
+    "related": [
+      "cap-theorem"
+    ],
+    "next": "distributed-locks"
+  },
+  {
+    "slug": "distributed-locks",
+    "section": "distributed",
+    "title": "Distributed Locks",
+    "summary": "Mutual exclusion across processes. Fencing tokens, and why Redis SET NX is not enough.",
+    "level": "advanced",
+    "prereqs": [
+      "mutex",
+      "consensus"
+    ],
+    "related": [
+      "leader-election"
+    ],
+    "next": "scalability"
+  },
+  {
+    "slug": "scalability",
+    "section": "system-design",
+    "title": "Scalability",
+    "summary": "Doing more: vertical until you cannot, then horizontal, with the coordination tax.",
+    "level": "intermediate",
+    "prereqs": [
+      "distributed-fundamentals"
+    ],
+    "related": [
+      "availability",
+      "load-balancers"
+    ],
+    "next": "availability"
+  },
+  {
+    "slug": "availability",
+    "section": "system-design",
+    "title": "Availability",
+    "summary": "The fraction of time a service does useful work. Nines, and the error budget they imply.",
+    "level": "intermediate",
+    "prereqs": [
+      "scalability"
+    ],
+    "related": [
+      "reliability",
+      "slos"
+    ],
+    "next": "reliability"
+  },
+  {
+    "slug": "reliability",
+    "section": "system-design",
+    "title": "Reliability",
+    "summary": "Continuing to be correct under stress. Durability, redundancy, and graceful degradation.",
+    "level": "intermediate",
+    "prereqs": [
+      "availability"
+    ],
+    "related": [
+      "fault-tolerance-sd"
+    ],
+    "next": "latency-sd"
+  },
+  {
+    "slug": "latency-sd",
+    "section": "system-design",
+    "title": "Latency",
+    "summary": "How long an operation takes. Tail latency is the one users feel and p99 is the one you measure.",
+    "level": "intermediate",
+    "prereqs": [
+      "latency"
+    ],
+    "related": [
+      "throughput"
+    ],
+    "next": "throughput"
+  },
+  {
+    "slug": "throughput",
+    "section": "system-design",
+    "title": "Throughput",
+    "summary": "Work per unit time. Little's law ties it to latency and concurrency.",
+    "level": "intermediate",
+    "prereqs": [
+      "latency-sd"
+    ],
+    "related": [
+      "scalability"
+    ],
+    "next": "cap-theorem"
+  },
+  {
+    "slug": "cap-theorem",
+    "section": "system-design",
+    "title": "CAP Theorem",
+    "summary": "In a partition, you give up linearizability or availability. The rest is engineering.",
+    "level": "intermediate",
+    "prereqs": [
+      "consistency-models",
+      "network-partitions"
+    ],
+    "related": [
+      "acid-vs-base"
+    ],
+    "next": "acid-vs-base"
+  },
+  {
+    "slug": "acid-vs-base",
+    "section": "system-design",
+    "title": "ACID vs BASE",
+    "summary": "Strict transactions versus an apology-oriented, eventually consistent style.",
+    "level": "intermediate",
+    "prereqs": [
+      "acid",
+      "eventual-consistency"
+    ],
+    "related": [
+      "cap-theorem"
+    ],
+    "next": "consistency-sd"
+  },
+  {
+    "slug": "consistency-sd",
+    "section": "system-design",
+    "title": "Consistency (Design)",
+    "summary": "Choosing a consistency model as a product decision, not a database default.",
+    "level": "intermediate",
+    "prereqs": [
+      "consistency-models"
+    ],
+    "related": [
+      "cap-theorem"
+    ],
+    "next": "fault-tolerance-sd"
+  },
+  {
+    "slug": "fault-tolerance-sd",
+    "section": "system-design",
+    "title": "Fault Tolerance (Design)",
+    "summary": "Designing so a dead box is an event, not an outage: redundancy, retries, isolation.",
+    "level": "intermediate",
+    "prereqs": [
+      "fault-tolerance"
+    ],
+    "related": [
+      "circuit-breakers"
+    ],
+    "next": "load-balancers"
+  },
+  {
+    "slug": "load-balancers",
+    "section": "system-design",
+    "title": "Load Balancers",
+    "summary": "Spread traffic, hide backends, terminate TLS, and health-check the fleet.",
+    "level": "intermediate",
+    "prereqs": [
+      "scalability"
+    ],
+    "related": [
+      "reverse-proxies"
+    ],
+    "next": "reverse-proxies",
+    "viz": "load-balancer",
+    "lab": "load-balancer"
+  },
+  {
+    "slug": "reverse-proxies",
+    "section": "system-design",
+    "title": "Reverse Proxies",
+    "summary": "A server in front of servers: TLS, routing, caching, and a single origin for clients.",
+    "level": "intermediate",
+    "prereqs": [
+      "load-balancers",
+      "http"
+    ],
+    "related": [
+      "api-gateways",
+      "cdns"
+    ],
+    "next": "api-gateways"
+  },
+  {
+    "slug": "api-gateways",
+    "section": "system-design",
+    "title": "API Gateways",
+    "summary": "Auth, rate limits, routing, and protocol translation at the edge of a service fleet.",
+    "level": "intermediate",
+    "prereqs": [
+      "reverse-proxies",
+      "apis-web"
+    ],
+    "related": [
+      "rate-limiters"
+    ],
+    "next": "caches-sd"
+  },
+  {
+    "slug": "caches-sd",
+    "section": "system-design",
+    "title": "Caches",
+    "summary": "Remembering expensive results. Aside, through, write-back, and the invalidation problem.",
+    "level": "intermediate",
+    "prereqs": [
+      "cache",
+      "cache-web"
+    ],
+    "related": [
+      "redis",
+      "cdns"
+    ],
+    "next": "redis"
+  },
+  {
+    "slug": "redis",
+    "section": "system-design",
+    "title": "Redis",
+    "summary": "An in-memory data structure server used as cache, lock, queue, and sometimes a database.",
+    "level": "intermediate",
+    "prereqs": [
+      "key-value",
+      "caches-sd"
+    ],
+    "related": [
+      "caches-sd"
+    ],
+    "next": "cdns"
+  },
+  {
+    "slug": "cdns",
+    "section": "system-design",
+    "title": "CDNs",
+    "summary": "Put bytes closer to users. Edge caches, origin shield, and cache-control as the API.",
+    "level": "intermediate",
+    "prereqs": [
+      "cache-web"
+    ],
+    "related": [
+      "reverse-proxies"
+    ],
+    "next": "message-queues"
+  },
+  {
+    "slug": "message-queues",
+    "section": "system-design",
+    "title": "Message Queues",
+    "summary": "Asynchronous buffers between producers and consumers. Delivery semantics are the design.",
+    "level": "intermediate",
+    "prereqs": [
+      "message-passing"
+    ],
+    "related": [
+      "kafka"
+    ],
+    "next": "kafka"
+  },
+  {
+    "slug": "kafka",
+    "section": "system-design",
+    "title": "Kafka",
+    "summary": "A replicated, partitioned log. Consumers are offsets; retention is a disk, not a RAM, problem.",
+    "level": "advanced",
+    "prereqs": [
+      "message-queues"
+    ],
+    "related": [
+      "event-driven"
+    ],
+    "next": "object-storage"
+  },
+  {
+    "slug": "object-storage",
+    "section": "system-design",
+    "title": "Object Storage",
+    "summary": "Immutable blobs addressed by key. S3 as the API the industry converged on.",
+    "level": "intermediate",
+    "prereqs": [
+      "storage"
+    ],
+    "related": [
+      "cdns"
+    ],
+    "next": "search-engines-sd"
+  },
+  {
+    "slug": "search-engines-sd",
+    "section": "system-design",
+    "title": "Search Engines (Systems)",
+    "summary": "Crawling, inverted indexes, ranking, and the serving path of a query.",
+    "level": "advanced",
+    "prereqs": [
+      "ir-fundamentals"
+    ],
+    "related": [
+      "inverted-index"
+    ],
+    "next": "rate-limiters"
+  },
+  {
+    "slug": "rate-limiters",
+    "section": "system-design",
+    "title": "Rate Limiters",
+    "summary": "Token bucket, sliding window, and the distributed counter problem.",
+    "level": "intermediate",
+    "prereqs": [
+      "api-gateways"
+    ],
+    "related": [
+      "load-balancers"
+    ],
+    "next": "consistent-hashing"
+  },
+  {
+    "slug": "consistent-hashing",
+    "section": "system-design",
+    "title": "Consistent Hashing",
+    "summary": "A ring so that adding a node moves only a 1/n fraction of keys — plus virtual nodes.",
+    "level": "advanced",
+    "prereqs": [
+      "hash-tables",
+      "sharding"
+    ],
+    "related": [
+      "sharding"
+    ],
+    "next": "circuit-breakers",
+    "viz": "consistent-hashing",
+    "lab": "consistent-hashing"
+  },
+  {
+    "slug": "circuit-breakers",
+    "section": "system-design",
+    "title": "Circuit Breakers",
+    "summary": "Stop calling a sick dependency so it can recover — and so you fail fast.",
+    "level": "intermediate",
+    "prereqs": [
+      "fault-tolerance-sd"
+    ],
+    "related": [
+      "retry-backoff"
+    ],
+    "next": "retry-backoff"
+  },
+  {
+    "slug": "retry-backoff",
+    "section": "system-design",
+    "title": "Retry and Backoff",
+    "summary": "Retry is amplification. Jittered exponential backoff and idempotency keys are the adult version.",
+    "level": "intermediate",
+    "prereqs": [
+      "rpc"
+    ],
+    "related": [
+      "circuit-breakers"
+    ],
+    "next": "event-driven"
+  },
+  {
+    "slug": "event-driven",
+    "section": "system-design",
+    "title": "Event-Driven Architecture",
+    "summary": "Facts emitted as events; consumers decide what to do. Coupling in time is gone; coupling in meaning remains.",
+    "level": "advanced",
+    "prereqs": [
+      "message-queues"
+    ],
+    "related": [
+      "microservices-sd"
+    ],
+    "next": "microservices-sd"
+  },
+  {
+    "slug": "microservices-sd",
+    "section": "system-design",
+    "title": "Microservices (Design)",
+    "summary": "Independent deploys versus distributed transactions. Draw the seams where the domain already splits.",
+    "level": "advanced",
+    "prereqs": [
+      "microservices-web"
+    ],
+    "related": [
+      "event-driven",
+      "api-gateways"
+    ],
+    "next": "url-shortener"
+  },
+  {
+    "slug": "url-shortener",
+    "section": "system-design",
+    "title": "URL Shortener",
+    "summary": "Tiny unique IDs, 301s, and a write-heavy mapping that must not collide.",
+    "level": "intermediate",
+    "prereqs": [
+      "hash-tables",
+      "load-balancers"
+    ],
+    "related": [
+      "twitter"
+    ],
+    "next": "twitter"
+  },
+  {
+    "slug": "twitter",
+    "section": "system-design",
+    "title": "Twitter / X",
+    "summary": "Fan-out on write vs read, a home timeline, and the celebrity problem.",
+    "level": "advanced",
+    "prereqs": [
+      "url-shortener",
+      "caches-sd"
+    ],
+    "related": [
+      "chat-system"
+    ],
+    "next": "chat-system"
+  },
+  {
+    "slug": "chat-system",
+    "section": "system-design",
+    "title": "Chat System",
+    "summary": "One-to-one and group messages, presence, and delivery at the edge of consistency.",
+    "level": "advanced",
+    "prereqs": [
+      "websockets",
+      "message-queues"
+    ],
+    "related": [
+      "notification-system"
+    ],
+    "next": "notification-system"
+  },
+  {
+    "slug": "notification-system",
+    "section": "system-design",
+    "title": "Notification System",
+    "summary": "Fan-out to push, email, SMS, with preferences, retries, and quiet hours.",
+    "level": "intermediate",
+    "prereqs": [
+      "message-queues"
+    ],
+    "related": [
+      "chat-system"
+    ],
+    "next": "youtube"
+  },
+  {
+    "slug": "youtube",
+    "section": "system-design",
+    "title": "YouTube",
+    "summary": "Upload, transcode, store, CDN, and a recommendation path that dwarfs the video path.",
+    "level": "advanced",
+    "prereqs": [
+      "object-storage",
+      "cdns"
+    ],
+    "related": [
+      "netflix",
+      "video-streaming"
+    ],
+    "next": "netflix"
+  },
+  {
+    "slug": "netflix",
+    "section": "system-design",
+    "title": "Netflix",
+    "summary": "Open Connect, adaptive bitrate, and a control plane that is a microservice zoo.",
+    "level": "advanced",
+    "prereqs": [
+      "youtube",
+      "cdns"
+    ],
+    "related": [
+      "video-streaming"
+    ],
+    "next": "video-streaming"
+  },
+  {
+    "slug": "video-streaming",
+    "section": "system-design",
+    "title": "Video Streaming",
+    "summary": "Chunked files, manifests, ABR, and the CDN as the real product.",
+    "level": "advanced",
+    "prereqs": [
+      "cdns",
+      "object-storage"
+    ],
+    "related": [
+      "youtube"
+    ],
+    "next": "instagram"
+  },
+  {
+    "slug": "instagram",
+    "section": "system-design",
+    "title": "Instagram",
+    "summary": "Media upload, a graph of follows, and a feed that is part cache, part ranking.",
+    "level": "advanced",
+    "prereqs": [
+      "twitter",
+      "object-storage"
+    ],
+    "related": [
+      "whatsapp"
+    ],
+    "next": "whatsapp"
+  },
+  {
+    "slug": "whatsapp",
+    "section": "system-design",
+    "title": "WhatsApp",
+    "summary": "End-to-end encryption, a small server footprint, and queues as the product.",
+    "level": "advanced",
+    "prereqs": [
+      "chat-system",
+      "encryption"
+    ],
+    "related": [
+      "chat-system"
+    ],
+    "next": "uber"
+  },
+  {
+    "slug": "uber",
+    "section": "system-design",
+    "title": "Uber",
+    "summary": "Matching riders to drivers on a map, with dispatch that cannot be a naive query.",
+    "level": "advanced",
+    "prereqs": [
+      "geo",
+      "kafka"
+    ],
+    "related": [
+      "ride-sharing"
+    ],
+    "next": "ride-sharing"
+  },
+  {
+    "slug": "ride-sharing",
+    "section": "system-design",
+    "title": "Ride Sharing",
+    "summary": "Supply, demand, surge, and location at 1 Hz from millions of phones.",
+    "level": "advanced",
+    "prereqs": [
+      "uber"
+    ],
+    "related": [
+      "food-delivery"
+    ],
+    "next": "amazon"
+  },
+  {
+    "slug": "amazon",
+    "section": "system-design",
+    "title": "Amazon",
+    "summary": "A catalog, a cart, inventory, and a warehouse network. The original service-oriented giant.",
+    "level": "advanced",
+    "prereqs": [
+      "microservices-sd"
+    ],
+    "related": [
+      "payment-system"
+    ],
+    "next": "google-search"
+  },
+  {
+    "slug": "google-search",
+    "section": "system-design",
+    "title": "Google Search",
+    "summary": "Crawl, index, rank, and serve in ~100ms. The original warehouse-scale computer.",
+    "level": "advanced",
+    "prereqs": [
+      "search-engines-sd",
+      "ir-fundamentals"
+    ],
+    "related": [
+      "search-engine"
+    ],
+    "next": "search-engine"
+  },
+  {
+    "slug": "search-engine",
+    "section": "system-design",
+    "title": "Search Engine",
+    "summary": "A complete IR pipeline you could sketch: crawler, indexer, query service, ranker.",
+    "level": "advanced",
+    "prereqs": [
+      "google-search"
+    ],
+    "related": [
+      "ir-fundamentals"
+    ],
+    "next": "payment-system"
+  },
+  {
+    "slug": "payment-system",
+    "section": "system-design",
+    "title": "Payment System",
+    "summary": "Idempotent captures, ledgers, and exactly-once as a business requirement.",
+    "level": "advanced",
+    "prereqs": [
+      "transactions",
+      "retry-backoff"
+    ],
+    "related": [
+      "amazon"
+    ],
+    "next": "file-storage"
+  },
+  {
+    "slug": "file-storage",
+    "section": "system-design",
+    "title": "File Storage",
+    "summary": "Metadata vs bytes, chunking, dedup, and a namespace that looks like a disk.",
+    "level": "advanced",
+    "prereqs": [
+      "object-storage"
+    ],
+    "related": [
+      "dropbox"
+    ],
+    "next": "food-delivery"
+  },
+  {
+    "slug": "food-delivery",
+    "section": "system-design",
+    "title": "Food Delivery",
+    "summary": "Three-sided marketplace: diner, restaurant, courier — with ETAs that lie.",
+    "level": "advanced",
+    "prereqs": [
+      "uber",
+      "notification-system"
+    ],
+    "related": [
+      "ride-sharing"
+    ],
+    "next": "linux-fundamentals"
+  },
+  {
+    "slug": "linux-fundamentals",
+    "section": "linux",
+    "title": "Linux Fundamentals",
+    "summary": "A Unix-like kernel, a userspace, and a culture of small tools composed with pipes.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-os"
+    ],
+    "related": [
+      "linux-filesystem",
+      "shell"
+    ],
+    "next": "linux-filesystem"
+  },
+  {
+    "slug": "linux-filesystem",
+    "section": "linux",
+    "title": "Linux Filesystem",
+    "summary": "A single tree. Everything is a file — until it is a socket, a namespace, or /proc.",
+    "level": "beginner",
+    "prereqs": [
+      "linux-fundamentals",
+      "file-systems"
+    ],
+    "related": [
+      "proc",
+      "permissions"
+    ],
+    "next": "linux-processes",
+    "viz": "linux-terminal",
+    "lab": "linux-terminal"
+  },
+  {
+    "slug": "linux-processes",
+    "section": "linux",
+    "title": "Processes (Linux)",
+    "summary": "fork, exec, wait, and the process tree. pstree is a map of the machine.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes",
+      "linux-fundamentals"
+    ],
+    "related": [
+      "linux-threads",
+      "signals-linux"
+    ],
+    "next": "linux-threads"
+  },
+  {
+    "slug": "linux-threads",
+    "section": "linux",
+    "title": "Threads (Linux)",
+    "summary": "clone() and NPTL. A thread is a task that shares an address space.",
+    "level": "intermediate",
+    "prereqs": [
+      "threads",
+      "linux-processes"
+    ],
+    "related": [
+      "linux-processes"
+    ],
+    "next": "permissions"
+  },
+  {
+    "slug": "permissions",
+    "section": "linux",
+    "title": "Permissions",
+    "summary": "User, group, other; rwx; and the bits that actually matter: setuid, capabilities, ACLs.",
+    "level": "beginner",
+    "prereqs": [
+      "linux-filesystem"
+    ],
+    "related": [
+      "users-groups"
+    ],
+    "next": "users-groups"
+  },
+  {
+    "slug": "users-groups",
+    "section": "linux",
+    "title": "Users and Groups",
+    "summary": "uid, gid, /etc/passwd, and the real vs effective IDs a process carries.",
+    "level": "beginner",
+    "prereqs": [
+      "permissions"
+    ],
+    "related": [
+      "permissions"
+    ],
+    "next": "shell"
+  },
+  {
+    "slug": "shell",
+    "section": "linux",
+    "title": "Shell",
+    "summary": "A REPL that launches programs, expands globs, and wires file descriptors.",
+    "level": "beginner",
+    "prereqs": [
+      "linux-fundamentals"
+    ],
+    "related": [
+      "bash-linux",
+      "pipes"
+    ],
+    "next": "bash-linux",
+    "viz": "linux-terminal",
+    "lab": "linux-terminal"
+  },
+  {
+    "slug": "bash-linux",
+    "section": "linux",
+    "title": "Bash (Unix)",
+    "summary": "The language of automation on Unix: functions, arrays, set -euo pipefail.",
+    "level": "beginner",
+    "prereqs": [
+      "bash",
+      "shell"
+    ],
+    "related": [
+      "pipes"
+    ],
+    "next": "pipes"
+  },
+  {
+    "slug": "pipes",
+    "section": "linux",
+    "title": "Pipes",
+    "summary": "stdout of one process into stdin of the next. The Unix idea in one character.",
+    "level": "beginner",
+    "prereqs": [
+      "shell"
+    ],
+    "related": [
+      "redirection"
+    ],
+    "next": "redirection",
+    "viz": "linux-terminal",
+    "lab": "linux-terminal"
+  },
+  {
+    "slug": "redirection",
+    "section": "linux",
+    "title": "Redirection",
+    "summary": "<, >, >>, 2>&1 — the file-descriptor algebra of the shell.",
+    "level": "beginner",
+    "prereqs": [
+      "pipes"
+    ],
+    "related": [
+      "env-vars"
+    ],
+    "next": "env-vars"
+  },
+  {
+    "slug": "env-vars",
+    "section": "linux",
+    "title": "Environment Variables",
+    "summary": "A string map inherited by children. Configuration without a config file.",
+    "level": "beginner",
+    "prereqs": [
+      "shell"
+    ],
+    "related": [
+      "linux-processes"
+    ],
+    "next": "ssh-linux"
+  },
+  {
+    "slug": "ssh-linux",
+    "section": "linux",
+    "title": "SSH (Ops)",
+    "summary": "Remote login, keys, agent forwarding, and tunnels you should understand before you use.",
+    "level": "beginner",
+    "prereqs": [
+      "ssh",
+      "linux-fundamentals"
+    ],
+    "related": [
+      "ssh"
+    ],
+    "next": "signals-linux"
+  },
+  {
+    "slug": "signals-linux",
+    "section": "linux",
+    "title": "Signals (Linux)",
+    "summary": "kill, trap, SIGPIPE, and why a daemon should handle SIGTERM.",
+    "level": "intermediate",
+    "prereqs": [
+      "os-signals",
+      "linux-processes"
+    ],
+    "related": [
+      "linux-processes"
+    ],
+    "next": "networking-commands"
+  },
+  {
+    "slug": "networking-commands",
+    "section": "linux",
+    "title": "Networking Commands",
+    "summary": "ss, ip, ping, traceroute, dig, curl — reading the live network from a box.",
+    "level": "beginner",
+    "prereqs": [
+      "linux-fundamentals",
+      "tcp"
+    ],
+    "related": [
+      "dns",
+      "tcp"
+    ],
+    "next": "proc"
+  },
+  {
+    "slug": "proc",
+    "section": "linux",
+    "title": "The /proc Filesystem",
+    "summary": "A window into the kernel: processes, net, sysctl, and the files that are not on disk.",
+    "level": "intermediate",
+    "prereqs": [
+      "linux-filesystem"
+    ],
+    "related": [
+      "syscalls-linux"
+    ],
+    "next": "syscalls-linux"
+  },
+  {
+    "slug": "syscalls-linux",
+    "section": "linux",
+    "title": "System Calls (Linux)",
+    "summary": "The actual ABI: unistd, strace, and the handful of calls that implement a Unix.",
+    "level": "intermediate",
+    "prereqs": [
+      "system-calls",
+      "linux-fundamentals"
+    ],
+    "related": [
+      "proc"
+    ],
+    "next": "package-management"
+  },
+  {
+    "slug": "package-management",
+    "section": "linux",
+    "title": "Package Management",
+    "summary": "apt, dnf, pacman: dependency graphs, signatures, and why you pin in production.",
+    "level": "beginner",
+    "prereqs": [
+      "linux-fundamentals"
+    ],
+    "related": [
+      "linux-fundamentals"
+    ],
+    "next": "cloud-fundamentals"
+  },
+  {
+    "slug": "cloud-fundamentals",
+    "section": "cloud",
+    "title": "Cloud Fundamentals",
+    "summary": "Someone else's computers, APIs in front of them, billed by the hour or the request.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "iaas",
+      "virtual-machines"
+    ],
+    "next": "iaas"
+  },
+  {
+    "slug": "iaas",
+    "section": "cloud",
+    "title": "IaaS",
+    "summary": "VMs, disks, and networks as API objects. You still own the guest OS.",
+    "level": "beginner",
+    "prereqs": [
+      "cloud-fundamentals"
+    ],
+    "related": [
+      "paas",
+      "virtual-machines"
+    ],
+    "next": "paas"
+  },
+  {
+    "slug": "paas",
+    "section": "cloud",
+    "title": "PaaS",
+    "summary": "You bring code; the platform brings the runtime, scaling, and a lot of opinions.",
+    "level": "beginner",
+    "prereqs": [
+      "iaas"
+    ],
+    "related": [
+      "saas",
+      "serverless"
+    ],
+    "next": "saas"
+  },
+  {
+    "slug": "saas",
+    "section": "cloud",
+    "title": "SaaS",
+    "summary": "Software delivered as a service. You are now on the other side of the API.",
+    "level": "beginner",
+    "prereqs": [
+      "paas"
+    ],
+    "related": [
+      "cloud-fundamentals"
+    ],
+    "next": "virtual-machines"
+  },
+  {
+    "slug": "virtual-machines",
+    "section": "cloud",
+    "title": "Virtual Machines",
+    "summary": "A hypervisor multiplexing hardware. Isolation that looks like a computer.",
+    "level": "intermediate",
+    "prereqs": [
+      "iaas"
+    ],
+    "related": [
+      "containers"
+    ],
+    "next": "containers"
+  },
+  {
+    "slug": "containers",
+    "section": "cloud",
+    "title": "Containers",
+    "summary": "Namespaces + cgroups + a filesystem image. Not a VM, despite the UX.",
+    "level": "intermediate",
+    "prereqs": [
+      "linux-fundamentals",
+      "virtual-machines"
+    ],
+    "related": [
+      "docker",
+      "kubernetes"
+    ],
+    "next": "object-storage-cloud"
+  },
+  {
+    "slug": "object-storage-cloud",
+    "section": "cloud",
+    "title": "Object Storage (Cloud)",
+    "summary": "Durable blobs, eleven nines of marketing, and a consistency model you must read.",
+    "level": "intermediate",
+    "prereqs": [
+      "object-storage"
+    ],
+    "related": [
+      "cloud-fundamentals"
+    ],
+    "next": "cloud-networking"
+  },
+  {
+    "slug": "cloud-networking",
+    "section": "cloud",
+    "title": "Cloud Networking",
+    "summary": "VPCs, subnets, security groups, and the fact that 'the network' is now software.",
+    "level": "intermediate",
+    "prereqs": [
+      "vpc",
+      "routing"
+    ],
+    "related": [
+      "iam"
+    ],
+    "next": "iam"
+  },
+  {
+    "slug": "iam",
+    "section": "cloud",
+    "title": "IAM",
+    "summary": "Identities, roles, policies. The blast radius of a leaked key is the whole account.",
+    "level": "intermediate",
+    "prereqs": [
+      "identity-management"
+    ],
+    "related": [
+      "cloud-fundamentals"
+    ],
+    "next": "autoscaling"
+  },
+  {
+    "slug": "autoscaling",
+    "section": "cloud",
+    "title": "Autoscaling",
+    "summary": "Add or remove capacity from a metric. Cold starts and flapping are the failure modes.",
+    "level": "intermediate",
+    "prereqs": [
+      "virtual-machines",
+      "load-balancers"
+    ],
+    "related": [
+      "serverless"
+    ],
+    "next": "serverless"
+  },
+  {
+    "slug": "serverless",
+    "section": "cloud",
+    "title": "Serverless",
+    "summary": "You deploy functions; the platform scales to zero. Timeouts, payloads, and vendor glue.",
+    "level": "intermediate",
+    "prereqs": [
+      "paas",
+      "autoscaling"
+    ],
+    "related": [
+      "containers"
+    ],
+    "next": "monitoring-cloud"
+  },
+  {
+    "slug": "monitoring-cloud",
+    "section": "cloud",
+    "title": "Cloud Monitoring",
+    "summary": "Host metrics, managed-service metrics, and the dashboard that is not a substitute for traces.",
+    "level": "intermediate",
+    "prereqs": [
+      "observability"
+    ],
+    "related": [
+      "logging-cloud"
+    ],
+    "next": "logging-cloud"
+  },
+  {
+    "slug": "logging-cloud",
+    "section": "cloud",
+    "title": "Cloud Logging",
+    "summary": "Centralized logs as a billed firehose. Structure them or drown.",
+    "level": "beginner",
+    "prereqs": [
+      "observability"
+    ],
+    "related": [
+      "monitoring-cloud"
+    ],
+    "next": "docker"
+  },
+  {
+    "slug": "docker",
+    "section": "devops",
+    "title": "Docker",
+    "summary": "Images, containers, and a daemon. The packaging format the cloud standardized on.",
+    "level": "intermediate",
+    "prereqs": [
+      "containers"
+    ],
+    "related": [
+      "kubernetes"
+    ],
+    "next": "kubernetes"
+  },
+  {
+    "slug": "kubernetes",
+    "section": "devops",
+    "title": "Kubernetes",
+    "summary": "A control plane for containers: desired state, reconciliation, and a lot of YAML.",
+    "level": "advanced",
+    "prereqs": [
+      "docker",
+      "containers"
+    ],
+    "related": [
+      "deployment-strategies"
+    ],
+    "next": "iac"
+  },
+  {
+    "slug": "iac",
+    "section": "devops",
+    "title": "Infrastructure as Code",
+    "summary": "The network and the boxes are in git. Plan, apply, and review like software.",
+    "level": "intermediate",
+    "prereqs": [
+      "git"
+    ],
+    "related": [
+      "terraform"
+    ],
+    "next": "terraform"
+  },
+  {
+    "slug": "terraform",
+    "section": "devops",
+    "title": "Terraform",
+    "summary": "A graph of resources and a state file. Providers for every cloud, including the ones you regret.",
+    "level": "intermediate",
+    "prereqs": [
+      "iac"
+    ],
+    "related": [
+      "iac"
+    ],
+    "next": "deployment-strategies"
+  },
+  {
+    "slug": "deployment-strategies",
+    "section": "devops",
+    "title": "Deployment Strategies",
+    "summary": "Rolling, recreate, blue/green, canary — how you swap the running bits.",
+    "level": "intermediate",
+    "prereqs": [
+      "cicd"
+    ],
+    "related": [
+      "blue-green",
+      "canary"
+    ],
+    "next": "blue-green"
+  },
+  {
+    "slug": "blue-green",
+    "section": "devops",
+    "title": "Blue/Green Deployment",
+    "summary": "Two environments; flip the pointer. Instant rollback, double the capacity during the cut.",
+    "level": "intermediate",
+    "prereqs": [
+      "deployment-strategies"
+    ],
+    "related": [
+      "canary"
+    ],
+    "next": "canary"
+  },
+  {
+    "slug": "canary",
+    "section": "devops",
+    "title": "Canary Deployment",
+    "summary": "Send a fraction of traffic to the new version and watch the error budget.",
+    "level": "intermediate",
+    "prereqs": [
+      "deployment-strategies",
+      "slos"
+    ],
+    "related": [
+      "blue-green"
+    ],
+    "next": "monitoring-sre"
+  },
+  {
+    "slug": "monitoring-sre",
+    "section": "devops",
+    "title": "Monitoring",
+    "summary": "Known-unknowns: the dashboards you designed. Alerts that page a human should be rare and true.",
+    "level": "intermediate",
+    "prereqs": [
+      "observability"
+    ],
+    "related": [
+      "logging-sre",
+      "metrics"
+    ],
+    "next": "logging-sre"
+  },
+  {
+    "slug": "logging-sre",
+    "section": "devops",
+    "title": "Logging (SRE)",
+    "summary": "A debug interface for production. Cardinality, retention, and PII.",
+    "level": "intermediate",
+    "prereqs": [
+      "observability"
+    ],
+    "related": [
+      "tracing"
+    ],
+    "next": "metrics"
+  },
+  {
+    "slug": "metrics",
+    "section": "devops",
+    "title": "Metrics",
+    "summary": "Numbers over time: RED, USE, and the histograms that make percentiles honest.",
+    "level": "intermediate",
+    "prereqs": [
+      "observability"
+    ],
+    "related": [
+      "slos"
+    ],
+    "next": "tracing"
+  },
+  {
+    "slug": "tracing",
+    "section": "devops",
+    "title": "Tracing",
+    "summary": "A request as a tree of spans across services. Sampling is not optional at scale.",
+    "level": "intermediate",
+    "prereqs": [
+      "observability",
+      "microservices-sd"
+    ],
+    "related": [
+      "metrics"
+    ],
+    "next": "slis"
+  },
+  {
+    "slug": "slis",
+    "section": "devops",
+    "title": "SLIs",
+    "summary": "The measurements that stand in for user happiness: availability, latency, quality.",
+    "level": "intermediate",
+    "prereqs": [
+      "metrics"
+    ],
+    "related": [
+      "slos"
+    ],
+    "next": "slos"
+  },
+  {
+    "slug": "slos",
+    "section": "devops",
+    "title": "SLOs",
+    "summary": "A target on an SLI, and an error budget that tells you when to slow down shipping.",
+    "level": "intermediate",
+    "prereqs": [
+      "slis"
+    ],
+    "related": [
+      "slas"
+    ],
+    "next": "slas"
+  },
+  {
+    "slug": "slas",
+    "section": "devops",
+    "title": "SLAs",
+    "summary": "The SLO you wrote into a contract, with money attached.",
+    "level": "beginner",
+    "prereqs": [
+      "slos"
+    ],
+    "related": [
+      "slos"
+    ],
+    "next": "incident-response"
+  },
+  {
+    "slug": "incident-response",
+    "section": "devops",
+    "title": "Incident Response",
+    "summary": "Detect, mitigate, communicate, learn. The runbook is the product.",
+    "level": "intermediate",
+    "prereqs": [
+      "slos"
+    ],
+    "related": [
+      "reliability-sre"
+    ],
+    "next": "reliability-sre"
+  },
+  {
+    "slug": "reliability-sre",
+    "section": "devops",
+    "title": "Reliability",
+    "summary": "SRE as an engineering discipline: toil, error budgets, and making tomorrow quieter.",
+    "level": "intermediate",
+    "prereqs": [
+      "incident-response",
+      "slos"
+    ],
+    "related": [
+      "availability"
+    ],
+    "next": "ai-fundamentals"
+  },
+  {
+    "slug": "ai-fundamentals",
+    "section": "ai",
+    "title": "AI Fundamentals",
+    "summary": "Building machines that act as if they were intelligent: search, knowledge, learning.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "search-ai",
+      "supervised"
+    ],
+    "next": "search-ai"
+  },
+  {
+    "slug": "search-ai",
+    "section": "ai",
+    "title": "Search (AI)",
+    "summary": "State spaces, BFS/DFS/A*, and heuristics. Planning as graph search.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "ai-fundamentals"
+    ],
+    "related": [
+      "planning"
+    ],
+    "next": "knowledge-representation"
+  },
+  {
+    "slug": "knowledge-representation",
+    "section": "ai",
+    "title": "Knowledge Representation",
+    "summary": "Logic, frames, graphs — making facts a machine can query and update.",
+    "level": "intermediate",
+    "prereqs": [
+      "predicate-logic"
+    ],
+    "related": [
+      "reasoning"
+    ],
+    "next": "planning"
+  },
+  {
+    "slug": "planning",
+    "section": "ai",
+    "title": "Planning",
+    "summary": "Choosing a sequence of actions to reach a goal. STRIPS, and why the real world is not STRIPS.",
+    "level": "intermediate",
+    "prereqs": [
+      "search-ai"
+    ],
+    "related": [
+      "reasoning"
+    ],
+    "next": "reasoning"
+  },
+  {
+    "slug": "reasoning",
+    "section": "ai",
+    "title": "Reasoning",
+    "summary": "Inference over a knowledge base: forward, backward, and the incompleteness you live with.",
+    "level": "intermediate",
+    "prereqs": [
+      "knowledge-representation"
+    ],
+    "related": [
+      "probabilistic-ai"
+    ],
+    "next": "probabilistic-ai"
+  },
+  {
+    "slug": "probabilistic-ai",
+    "section": "ai",
+    "title": "Probabilistic AI",
+    "summary": "When the world is noisy: Bayes nets, HMMs, and decisions under uncertainty.",
+    "level": "advanced",
+    "prereqs": [
+      "probability",
+      "reasoning"
+    ],
+    "related": [
+      "supervised"
+    ],
+    "next": "supervised"
+  },
+  {
+    "slug": "supervised",
+    "section": "ml",
+    "title": "Supervised Learning",
+    "summary": "Learn a mapping from labeled examples. Classification and regression are the two headlines.",
+    "level": "beginner",
+    "prereqs": [
+      "probability"
+    ],
+    "related": [
+      "regression",
+      "classification"
+    ],
+    "next": "unsupervised"
+  },
+  {
+    "slug": "unsupervised",
+    "section": "ml",
+    "title": "Unsupervised Learning",
+    "summary": "Structure without labels: clusters, density, and compressed representations.",
+    "level": "intermediate",
+    "prereqs": [
+      "supervised"
+    ],
+    "related": [
+      "clustering",
+      "pca"
+    ],
+    "next": "regression"
+  },
+  {
+    "slug": "regression",
+    "section": "ml",
+    "title": "Regression",
+    "summary": "Predict a continuous target. Linear models, residuals, and regularization.",
+    "level": "beginner",
+    "prereqs": [
+      "supervised"
+    ],
+    "related": [
+      "classification",
+      "overfitting"
+    ],
+    "next": "classification"
+  },
+  {
+    "slug": "classification",
+    "section": "ml",
+    "title": "Classification",
+    "summary": "Predict a discrete label. Decision boundaries, class imbalance, and calibration.",
+    "level": "beginner",
+    "prereqs": [
+      "supervised"
+    ],
+    "related": [
+      "decision-trees-ml"
+    ],
+    "next": "decision-trees-ml"
+  },
+  {
+    "slug": "decision-trees-ml",
+    "section": "ml",
+    "title": "Decision Trees",
+    "summary": "Axis-aligned splits that you can read. Easy to overfit, easy to ensemble.",
+    "level": "beginner",
+    "prereqs": [
+      "classification"
+    ],
+    "related": [
+      "random-forests"
+    ],
+    "next": "random-forests"
+  },
+  {
+    "slug": "random-forests",
+    "section": "ml",
+    "title": "Random Forests",
+    "summary": "Bagged trees with feature randomness. Strong off-the-shelf tabular models.",
+    "level": "intermediate",
+    "prereqs": [
+      "decision-trees-ml"
+    ],
+    "related": [
+      "svm"
+    ],
+    "next": "svm"
+  },
+  {
+    "slug": "svm",
+    "section": "ml",
+    "title": "SVM",
+    "summary": "Maximum-margin classifiers, kernels, and the dual that made them famous.",
+    "level": "advanced",
+    "prereqs": [
+      "classification"
+    ],
+    "related": [
+      "knn"
+    ],
+    "next": "knn"
+  },
+  {
+    "slug": "knn",
+    "section": "ml",
+    "title": "k-NN",
+    "summary": "Classify by the labels of the nearest neighbors. The dataset is the model.",
+    "level": "beginner",
+    "prereqs": [
+      "classification"
+    ],
+    "related": [
+      "clustering"
+    ],
+    "next": "clustering"
+  },
+  {
+    "slug": "clustering",
+    "section": "ml",
+    "title": "Clustering",
+    "summary": "k-means, hierarchical, density-based. There is no single right partition.",
+    "level": "intermediate",
+    "prereqs": [
+      "unsupervised"
+    ],
+    "related": [
+      "pca"
+    ],
+    "next": "pca"
+  },
+  {
+    "slug": "pca",
+    "section": "ml",
+    "title": "PCA",
+    "summary": "Orthogonal directions of variance. A linear compression, not a mystery.",
+    "level": "intermediate",
+    "prereqs": [
+      "unsupervised"
+    ],
+    "related": [
+      "feature-engineering"
+    ],
+    "next": "feature-engineering"
+  },
+  {
+    "slug": "feature-engineering",
+    "section": "ml",
+    "title": "Feature Engineering",
+    "summary": "Turning raw observations into the numbers a model can use. Still half the job.",
+    "level": "intermediate",
+    "prereqs": [
+      "supervised"
+    ],
+    "related": [
+      "evaluation-ml"
+    ],
+    "next": "evaluation-ml"
+  },
+  {
+    "slug": "evaluation-ml",
+    "section": "ml",
+    "title": "Evaluation",
+    "summary": "Hold-out, cross-validation, precision/recall, ROC, and the metric that matches the cost.",
+    "level": "intermediate",
+    "prereqs": [
+      "supervised"
+    ],
+    "related": [
+      "overfitting"
+    ],
+    "next": "overfitting"
+  },
+  {
+    "slug": "overfitting",
+    "section": "ml",
+    "title": "Overfitting",
+    "summary": "Fitting the sample's noise. The bias-variance story, and why more data is a regularizer.",
+    "level": "beginner",
+    "prereqs": [
+      "evaluation-ml"
+    ],
+    "related": [
+      "regularization"
+    ],
+    "next": "regularization"
+  },
+  {
+    "slug": "regularization",
+    "section": "ml",
+    "title": "Regularization",
+    "summary": "Penalizing complexity: L2, L1, dropout, early stopping — different names, same idea.",
+    "level": "intermediate",
+    "prereqs": [
+      "overfitting"
+    ],
+    "related": [
+      "neural-networks"
+    ],
+    "next": "neural-networks"
+  },
+  {
+    "slug": "neural-networks",
+    "section": "deep-learning",
+    "title": "Neural Networks",
+    "summary": "Composed linear maps and nonlinearities. Universal approximation, in theory; engineering, in practice.",
+    "level": "intermediate",
+    "prereqs": [
+      "supervised"
+    ],
+    "related": [
+      "backpropagation"
+    ],
+    "next": "backpropagation",
+    "viz": "neural-net",
+    "lab": "neural-net"
+  },
+  {
+    "slug": "backpropagation",
+    "section": "deep-learning",
+    "title": "Backpropagation",
+    "summary": "Reverse-mode autodiff on a computational graph. The gradient is a chain rule.",
+    "level": "intermediate",
+    "prereqs": [
+      "neural-networks"
+    ],
+    "related": [
+      "cnn"
+    ],
+    "next": "cnn",
+    "viz": "neural-net",
+    "lab": "neural-net"
+  },
+  {
+    "slug": "cnn",
+    "section": "deep-learning",
+    "title": "CNN",
+    "summary": "Weight sharing over local patches. The inductive bias that ate computer vision.",
+    "level": "intermediate",
+    "prereqs": [
+      "neural-networks"
+    ],
+    "related": [
+      "computer-vision-fundamentals"
+    ],
+    "next": "rnn"
+  },
+  {
+    "slug": "rnn",
+    "section": "deep-learning",
+    "title": "RNN",
+    "summary": "A network with state over time. Vanishing gradients made them famous for failing.",
+    "level": "intermediate",
+    "prereqs": [
+      "neural-networks"
+    ],
+    "related": [
+      "lstm",
+      "gru"
+    ],
+    "next": "lstm"
+  },
+  {
+    "slug": "lstm",
+    "section": "deep-learning",
+    "title": "LSTM",
+    "summary": "Gates that learn what to remember. The RNN that actually trained.",
+    "level": "intermediate",
+    "prereqs": [
+      "rnn"
+    ],
+    "related": [
+      "gru",
+      "attention"
+    ],
+    "next": "gru"
+  },
+  {
+    "slug": "gru",
+    "section": "deep-learning",
+    "title": "GRU",
+    "summary": "A simpler gated recurrent unit. Often close enough to LSTM, cheaper.",
+    "level": "intermediate",
+    "prereqs": [
+      "lstm"
+    ],
+    "related": [
+      "attention"
+    ],
+    "next": "attention"
+  },
+  {
+    "slug": "attention",
+    "section": "deep-learning",
+    "title": "Attention",
+    "summary": "A weighted sum of values, with weights from a query-key match. The primitive of transformers.",
+    "level": "intermediate",
+    "prereqs": [
+      "neural-networks"
+    ],
+    "related": [
+      "transformers"
+    ],
+    "next": "transformers",
+    "viz": "neural-net",
+    "lab": "neural-net"
+  },
+  {
+    "slug": "transformers",
+    "section": "deep-learning",
+    "title": "Transformers",
+    "summary": "Stacked attention and MLPs, with residual connections. The architecture of modern language models.",
+    "level": "advanced",
+    "prereqs": [
+      "attention"
+    ],
+    "related": [
+      "tokenization",
+      "pretraining"
+    ],
+    "next": "tokens"
+  },
+  {
+    "slug": "tokens",
+    "section": "llm",
+    "title": "Tokens",
+    "summary": "The atomic pieces a language model reads and writes. Not always words.",
+    "level": "beginner",
+    "prereqs": [
+      "transformers"
+    ],
+    "related": [
+      "tokenization"
+    ],
+    "next": "tokenization"
+  },
+  {
+    "slug": "tokenization",
+    "section": "llm",
+    "title": "Tokenization",
+    "summary": "BPE, WordPiece, Unigram. The tokenizer is part of the model.",
+    "level": "intermediate",
+    "prereqs": [
+      "tokens"
+    ],
+    "related": [
+      "embeddings"
+    ],
+    "next": "embeddings"
+  },
+  {
+    "slug": "embeddings",
+    "section": "llm",
+    "title": "Embeddings",
+    "summary": "Vectors that put related items nearby. Token, sentence, and document flavors.",
+    "level": "intermediate",
+    "prereqs": [
+      "tokenization"
+    ],
+    "related": [
+      "vector-databases"
+    ],
+    "next": "context-windows"
+  },
+  {
+    "slug": "context-windows",
+    "section": "llm",
+    "title": "Context Windows",
+    "summary": "How much prefix the model can attend to. Quadratic cost, and the tricks around it.",
+    "level": "intermediate",
+    "prereqs": [
+      "transformers"
+    ],
+    "related": [
+      "positional-encoding"
+    ],
+    "next": "positional-encoding"
+  },
+  {
+    "slug": "positional-encoding",
+    "section": "llm",
+    "title": "Positional Encoding",
+    "summary": "How a transformer knows order: sinusoids, learned, RoPE.",
+    "level": "advanced",
+    "prereqs": [
+      "transformers"
+    ],
+    "related": [
+      "attention"
+    ],
+    "next": "pretraining"
+  },
+  {
+    "slug": "pretraining",
+    "section": "llm",
+    "title": "Pretraining",
+    "summary": "Next-token (or masked) prediction on a large corpus. The expensive part.",
+    "level": "advanced",
+    "prereqs": [
+      "transformers"
+    ],
+    "related": [
+      "fine-tuning"
+    ],
+    "next": "fine-tuning"
+  },
+  {
+    "slug": "fine-tuning",
+    "section": "llm",
+    "title": "Fine-tuning",
+    "summary": "Continuing training on a narrower distribution. Full, LoRA, and instruction variants.",
+    "level": "intermediate",
+    "prereqs": [
+      "pretraining"
+    ],
+    "related": [
+      "rlhf"
+    ],
+    "next": "rlhf"
+  },
+  {
+    "slug": "rlhf",
+    "section": "llm",
+    "title": "RLHF",
+    "summary": "Using preference data and a reward model to steer generations. Alignment as optimization.",
+    "level": "advanced",
+    "prereqs": [
+      "fine-tuning"
+    ],
+    "related": [
+      "evaluation-llm"
+    ],
+    "next": "inference"
+  },
+  {
+    "slug": "inference",
+    "section": "llm",
+    "title": "Inference",
+    "summary": "Generating tokens: KV cache, sampling, batching, and the hardware it runs on.",
+    "level": "intermediate",
+    "prereqs": [
+      "pretraining"
+    ],
+    "related": [
+      "quantization"
+    ],
+    "next": "quantization"
+  },
+  {
+    "slug": "quantization",
+    "section": "llm",
+    "title": "Quantization",
+    "summary": "Fewer bits per weight (and sometimes activation). A quality/cost knob, not a free lunch.",
+    "level": "advanced",
+    "prereqs": [
+      "inference"
+    ],
+    "related": [
+      "inference"
+    ],
+    "next": "rag"
+  },
+  {
+    "slug": "rag",
+    "section": "llm",
+    "title": "RAG",
+    "summary": "Retrieve then generate. Grounding a model in documents it did not memorize.",
+    "level": "intermediate",
+    "prereqs": [
+      "embeddings",
+      "inference"
+    ],
+    "related": [
+      "vector-databases"
+    ],
+    "next": "vector-databases"
+  },
+  {
+    "slug": "vector-databases",
+    "section": "llm",
+    "title": "Vector Databases",
+    "summary": "Indexes for nearest-neighbor search over embeddings: HNSW, IVF, product quantization.",
+    "level": "intermediate",
+    "prereqs": [
+      "embeddings"
+    ],
+    "related": [
+      "rag",
+      "semantic-search"
+    ],
+    "next": "ai-agents"
+  },
+  {
+    "slug": "ai-agents",
+    "section": "llm",
+    "title": "AI Agents",
+    "summary": "Models that plan, use tools, and loop. The hard part is still reliability.",
+    "level": "advanced",
+    "prereqs": [
+      "inference",
+      "tool-calling"
+    ],
+    "related": [
+      "tool-calling"
+    ],
+    "next": "tool-calling"
+  },
+  {
+    "slug": "tool-calling",
+    "section": "llm",
+    "title": "Tool Calling",
+    "summary": "Structured calls out to APIs, decided by the model, executed by the host.",
+    "level": "intermediate",
+    "prereqs": [
+      "inference"
+    ],
+    "related": [
+      "ai-agents"
+    ],
+    "next": "evaluation-llm"
+  },
+  {
+    "slug": "evaluation-llm",
+    "section": "llm",
+    "title": "LLM Evaluation",
+    "summary": "Benchmarks, judges, and the fact that fluency is not truth.",
+    "level": "intermediate",
+    "prereqs": [
+      "evaluation-ml"
+    ],
+    "related": [
+      "ai-system-design"
+    ],
+    "next": "ai-system-design"
+  },
+  {
+    "slug": "ai-system-design",
+    "section": "llm",
+    "title": "AI System Design",
+    "summary": "Serving, retrieval, eval, fallbacks, and cost. A language model is a component.",
+    "level": "advanced",
+    "prereqs": [
+      "inference",
+      "rag"
+    ],
+    "related": [
+      "system-design"
+    ],
+    "next": "computer-graphics-fundamentals"
+  },
+  {
+    "slug": "computer-graphics-fundamentals",
+    "section": "graphics",
+    "title": "Graphics Fundamentals",
+    "summary": "Making images from models: geometry, cameras, lights, and a pipeline to pixels.",
+    "level": "beginner",
+    "prereqs": [
+      "cpu"
+    ],
+    "related": [
+      "pixels",
+      "rendering-pipeline"
+    ],
+    "next": "pixels"
+  },
+  {
+    "slug": "pixels",
+    "section": "graphics",
+    "title": "Pixels",
+    "summary": "Picture elements. Color spaces, alpha, and the framebuffer as a 2D array.",
+    "level": "beginner",
+    "prereqs": [
+      "computer-graphics-fundamentals"
+    ],
+    "related": [
+      "coordinates"
+    ],
+    "next": "coordinates"
+  },
+  {
+    "slug": "coordinates",
+    "section": "graphics",
+    "title": "Coordinates",
+    "summary": "Object, world, view, clip, screen. Every bug is a space you forgot.",
+    "level": "beginner",
+    "prereqs": [
+      "pixels"
+    ],
+    "related": [
+      "vectors-gfx"
+    ],
+    "next": "vectors-gfx"
+  },
+  {
+    "slug": "vectors-gfx",
+    "section": "graphics",
+    "title": "Vectors (Graphics)",
+    "summary": "Directions and points, dot and cross, and the geometry of lighting.",
+    "level": "beginner",
+    "prereqs": [
+      "coordinates"
+    ],
+    "related": [
+      "matrices-gfx"
+    ],
+    "next": "matrices-gfx"
+  },
+  {
+    "slug": "matrices-gfx",
+    "section": "graphics",
+    "title": "Matrices (Graphics)",
+    "summary": "Linear maps and homogeneous coordinates. Why 4×4 is the real 3D matrix.",
+    "level": "intermediate",
+    "prereqs": [
+      "vectors-gfx"
+    ],
+    "related": [
+      "transforms"
+    ],
+    "next": "transforms"
+  },
+  {
+    "slug": "transforms",
+    "section": "graphics",
+    "title": "Transforms",
+    "summary": "Translate, rotate, scale, and the composition order that surprises you.",
+    "level": "intermediate",
+    "prereqs": [
+      "matrices-gfx"
+    ],
+    "related": [
+      "rendering-pipeline"
+    ],
+    "next": "rendering-pipeline"
+  },
+  {
+    "slug": "rendering-pipeline",
+    "section": "graphics",
+    "title": "Rendering Pipeline",
+    "summary": "Vertex to fragment: clip, rasterize, test, blend. What the GPU actually does.",
+    "level": "intermediate",
+    "prereqs": [
+      "transforms"
+    ],
+    "related": [
+      "rasterization",
+      "shaders"
+    ],
+    "next": "rasterization"
+  },
+  {
+    "slug": "rasterization",
+    "section": "graphics",
+    "title": "Rasterization",
+    "summary": "Turning primitives into fragments. The algorithm behind real-time graphics.",
+    "level": "intermediate",
+    "prereqs": [
+      "rendering-pipeline"
+    ],
+    "related": [
+      "shaders"
+    ],
+    "next": "shaders"
+  },
+  {
+    "slug": "shaders",
+    "section": "graphics",
+    "title": "Shaders",
+    "summary": "Small programs on the GPU: vertex, fragment, compute. The programmable pipeline.",
+    "level": "intermediate",
+    "prereqs": [
+      "rendering-pipeline",
+      "gpu"
+    ],
+    "related": [
+      "lighting"
+    ],
+    "next": "lighting"
+  },
+  {
+    "slug": "lighting",
+    "section": "graphics",
+    "title": "Lighting",
+    "summary": "Lambert, Phong, PBR. Energy, BRDFs, and why a sphere tells you if the shader works.",
+    "level": "intermediate",
+    "prereqs": [
+      "shaders"
+    ],
+    "related": [
+      "gpu"
+    ],
+    "next": "gpu-gfx"
+  },
+  {
+    "slug": "gpu-gfx",
+    "section": "graphics",
+    "title": "GPU (Graphics)",
+    "summary": "The same processor as in architecture, used here as a raster and compute engine.",
+    "level": "intermediate",
+    "prereqs": [
+      "gpu",
+      "shaders"
+    ],
+    "related": [
+      "simd"
+    ],
+    "next": "2d-graphics"
+  },
+  {
+    "slug": "2d-graphics",
+    "section": "graphics",
+    "title": "2D Graphics",
+    "summary": "Sprites, text, immediate-mode UI, and a transform stack.",
+    "level": "beginner",
+    "prereqs": [
+      "pixels"
+    ],
+    "related": [
+      "3d-graphics"
+    ],
+    "next": "3d-graphics"
+  },
+  {
+    "slug": "3d-graphics",
+    "section": "graphics",
+    "title": "3D Graphics",
+    "summary": "Meshes, cameras, depth, and the pipeline that makes a scene a frame.",
+    "level": "intermediate",
+    "prereqs": [
+      "rendering-pipeline"
+    ],
+    "related": [
+      "2d-graphics"
+    ],
+    "next": "computer-vision-fundamentals"
+  },
+  {
+    "slug": "computer-vision-fundamentals",
+    "section": "vision",
+    "title": "Vision Fundamentals",
+    "summary": "Making machines interpret images: pixels in, structure and labels out.",
+    "level": "beginner",
+    "prereqs": [
+      "pixels"
+    ],
+    "related": [
+      "convolution",
+      "image-classification"
+    ],
+    "next": "images-cv"
+  },
+  {
+    "slug": "images-cv",
+    "section": "vision",
+    "title": "Images",
+    "summary": "Arrays of intensity. Resolution, channels, and the sampling theorem you ignore at your peril.",
+    "level": "beginner",
+    "prereqs": [
+      "pixels"
+    ],
+    "related": [
+      "convolution"
+    ],
+    "next": "convolution"
+  },
+  {
+    "slug": "convolution",
+    "section": "vision",
+    "title": "Convolution",
+    "summary": "A local weighted sum. Filters, CNNs, and the Fourier view for those who want it.",
+    "level": "intermediate",
+    "prereqs": [
+      "images-cv"
+    ],
+    "related": [
+      "filters-cv",
+      "cnn"
+    ],
+    "next": "filters-cv"
+  },
+  {
+    "slug": "filters-cv",
+    "section": "vision",
+    "title": "Filters",
+    "summary": "Blur, edge, sharpen. Convolution kernels as the vocabulary of early vision.",
+    "level": "beginner",
+    "prereqs": [
+      "convolution"
+    ],
+    "related": [
+      "feature-detection"
+    ],
+    "next": "feature-detection"
+  },
+  {
+    "slug": "feature-detection",
+    "section": "vision",
+    "title": "Feature Detection",
+    "summary": "Corners, SIFT, ORB — finding points that survive viewpoint change.",
+    "level": "intermediate",
+    "prereqs": [
+      "filters-cv"
+    ],
+    "related": [
+      "image-classification"
+    ],
+    "next": "image-classification"
+  },
+  {
+    "slug": "image-classification",
+    "section": "vision",
+    "title": "Image Classification",
+    "summary": "One label per image. The ImageNet era, and CNNs as the default answer.",
+    "level": "intermediate",
+    "prereqs": [
+      "cnn"
+    ],
+    "related": [
+      "object-detection"
+    ],
+    "next": "object-detection"
+  },
+  {
+    "slug": "object-detection",
+    "section": "vision",
+    "title": "Object Detection",
+    "summary": "Boxes and labels. Two-stage vs one-stage, and the NMS footnote.",
+    "level": "advanced",
+    "prereqs": [
+      "image-classification"
+    ],
+    "related": [
+      "vision-segmentation"
+    ],
+    "next": "vision-segmentation"
+  },
+  {
+    "slug": "vision-segmentation",
+    "section": "vision",
+    "title": "Segmentation",
+    "summary": "A label per pixel (or per instance). U-Nets and the datasets that made them.",
+    "level": "advanced",
+    "prereqs": [
+      "object-detection"
+    ],
+    "related": [
+      "cnn"
+    ],
+    "next": "text-processing"
+  },
+  {
+    "slug": "text-processing",
+    "section": "nlp",
+    "title": "Text Processing",
+    "summary": "The unglamorous front: encoding, normalization, sentence splitting, and noise.",
+    "level": "beginner",
+    "prereqs": [
+      "strings-ds"
+    ],
+    "related": [
+      "tokenization-nlp"
+    ],
+    "next": "tokenization-nlp"
+  },
+  {
+    "slug": "tokenization-nlp",
+    "section": "nlp",
+    "title": "Tokenization (NLP)",
+    "summary": "Words, subwords, sentences. The first modeling decision, often invisible.",
+    "level": "beginner",
+    "prereqs": [
+      "text-processing",
+      "tokenization"
+    ],
+    "related": [
+      "embeddings-nlp"
+    ],
+    "next": "embeddings-nlp"
+  },
+  {
+    "slug": "embeddings-nlp",
+    "section": "nlp",
+    "title": "Embeddings (NLP)",
+    "summary": "Distributional vectors: word2vec, GloVe, and contextual models that replaced them.",
+    "level": "intermediate",
+    "prereqs": [
+      "embeddings",
+      "tokenization-nlp"
+    ],
+    "related": [
+      "language-models"
+    ],
+    "next": "language-models"
+  },
+  {
+    "slug": "language-models",
+    "section": "nlp",
+    "title": "Language Models",
+    "summary": "Distributions over sequences. n-gram, neural, and the transformer takeover.",
+    "level": "intermediate",
+    "prereqs": [
+      "embeddings-nlp"
+    ],
+    "related": [
+      "sequence-models"
+    ],
+    "next": "sequence-models"
+  },
+  {
+    "slug": "sequence-models",
+    "section": "nlp",
+    "title": "Sequence Models",
+    "summary": "RNNs, then attention, then transformers. Alignment and transduction.",
+    "level": "intermediate",
+    "prereqs": [
+      "rnn",
+      "language-models"
+    ],
+    "related": [
+      "attention"
+    ],
+    "next": "text-classification"
+  },
+  {
+    "slug": "text-classification",
+    "section": "nlp",
+    "title": "Text Classification",
+    "summary": "Labels on documents or spans. Still the most common NLP production task.",
+    "level": "beginner",
+    "prereqs": [
+      "language-models"
+    ],
+    "related": [
+      "information-extraction"
+    ],
+    "next": "information-extraction"
+  },
+  {
+    "slug": "information-extraction",
+    "section": "nlp",
+    "title": "Information Extraction",
+    "summary": "Entities, relations, events. From regex to span models.",
+    "level": "intermediate",
+    "prereqs": [
+      "text-classification"
+    ],
+    "related": [
+      "search-nlp"
+    ],
+    "next": "search-nlp"
+  },
+  {
+    "slug": "search-nlp",
+    "section": "nlp",
+    "title": "Search (NLP)",
+    "summary": "Using language models to rank or rewrite queries. Hybrid with classical IR.",
+    "level": "intermediate",
+    "prereqs": [
+      "language-models",
+      "ir-fundamentals"
+    ],
+    "related": [
+      "semantic-search"
+    ],
+    "next": "ir-fundamentals"
+  },
+  {
+    "slug": "ir-fundamentals",
+    "section": "ir",
+    "title": "IR Fundamentals",
+    "summary": "Finding documents relevant to a query. Precision, recall, and the user in the loop.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "web-crawlers",
+      "inverted-index"
+    ],
+    "next": "web-crawlers"
+  },
+  {
+    "slug": "web-crawlers",
+    "section": "ir",
+    "title": "Web Crawlers",
+    "summary": "Fetch, parse, enqueue. Politeness, canonicalization, and the frontier.",
+    "level": "intermediate",
+    "prereqs": [
+      "ir-fundamentals",
+      "http"
+    ],
+    "related": [
+      "indexing-ir"
+    ],
+    "next": "indexing-ir"
+  },
+  {
+    "slug": "indexing-ir",
+    "section": "ir",
+    "title": "Indexing",
+    "summary": "Building the structures a query will hit. Inverted indexes, shards, and freshness.",
+    "level": "intermediate",
+    "prereqs": [
+      "web-crawlers"
+    ],
+    "related": [
+      "inverted-index"
+    ],
+    "next": "inverted-index"
+  },
+  {
+    "slug": "inverted-index",
+    "section": "ir",
+    "title": "Inverted Index",
+    "summary": "Term → postings. Compression, skip lists, and the reason search is fast.",
+    "level": "intermediate",
+    "prereqs": [
+      "indexing-ir"
+    ],
+    "related": [
+      "tf-idf",
+      "bm25"
+    ],
+    "next": "ranking"
+  },
+  {
+    "slug": "ranking",
+    "section": "ir",
+    "title": "Ranking",
+    "summary": "Ordering hits. Learning to rank sits on top of a candidate generator.",
+    "level": "intermediate",
+    "prereqs": [
+      "inverted-index"
+    ],
+    "related": [
+      "tf-idf",
+      "bm25"
+    ],
+    "next": "tf-idf"
+  },
+  {
+    "slug": "tf-idf",
+    "section": "ir",
+    "title": "TF-IDF",
+    "summary": "Term frequency times inverse document frequency. The classic sparse vector.",
+    "level": "beginner",
+    "prereqs": [
+      "inverted-index"
+    ],
+    "related": [
+      "bm25"
+    ],
+    "next": "bm25"
+  },
+  {
+    "slug": "bm25",
+    "section": "ir",
+    "title": "BM25",
+    "summary": "A better TF-IDF: saturation and document-length normalization. Still the sparse baseline.",
+    "level": "intermediate",
+    "prereqs": [
+      "tf-idf"
+    ],
+    "related": [
+      "vector-search"
+    ],
+    "next": "vector-search"
+  },
+  {
+    "slug": "vector-search",
+    "section": "ir",
+    "title": "Vector Search",
+    "summary": "Nearest neighbors in embedding space. ANN indexes make it serveable.",
+    "level": "intermediate",
+    "prereqs": [
+      "embeddings",
+      "vector-databases"
+    ],
+    "related": [
+      "semantic-search"
+    ],
+    "next": "semantic-search"
+  },
+  {
+    "slug": "semantic-search",
+    "section": "ir",
+    "title": "Semantic Search",
+    "summary": "Matching meaning, not terms. Usually hybrid with BM25 because both miss things.",
+    "level": "intermediate",
+    "prereqs": [
+      "vector-search",
+      "bm25"
+    ],
+    "related": [
+      "hybrid-search"
+    ],
+    "next": "hybrid-search"
+  },
+  {
+    "slug": "hybrid-search",
+    "section": "ir",
+    "title": "Hybrid Search",
+    "summary": "Fusing sparse and dense retrieval. Reciprocal rank fusion as the simple thing that works.",
+    "level": "advanced",
+    "prereqs": [
+      "semantic-search",
+      "bm25"
+    ],
+    "related": [
+      "ranking"
+    ],
+    "next": "concurrency"
+  },
+  {
+    "slug": "concurrency",
+    "section": "parallel",
+    "title": "Concurrency",
+    "summary": "More than one task in progress. Not the same as parallelism.",
+    "level": "intermediate",
+    "prereqs": [
+      "threads"
+    ],
+    "related": [
+      "parallelism",
+      "race-conditions"
+    ],
+    "next": "parallelism"
+  },
+  {
+    "slug": "parallelism",
+    "section": "parallel",
+    "title": "Parallelism",
+    "summary": "Doing several operations at the same instant. Hardware is the limit; algorithms are the art.",
+    "level": "intermediate",
+    "prereqs": [
+      "concurrency",
+      "multicore"
+    ],
+    "related": [
+      "parallel-algorithms"
+    ],
+    "next": "locks-par"
+  },
+  {
+    "slug": "locks-par",
+    "section": "parallel",
+    "title": "Locks (Parallel)",
+    "summary": "Mutexes, rwlocks, and the contention that makes them scale badly.",
+    "level": "intermediate",
+    "prereqs": [
+      "mutex",
+      "concurrency"
+    ],
+    "related": [
+      "atomics"
+    ],
+    "next": "atomics"
+  },
+  {
+    "slug": "atomics",
+    "section": "parallel",
+    "title": "Atomics",
+    "summary": "Hardware-supported indivisible operations. The memory model is the real API.",
+    "level": "advanced",
+    "prereqs": [
+      "locks-par"
+    ],
+    "related": [
+      "race-conditions"
+    ],
+    "next": "parallel-algorithms"
+  },
+  {
+    "slug": "parallel-algorithms",
+    "section": "parallel",
+    "title": "Parallel Algorithms",
+    "summary": "Prefix sums, parallel sorts, and work/span analysis.",
+    "level": "advanced",
+    "prereqs": [
+      "parallelism",
+      "asymptotic-notation"
+    ],
+    "related": [
+      "mapreduce"
+    ],
+    "next": "gpu-computing"
+  },
+  {
+    "slug": "gpu-computing",
+    "section": "parallel",
+    "title": "GPU Computing",
+    "summary": "SIMT, occupancy, and memory coalescing. CUDA/OpenCL as the programming model.",
+    "level": "advanced",
+    "prereqs": [
+      "gpu",
+      "simd"
+    ],
+    "related": [
+      "parallel-algorithms"
+    ],
+    "next": "mapreduce"
+  },
+  {
+    "slug": "mapreduce",
+    "section": "parallel",
+    "title": "MapReduce",
+    "summary": "Map, shuffle, reduce. A programming model that hid a distributed sort.",
+    "level": "intermediate",
+    "prereqs": [
+      "parallel-algorithms"
+    ],
+    "related": [
+      "distributed-fundamentals"
+    ],
+    "next": "sensors"
+  },
+  {
+    "slug": "sensors",
+    "section": "robotics",
+    "title": "Sensors",
+    "summary": "The robot's input: cameras, IMU, lidar, encoders — each with a noise model.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "actuators"
+    ],
+    "next": "actuators"
+  },
+  {
+    "slug": "actuators",
+    "section": "robotics",
+    "title": "Actuators",
+    "summary": "Motors, servos, hydraulics. How intention becomes force.",
+    "level": "beginner",
+    "prereqs": [
+      "sensors"
+    ],
+    "related": [
+      "control"
+    ],
+    "next": "control"
+  },
+  {
+    "slug": "control",
+    "section": "robotics",
+    "title": "Control",
+    "summary": "PID, state-space, and the loop that keeps a system near a reference.",
+    "level": "intermediate",
+    "prereqs": [
+      "actuators"
+    ],
+    "related": [
+      "localization"
+    ],
+    "next": "localization"
+  },
+  {
+    "slug": "localization",
+    "section": "robotics",
+    "title": "Localization",
+    "summary": "Where is the robot? Filters over pose, and the map they need.",
+    "level": "advanced",
+    "prereqs": [
+      "control",
+      "probability"
+    ],
+    "related": [
+      "mapping"
+    ],
+    "next": "mapping"
+  },
+  {
+    "slug": "mapping",
+    "section": "robotics",
+    "title": "Mapping",
+    "summary": "Building a model of space. Occupancy grids, SLAM as the joint problem.",
+    "level": "advanced",
+    "prereqs": [
+      "localization"
+    ],
+    "related": [
+      "path-planning"
+    ],
+    "next": "path-planning"
+  },
+  {
+    "slug": "path-planning",
+    "section": "robotics",
+    "title": "Path Planning",
+    "summary": "A collision-free path. Graphs, sampling, and optimization.",
+    "level": "intermediate",
+    "prereqs": [
+      "search-ai",
+      "mapping"
+    ],
+    "related": [
+      "motion-planning"
+    ],
+    "next": "robot-perception"
+  },
+  {
+    "slug": "robot-perception",
+    "section": "robotics",
+    "title": "Robot Perception",
+    "summary": "Vision, lidar, and fusion for a body that moves. Latency is a safety issue.",
+    "level": "advanced",
+    "prereqs": [
+      "computer-vision-fundamentals",
+      "sensors"
+    ],
+    "related": [
+      "motion-planning"
+    ],
+    "next": "motion-planning"
+  },
+  {
+    "slug": "motion-planning",
+    "section": "robotics",
+    "title": "Motion Planning",
+    "summary": "From a path to a trajectory the actuators can track, with dynamics in the loop.",
+    "level": "advanced",
+    "prereqs": [
+      "path-planning",
+      "control"
+    ],
+    "related": [
+      "path-planning"
+    ],
+    "next": "android"
+  },
+  {
+    "slug": "android",
+    "section": "mobile",
+    "title": "Android",
+    "summary": "A Linux-based OS with a managed runtime, a component model, and a permission system.",
+    "level": "intermediate",
+    "prereqs": [
+      "linux-fundamentals",
+      "java"
+    ],
+    "related": [
+      "ios",
+      "app-lifecycle"
+    ],
+    "next": "ios"
+  },
+  {
+    "slug": "ios",
+    "section": "mobile",
+    "title": "iOS",
+    "summary": "A Unix descendant with UIKit/SwiftUI, sandboxing, and a review-gated distribution model.",
+    "level": "intermediate",
+    "prereqs": [
+      "swift"
+    ],
+    "related": [
+      "android",
+      "app-lifecycle"
+    ],
+    "next": "app-lifecycle"
+  },
+  {
+    "slug": "app-lifecycle",
+    "section": "mobile",
+    "title": "App Lifecycle",
+    "summary": "Foreground, background, killed. State you must persist because the OS will reclaim you.",
+    "level": "beginner",
+    "prereqs": [
+      "android",
+      "ios"
+    ],
+    "related": [
+      "mobile-networking"
+    ],
+    "next": "mobile-networking"
+  },
+  {
+    "slug": "mobile-networking",
+    "section": "mobile",
+    "title": "Mobile Networking",
+    "summary": "Radios that come and go. Retries, reachability, and battery as a constraint.",
+    "level": "intermediate",
+    "prereqs": [
+      "http",
+      "app-lifecycle"
+    ],
+    "related": [
+      "local-storage-mobile"
+    ],
+    "next": "local-storage-mobile"
+  },
+  {
+    "slug": "local-storage-mobile",
+    "section": "mobile",
+    "title": "Local Storage (Mobile)",
+    "summary": "SQLite, files, keychain/keystore. On-device is not the same as secure.",
+    "level": "beginner",
+    "prereqs": [
+      "app-lifecycle"
+    ],
+    "related": [
+      "mobile-security"
+    ],
+    "next": "notifications"
+  },
+  {
+    "slug": "notifications",
+    "section": "mobile",
+    "title": "Notifications",
+    "summary": "OS-mediated push. Tokens, permissions, and the server that fans out.",
+    "level": "beginner",
+    "prereqs": [
+      "notification-system"
+    ],
+    "related": [
+      "app-lifecycle"
+    ],
+    "next": "authentication-mobile"
+  },
+  {
+    "slug": "authentication-mobile",
+    "section": "mobile",
+    "title": "Mobile Authentication",
+    "summary": "Biometrics, secure enclave, OAuth on a public client, and token storage.",
+    "level": "intermediate",
+    "prereqs": [
+      "oauth",
+      "authentication"
+    ],
+    "related": [
+      "mobile-security"
+    ],
+    "next": "mobile-security"
+  },
+  {
+    "slug": "mobile-security",
+    "section": "mobile",
+    "title": "Mobile Security",
+    "summary": "Sandbox, permissions, attestation, and the threat of a lost phone.",
+    "level": "intermediate",
+    "prereqs": [
+      "authentication-mobile"
+    ],
+    "related": [
+      "performance-mobile"
+    ],
+    "next": "performance-mobile"
+  },
+  {
+    "slug": "performance-mobile",
+    "section": "mobile",
+    "title": "Mobile Performance",
+    "summary": "Frame budget, cold start, and radios that cost joules. Profile on device.",
+    "level": "intermediate",
+    "prereqs": [
+      "app-lifecycle"
+    ],
+    "related": [
+      "rendering"
+    ],
+    "next": "how-to-read-papers"
+  },
+  {
+    "slug": "how-to-read-papers",
+    "section": "research",
+    "title": "How to Read Papers",
+    "summary": "Three passes: gist, argument, details. Notes that you can find later.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "literature-review"
+    ],
+    "next": "literature-review"
+  },
+  {
+    "slug": "literature-review",
+    "section": "research",
+    "title": "Literature Review",
+    "summary": "A map of prior work: who claimed what, with what evidence, and where the gap is.",
+    "level": "beginner",
+    "prereqs": [
+      "how-to-read-papers"
+    ],
+    "related": [
+      "research-methodology"
+    ],
+    "next": "experiments"
+  },
+  {
+    "slug": "experiments",
+    "section": "research",
+    "title": "Experiments",
+    "summary": "A hypothesis, a protocol, and a result that could have gone the other way.",
+    "level": "intermediate",
+    "prereqs": [
+      "evaluation-ml"
+    ],
+    "related": [
+      "benchmarks"
+    ],
+    "next": "benchmarks"
+  },
+  {
+    "slug": "benchmarks",
+    "section": "research",
+    "title": "Benchmarks",
+    "summary": "Shared tasks and datasets. Useful, gameable, and not a substitute for a question.",
+    "level": "intermediate",
+    "prereqs": [
+      "experiments"
+    ],
+    "related": [
+      "reproducibility"
+    ],
+    "next": "reproducibility"
+  },
+  {
+    "slug": "reproducibility",
+    "section": "research",
+    "title": "Reproducibility",
+    "summary": "Someone else, with your artifacts, should get a compatible answer.",
+    "level": "intermediate",
+    "prereqs": [
+      "experiments"
+    ],
+    "related": [
+      "technical-writing"
+    ],
+    "next": "research-methodology"
+  },
+  {
+    "slug": "research-methodology",
+    "section": "research",
+    "title": "Research Methodology",
+    "summary": "Problem, related work, method, evaluation, threats. The shape of a paper.",
+    "level": "beginner",
+    "prereqs": [
+      "literature-review"
+    ],
+    "related": [
+      "technical-writing"
+    ],
+    "next": "technical-writing"
+  },
+  {
+    "slug": "technical-writing",
+    "section": "research",
+    "title": "Technical Writing",
+    "summary": "Claims in the first sentence, evidence after. Figures that argue.",
+    "level": "beginner",
+    "prereqs": [
+      "documentation-se"
+    ],
+    "related": [
+      "how-to-read-papers"
+    ],
+    "next": "research-areas"
+  },
+  {
+    "slug": "research-areas",
+    "section": "research",
+    "title": "Research Areas",
+    "summary": "Where CS is moving: systems, ML, theory, HCI, security, and the seams between them.",
+    "level": "beginner",
+    "prereqs": [
+      "research-methodology"
+    ],
+    "related": [
+      "interview-guide"
+    ],
+    "next": "interview-guide"
+  },
+  {
+    "slug": "interview-guide",
+    "section": "interview",
+    "title": "Interview Guide",
+    "summary": "What interviews measure: problem solving, communication, and the systems you claim.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "dsa-interview",
+      "systems-interview"
+    ],
+    "next": "dsa-interview"
+  },
+  {
+    "slug": "dsa-interview",
+    "section": "interview",
+    "title": "DSA Interviews",
+    "summary": "Arrays, hashes, trees, graphs, DP — and talking while you do it.",
+    "level": "intermediate",
+    "prereqs": [
+      "arrays",
+      "graphs"
+    ],
+    "related": [
+      "behavioral"
+    ],
+    "next": "systems-interview"
+  },
+  {
+    "slug": "systems-interview",
+    "section": "interview",
+    "title": "Systems Interviews",
+    "summary": "OS, networks, databases, and a design on the whiteboard.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes",
+      "tcp",
+      "indexes"
+    ],
+    "related": [
+      "dsa-interview"
+    ],
+    "next": "behavioral"
+  },
+  {
+    "slug": "behavioral",
+    "section": "interview",
+    "title": "Behavioral Interviews",
+    "summary": "Stories with a situation, a decision, and a result. Specifics beat slogans.",
+    "level": "beginner",
+    "prereqs": [
+      "interview-guide"
+    ],
+    "related": [
+      "dsa-interview"
+    ],
+    "next": "coding-interviews"
+  },
+  {
+    "slug": "coding-interviews",
+    "section": "interview",
+    "title": "Coding Interviews",
+    "summary": "A function, a few examples, complexity, and tests you invent before the interviewer asks.",
+    "level": "beginner",
+    "prereqs": [
+      "dsa-interview"
+    ],
+    "related": [
+      "system-design-interviews"
+    ],
+    "next": "system-design-interviews"
+  },
+  {
+    "slug": "system-design-interviews",
+    "section": "interview",
+    "title": "System Design Interviews",
+    "summary": "Requirements, capacity, API, data, the drawing, then the failures.",
+    "level": "advanced",
+    "prereqs": [
+      "url-shortener",
+      "cap-theorem"
+    ],
+    "related": [
+      "systems-interview"
+    ],
+    "next": "arrays"
+  },
+  {
+    "slug": "jvm",
+    "section": "languages",
+    "title": "JVM",
+    "summary": "A bytecode VM with a JIT, a GC, and a class loader — the machine Java, Kotlin, and Scala share.",
+    "level": "intermediate",
+    "prereqs": [
+      "java"
+    ],
+    "related": [
+      "java",
+      "garbage-collection"
+    ],
+    "next": "python"
+  },
+  {
+    "slug": "wifi",
+    "section": "networks",
+    "title": "Wi-Fi",
+    "summary": "802.11: association, airtime, and a MAC that is nothing like a switched Ethernet.",
+    "level": "beginner",
+    "prereqs": [
+      "access-point",
+      "l2-data-link"
+    ],
+    "related": [
+      "ethernet",
+      "wireless-phy"
+    ],
+    "next": "firewall"
+  },
+  {
+    "slug": "bgp",
+    "section": "networks",
+    "title": "BGP",
+    "summary": "The internet's inter-domain routing protocol: path vectors, policy, and the default-free zone.",
+    "level": "advanced",
+    "prereqs": [
+      "routing-protocols"
+    ],
+    "related": [
+      "ospf",
+      "routing"
+    ],
+    "next": "tcp"
+  },
+  {
+    "slug": "ospf",
+    "section": "networks",
+    "title": "OSPF",
+    "summary": "A link-state IGP: flood LSAs, run Dijkstra, install routes in the RIB.",
+    "level": "advanced",
+    "prereqs": [
+      "routing-protocols",
+      "dijkstra"
+    ],
+    "related": [
+      "bgp",
+      "routing"
+    ],
+    "next": "tcp"
+  },
+  {
+    "slug": "stp",
+    "section": "networks",
+    "title": "Spanning Tree",
+    "summary": "A loop-free active topology on a switched LAN. Without it, broadcasts amplify until the LAN dies.",
+    "level": "intermediate",
+    "prereqs": [
+      "switching"
+    ],
+    "related": [
+      "vlan",
+      "ethernet"
+    ],
+    "next": "arp"
+  },
+  {
+    "slug": "fork",
+    "section": "os",
+    "title": "fork()",
+    "summary": "Copy a process: the child gets 0, the parent gets a pid. Copy-on-write makes the copy cheap until a write.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "linux-process-model",
+      "linux-threads"
+    ],
+    "next": "linux-threads"
+  },
+  {
+    "slug": "working-set",
+    "section": "os",
+    "title": "Working Set",
+    "summary": "The pages a process is actually using. If they do not fit in RAM, the system thrashes.",
+    "level": "intermediate",
+    "prereqs": [
+      "virtual-memory"
+    ],
+    "related": [
+      "thrashing",
+      "page-replacement"
+    ],
+    "next": "file-systems"
+  },
+  {
+    "slug": "pubsub",
+    "section": "oop",
+    "title": "Pub/Sub",
+    "summary": "Publishers emit events on a topic; subscribers receive them. Observer at the scale of a bus.",
+    "level": "intermediate",
+    "prereqs": [
+      "observer"
+    ],
+    "related": [
+      "message-queues",
+      "event-driven"
+    ],
+    "next": "strategy"
+  },
+  {
+    "slug": "vpc",
+    "section": "cloud",
+    "title": "VPC",
+    "summary": "A virtual private cloud: isolated address space, subnets, route tables, and gateways as API objects.",
+    "level": "intermediate",
+    "prereqs": [
+      "cloud-networking"
+    ],
+    "related": [
+      "iam",
+      "routing"
+    ],
+    "next": "iam"
+  },
+  {
+    "slug": "geo",
+    "section": "system-design",
+    "title": "Geospatial Indexing",
+    "summary": "Cells, geohashes, and R-trees so 'nearby' is not a table scan.",
+    "level": "advanced",
+    "prereqs": [
+      "indexes"
+    ],
+    "related": [
+      "uber",
+      "ride-sharing"
+    ],
+    "next": "uber"
+  },
+  {
+    "slug": "dropbox",
+    "section": "system-design",
+    "title": "Dropbox",
+    "summary": "The named case study of file storage: chunked sync, metadata vs bytes, and conflict copies.",
+    "level": "advanced",
+    "prereqs": [
+      "file-storage"
+    ],
+    "related": [
+      "object-storage"
+    ],
+    "next": "food-delivery"
+  }
+]

@@ -1,0 +1,3539 @@
+[
+  {
+    "slug": "what-is-programming",
+    "section": "fundamentals",
+    "title": "What is Programming?",
+    "summary": "Giving a machine an unambiguous sequence of instructions it can execute.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "source-code",
+      "compiler"
+    ],
+    "next": "source-code"
+  },
+  {
+    "slug": "source-code",
+    "section": "fundamentals",
+    "title": "Source Code",
+    "summary": "Human-written text that a compiler or interpreter turns into behavior.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-programming"
+    ],
+    "related": [
+      "compiler",
+      "interpreter"
+    ],
+    "next": "compiler"
+  },
+  {
+    "slug": "compiler",
+    "section": "fundamentals",
+    "title": "Compiler",
+    "summary": "A program that translates source into a lower-level form, usually ahead of time.",
+    "level": "beginner",
+    "prereqs": [
+      "source-code"
+    ],
+    "related": [
+      "interpreter",
+      "linker",
+      "compiler-design"
+    ],
+    "next": "interpreter",
+    "viz": "compiler-explorer",
+    "lab": "compiler-explorer"
+  },
+  {
+    "slug": "interpreter",
+    "section": "fundamentals",
+    "title": "Interpreter",
+    "summary": "A program that executes source (or bytecode) directly, without a separate machine-code binary.",
+    "level": "beginner",
+    "prereqs": [
+      "source-code"
+    ],
+    "related": [
+      "compiler",
+      "runtime"
+    ],
+    "next": "linker"
+  },
+  {
+    "slug": "linker",
+    "section": "fundamentals",
+    "title": "Linker",
+    "summary": "The tool that combines object files and libraries into a single executable image.",
+    "level": "intermediate",
+    "prereqs": [
+      "compiler"
+    ],
+    "related": [
+      "loader",
+      "libraries"
+    ],
+    "next": "loader"
+  },
+  {
+    "slug": "loader",
+    "section": "fundamentals",
+    "title": "Loader",
+    "summary": "The OS component that maps an executable into memory and starts it.",
+    "level": "intermediate",
+    "prereqs": [
+      "linker"
+    ],
+    "related": [
+      "runtime",
+      "memory"
+    ],
+    "next": "runtime"
+  },
+  {
+    "slug": "runtime",
+    "section": "fundamentals",
+    "title": "Runtime",
+    "summary": "The support system a program needs while it runs: memory, threads, I/O, and language services.",
+    "level": "intermediate",
+    "prereqs": [
+      "loader"
+    ],
+    "related": [
+      "stack",
+      "heap",
+      "garbage-collection"
+    ],
+    "next": "variables"
+  },
+  {
+    "slug": "variables",
+    "section": "fundamentals",
+    "title": "Variables",
+    "summary": "Named storage for values. A variable binds a name to a location and a type.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-programming"
+    ],
+    "related": [
+      "data-types",
+      "scope"
+    ],
+    "next": "data-types"
+  },
+  {
+    "slug": "data-types",
+    "section": "fundamentals",
+    "title": "Data Types",
+    "summary": "The set of values a variable can hold and the operations that are legal on them.",
+    "level": "beginner",
+    "prereqs": [
+      "variables"
+    ],
+    "related": [
+      "operators",
+      "memory"
+    ],
+    "next": "operators"
+  },
+  {
+    "slug": "operators",
+    "section": "fundamentals",
+    "title": "Operators",
+    "summary": "Built-in operations: arithmetic, comparison, logic, bitwise, and assignment.",
+    "level": "beginner",
+    "prereqs": [
+      "data-types"
+    ],
+    "related": [
+      "conditions"
+    ],
+    "next": "conditions"
+  },
+  {
+    "slug": "conditions",
+    "section": "fundamentals",
+    "title": "Conditions",
+    "summary": "Control flow that chooses a path from a boolean expression.",
+    "level": "beginner",
+    "prereqs": [
+      "operators"
+    ],
+    "related": [
+      "loops"
+    ],
+    "next": "loops"
+  },
+  {
+    "slug": "loops",
+    "section": "fundamentals",
+    "title": "Loops",
+    "summary": "Control flow that repeats a block while a condition holds, or over a collection.",
+    "level": "beginner",
+    "prereqs": [
+      "conditions"
+    ],
+    "related": [
+      "functions",
+      "recursion"
+    ],
+    "next": "functions"
+  },
+  {
+    "slug": "functions",
+    "section": "fundamentals",
+    "title": "Functions",
+    "summary": "Named, reusable units of computation with parameters, a body, and a return.",
+    "level": "beginner",
+    "prereqs": [
+      "variables"
+    ],
+    "related": [
+      "scope",
+      "recursion",
+      "stack"
+    ],
+    "next": "recursion"
+  },
+  {
+    "slug": "recursion",
+    "section": "fundamentals",
+    "title": "Recursion",
+    "summary": "A function that solves a problem by calling itself on a smaller instance, with a base case.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions",
+      "stack"
+    ],
+    "related": [
+      "recursion-algo",
+      "stack"
+    ],
+    "next": "scope"
+  },
+  {
+    "slug": "scope",
+    "section": "fundamentals",
+    "title": "Scope",
+    "summary": "The region of a program where a name is visible. Nested scopes shadow outer ones.",
+    "level": "beginner",
+    "prereqs": [
+      "functions",
+      "variables"
+    ],
+    "related": [
+      "stack"
+    ],
+    "next": "stack"
+  },
+  {
+    "slug": "stack",
+    "section": "fundamentals",
+    "title": "Call Stack",
+    "summary": "The region that stores frames for active function calls: locals, return address, saved registers.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions",
+      "scope"
+    ],
+    "related": [
+      "heap",
+      "memory"
+    ],
+    "next": "heap",
+    "viz": "stack-queue",
+    "lab": "stack-queue"
+  },
+  {
+    "slug": "heap",
+    "section": "fundamentals",
+    "title": "Heap",
+    "summary": "The region for dynamically allocated objects whose lifetime is not tied to a single frame.",
+    "level": "intermediate",
+    "prereqs": [
+      "memory"
+    ],
+    "related": [
+      "stack",
+      "dynamic-memory",
+      "garbage-collection"
+    ],
+    "next": "memory",
+    "viz": "memory-map",
+    "lab": "memory-map"
+  },
+  {
+    "slug": "memory",
+    "section": "fundamentals",
+    "title": "Memory",
+    "summary": "The addressable store a program reads and writes: code, data, stack, and heap.",
+    "level": "beginner",
+    "prereqs": [
+      "loader"
+    ],
+    "related": [
+      "stack",
+      "heap",
+      "pointers"
+    ],
+    "next": "pointers",
+    "viz": "memory-map",
+    "lab": "memory-map"
+  },
+  {
+    "slug": "pointers",
+    "section": "fundamentals",
+    "title": "Pointers",
+    "summary": "Values that hold addresses. They make aliasing, data structures, and manual memory possible.",
+    "level": "intermediate",
+    "prereqs": [
+      "memory"
+    ],
+    "related": [
+      "references",
+      "dynamic-memory"
+    ],
+    "next": "references"
+  },
+  {
+    "slug": "references",
+    "section": "fundamentals",
+    "title": "References",
+    "summary": "Names that alias an existing object without exposing arithmetic on its address.",
+    "level": "beginner",
+    "prereqs": [
+      "pointers"
+    ],
+    "related": [
+      "pointers"
+    ],
+    "next": "dynamic-memory"
+  },
+  {
+    "slug": "dynamic-memory",
+    "section": "fundamentals",
+    "title": "Dynamic Memory",
+    "summary": "Allocation whose size or lifetime is decided at run time, not at compile time.",
+    "level": "intermediate",
+    "prereqs": [
+      "heap",
+      "pointers"
+    ],
+    "related": [
+      "garbage-collection"
+    ],
+    "next": "garbage-collection"
+  },
+  {
+    "slug": "garbage-collection",
+    "section": "fundamentals",
+    "title": "Garbage Collection",
+    "summary": "Automatic reclamation of heap objects the program can no longer reach.",
+    "level": "intermediate",
+    "prereqs": [
+      "heap",
+      "dynamic-memory"
+    ],
+    "related": [
+      "runtime"
+    ],
+    "next": "error-handling"
+  },
+  {
+    "slug": "error-handling",
+    "section": "fundamentals",
+    "title": "Error Handling",
+    "summary": "How a program detects, reports, and recovers from failures without corrupting state.",
+    "level": "beginner",
+    "prereqs": [
+      "functions"
+    ],
+    "related": [
+      "exceptions"
+    ],
+    "next": "exceptions"
+  },
+  {
+    "slug": "exceptions",
+    "section": "fundamentals",
+    "title": "Exceptions",
+    "summary": "A non-local control-flow mechanism that unwinds the stack until a handler matches.",
+    "level": "intermediate",
+    "prereqs": [
+      "error-handling",
+      "stack"
+    ],
+    "related": [
+      "error-handling"
+    ],
+    "next": "debugging"
+  },
+  {
+    "slug": "debugging",
+    "section": "fundamentals",
+    "title": "Debugging",
+    "summary": "The discipline of forming a hypothesis about a defect and testing it against the running program.",
+    "level": "beginner",
+    "prereqs": [
+      "error-handling"
+    ],
+    "related": [
+      "exceptions"
+    ],
+    "next": "file-io"
+  },
+  {
+    "slug": "file-io",
+    "section": "fundamentals",
+    "title": "File I/O",
+    "summary": "Reading and writing byte streams that outlive the process: files, pipes, sockets.",
+    "level": "beginner",
+    "prereqs": [
+      "runtime"
+    ],
+    "related": [
+      "modules"
+    ],
+    "next": "modules"
+  },
+  {
+    "slug": "modules",
+    "section": "fundamentals",
+    "title": "Modules",
+    "summary": "Compilation or namespace units that hide internals and export a small interface.",
+    "level": "beginner",
+    "prereqs": [
+      "functions"
+    ],
+    "related": [
+      "packages",
+      "libraries"
+    ],
+    "next": "packages"
+  },
+  {
+    "slug": "packages",
+    "section": "fundamentals",
+    "title": "Packages",
+    "summary": "Versioned bundles of modules, with metadata for installation and dependency resolution.",
+    "level": "beginner",
+    "prereqs": [
+      "modules"
+    ],
+    "related": [
+      "libraries"
+    ],
+    "next": "libraries"
+  },
+  {
+    "slug": "libraries",
+    "section": "fundamentals",
+    "title": "Libraries",
+    "summary": "Reusable code meant to be linked or imported, not run as a program on its own.",
+    "level": "beginner",
+    "prereqs": [
+      "packages",
+      "linker"
+    ],
+    "related": [
+      "apis"
+    ],
+    "next": "apis"
+  },
+  {
+    "slug": "apis",
+    "section": "fundamentals",
+    "title": "APIs",
+    "summary": "The contract a component publishes: types, functions, errors, and the rules for using them.",
+    "level": "beginner",
+    "prereqs": [
+      "libraries",
+      "modules"
+    ],
+    "related": [
+      "rest",
+      "apis-web"
+    ],
+    "next": "c"
+  },
+  {
+    "slug": "c",
+    "section": "languages",
+    "title": "C",
+    "summary": "A small systems language with manual memory, undefined behavior, and a stable ABI.",
+    "level": "intermediate",
+    "prereqs": [
+      "pointers",
+      "compiler"
+    ],
+    "related": [
+      "cpp",
+      "memory"
+    ],
+    "next": "cpp"
+  },
+  {
+    "slug": "cpp",
+    "section": "languages",
+    "title": "C++",
+    "summary": "C’s model plus abstractions: RAII, templates, and zero-cost as a design goal.",
+    "level": "intermediate",
+    "prereqs": [
+      "c"
+    ],
+    "related": [
+      "rust",
+      "oop"
+    ],
+    "next": "java"
+  },
+  {
+    "slug": "java",
+    "section": "languages",
+    "title": "Java",
+    "summary": "A managed, class-based language with a VM, a huge standard library, and structured concurrency evolving in.",
+    "level": "beginner",
+    "prereqs": [
+      "oop",
+      "garbage-collection"
+    ],
+    "related": [
+      "kotlin",
+      "jvm"
+    ],
+    "next": "python"
+  },
+  {
+    "slug": "python",
+    "section": "languages",
+    "title": "Python",
+    "summary": "A dynamic language whose object model, iterators, and C-API shape almost every data stack.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-programming"
+    ],
+    "related": [
+      "javascript",
+      "modules"
+    ],
+    "next": "javascript"
+  },
+  {
+    "slug": "javascript",
+    "section": "languages",
+    "title": "JavaScript",
+    "summary": "The language of the web: prototypes, the event loop, and a single-threaded concurrency story.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-programming"
+    ],
+    "related": [
+      "typescript",
+      "event-loop"
+    ],
+    "next": "typescript"
+  },
+  {
+    "slug": "typescript",
+    "section": "languages",
+    "title": "TypeScript",
+    "summary": "A gradual type system erased at compile time, sitting on top of JavaScript.",
+    "level": "beginner",
+    "prereqs": [
+      "javascript"
+    ],
+    "related": [
+      "javascript"
+    ],
+    "next": "go"
+  },
+  {
+    "slug": "go",
+    "section": "languages",
+    "title": "Go",
+    "summary": "A small language with goroutines, channels, and a runtime aimed at networked services.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions"
+    ],
+    "related": [
+      "rust",
+      "concurrency"
+    ],
+    "next": "rust"
+  },
+  {
+    "slug": "rust",
+    "section": "languages",
+    "title": "Rust",
+    "summary": "Ownership, borrowing, and a type system that makes aliasing and mutation exclusive.",
+    "level": "advanced",
+    "prereqs": [
+      "pointers",
+      "memory"
+    ],
+    "related": [
+      "cpp",
+      "go"
+    ],
+    "next": "kotlin"
+  },
+  {
+    "slug": "kotlin",
+    "section": "languages",
+    "title": "Kotlin",
+    "summary": "A JVM (and beyond) language with null-safety, coroutines, and Java interop as a first-class goal.",
+    "level": "intermediate",
+    "prereqs": [
+      "java"
+    ],
+    "related": [
+      "java",
+      "android"
+    ],
+    "next": "swift"
+  },
+  {
+    "slug": "swift",
+    "section": "languages",
+    "title": "Swift",
+    "summary": "Apple’s language: value types, optionals, ARC, and protocol-oriented design.",
+    "level": "intermediate",
+    "prereqs": [
+      "oop"
+    ],
+    "related": [
+      "kotlin",
+      "ios"
+    ],
+    "next": "sql-language"
+  },
+  {
+    "slug": "sql-language",
+    "section": "languages",
+    "title": "SQL (Language)",
+    "summary": "A declarative language for describing the result you want from a relational store.",
+    "level": "beginner",
+    "prereqs": [
+      "relational-databases"
+    ],
+    "related": [
+      "sql",
+      "joins"
+    ],
+    "next": "bash"
+  },
+  {
+    "slug": "bash",
+    "section": "languages",
+    "title": "Bash",
+    "summary": "The default Unix shell language: pipelines, redirection, and the glue of every server.",
+    "level": "beginner",
+    "prereqs": [
+      "linux-fundamentals"
+    ],
+    "related": [
+      "shell",
+      "pipes"
+    ],
+    "next": "arrays"
+  },
+  {
+    "slug": "arrays",
+    "section": "dsa",
+    "title": "Arrays",
+    "summary": "A contiguous sequence of elements addressable in O(1) by index.",
+    "level": "beginner",
+    "prereqs": [
+      "memory"
+    ],
+    "related": [
+      "strings-ds",
+      "linked-lists"
+    ],
+    "next": "strings-ds",
+    "viz": "algorithm-visualizer",
+    "lab": "algorithm-visualizer"
+  },
+  {
+    "slug": "strings-ds",
+    "section": "dsa",
+    "title": "Strings",
+    "summary": "Sequences of characters. Encoding, immutability, and matching dominate their cost.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays"
+    ],
+    "related": [
+      "string-algorithms"
+    ],
+    "next": "linked-lists"
+  },
+  {
+    "slug": "linked-lists",
+    "section": "dsa",
+    "title": "Linked Lists",
+    "summary": "Nodes linked by pointers. O(1) insert at a known node, O(n) access by index.",
+    "level": "beginner",
+    "prereqs": [
+      "pointers"
+    ],
+    "related": [
+      "doubly-linked-lists",
+      "stack-ds"
+    ],
+    "next": "doubly-linked-lists",
+    "viz": "stack-queue",
+    "lab": "stack-queue"
+  },
+  {
+    "slug": "doubly-linked-lists",
+    "section": "dsa",
+    "title": "Doubly Linked Lists",
+    "summary": "Each node points both ways, so deletion and reverse traversal do not need a predecessor walk.",
+    "level": "beginner",
+    "prereqs": [
+      "linked-lists"
+    ],
+    "related": [
+      "circular-linked-lists"
+    ],
+    "next": "circular-linked-lists"
+  },
+  {
+    "slug": "circular-linked-lists",
+    "section": "dsa",
+    "title": "Circular Linked Lists",
+    "summary": "The last node points at the first. Useful for round-robin structures and buffers.",
+    "level": "intermediate",
+    "prereqs": [
+      "linked-lists"
+    ],
+    "related": [
+      "queue"
+    ],
+    "next": "stack-ds"
+  },
+  {
+    "slug": "stack-ds",
+    "section": "dsa",
+    "title": "Stack",
+    "summary": "Last-in, first-out. Recursion, undo, and parsing are stacks in disguise.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays"
+    ],
+    "related": [
+      "queue",
+      "stack"
+    ],
+    "next": "queue",
+    "viz": "stack-queue",
+    "lab": "stack-queue"
+  },
+  {
+    "slug": "queue",
+    "section": "dsa",
+    "title": "Queue",
+    "summary": "First-in, first-out. BFS, printers, and thread pools are queues.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays"
+    ],
+    "related": [
+      "deque",
+      "bfs"
+    ],
+    "next": "deque",
+    "viz": "stack-queue",
+    "lab": "stack-queue"
+  },
+  {
+    "slug": "deque",
+    "section": "dsa",
+    "title": "Deque",
+    "summary": "A double-ended queue: push and pop at both ends in O(1).",
+    "level": "beginner",
+    "prereqs": [
+      "queue"
+    ],
+    "related": [
+      "queue",
+      "stack-ds"
+    ],
+    "next": "hash-tables"
+  },
+  {
+    "slug": "hash-tables",
+    "section": "dsa",
+    "title": "Hash Tables",
+    "summary": "Average O(1) insert/lookup via a hash function and a collision strategy.",
+    "level": "intermediate",
+    "prereqs": [
+      "arrays"
+    ],
+    "related": [
+      "hash-maps",
+      "dsa-sets"
+    ],
+    "next": "hash-maps",
+    "viz": "hash-collisions",
+    "lab": "hash-collisions"
+  },
+  {
+    "slug": "hash-maps",
+    "section": "dsa",
+    "title": "Hash Maps",
+    "summary": "A hash table used as an associative array from keys to values.",
+    "level": "beginner",
+    "prereqs": [
+      "hash-tables"
+    ],
+    "related": [
+      "dsa-sets"
+    ],
+    "next": "dsa-sets"
+  },
+  {
+    "slug": "dsa-sets",
+    "section": "dsa",
+    "title": "Sets",
+    "summary": "Collections that answer membership. Hash sets and tree sets make different promises.",
+    "level": "beginner",
+    "prereqs": [
+      "hash-tables"
+    ],
+    "related": [
+      "hash-maps"
+    ],
+    "next": "trees"
+  },
+  {
+    "slug": "trees",
+    "section": "dsa",
+    "title": "Trees",
+    "summary": "Connected acyclic graphs with a root. Hierarchical data lives here.",
+    "level": "beginner",
+    "prereqs": [
+      "linked-lists"
+    ],
+    "related": [
+      "binary-trees",
+      "graphs"
+    ],
+    "next": "binary-trees"
+  },
+  {
+    "slug": "binary-trees",
+    "section": "dsa",
+    "title": "Binary Trees",
+    "summary": "Each node has at most two children. Traversals and shape govern everything else.",
+    "level": "beginner",
+    "prereqs": [
+      "trees"
+    ],
+    "related": [
+      "bst",
+      "heaps"
+    ],
+    "next": "bst",
+    "viz": "bst-explorer",
+    "lab": "bst-explorer"
+  },
+  {
+    "slug": "bst",
+    "section": "dsa",
+    "title": "Binary Search Trees",
+    "summary": "Left < node < right. Ordered operations in O(h), which is O(log n) if balanced.",
+    "level": "intermediate",
+    "prereqs": [
+      "binary-trees"
+    ],
+    "related": [
+      "avl-trees",
+      "red-black-trees"
+    ],
+    "next": "avl-trees",
+    "viz": "bst-explorer",
+    "lab": "bst-explorer"
+  },
+  {
+    "slug": "avl-trees",
+    "section": "dsa",
+    "title": "AVL Trees",
+    "summary": "BSTs that rebalance on insert/delete so height stays within 1 of a sibling.",
+    "level": "advanced",
+    "prereqs": [
+      "bst"
+    ],
+    "related": [
+      "red-black-trees"
+    ],
+    "next": "red-black-trees",
+    "viz": "bst-explorer",
+    "lab": "bst-explorer"
+  },
+  {
+    "slug": "red-black-trees",
+    "section": "dsa",
+    "title": "Red-Black Trees",
+    "summary": "A weaker balance invariant than AVL, with cheaper updates — the usual map/set backbone.",
+    "level": "advanced",
+    "prereqs": [
+      "bst"
+    ],
+    "related": [
+      "avl-trees"
+    ],
+    "next": "heaps"
+  },
+  {
+    "slug": "heaps",
+    "section": "dsa",
+    "title": "Heaps",
+    "summary": "Almost-complete binary trees that keep the min or max at the root in O(1).",
+    "level": "intermediate",
+    "prereqs": [
+      "binary-trees",
+      "arrays"
+    ],
+    "related": [
+      "priority-queues"
+    ],
+    "next": "priority-queues"
+  },
+  {
+    "slug": "priority-queues",
+    "section": "dsa",
+    "title": "Priority Queues",
+    "summary": "Extract-min (or max) in O(log n). Dijkstra, schedulers, and A* depend on them.",
+    "level": "intermediate",
+    "prereqs": [
+      "heaps"
+    ],
+    "related": [
+      "dijkstra",
+      "cpu-scheduling"
+    ],
+    "next": "tries"
+  },
+  {
+    "slug": "tries",
+    "section": "dsa",
+    "title": "Tries",
+    "summary": "Trees indexed by characters (or bits). Prefix queries and dictionaries live here.",
+    "level": "intermediate",
+    "prereqs": [
+      "trees",
+      "strings-ds"
+    ],
+    "related": [
+      "string-algorithms"
+    ],
+    "next": "segment-trees"
+  },
+  {
+    "slug": "segment-trees",
+    "section": "dsa",
+    "title": "Segment Trees",
+    "summary": "A tree over ranges that answers range queries and updates in O(log n).",
+    "level": "advanced",
+    "prereqs": [
+      "trees",
+      "arrays"
+    ],
+    "related": [
+      "fenwick-trees"
+    ],
+    "next": "fenwick-trees"
+  },
+  {
+    "slug": "fenwick-trees",
+    "section": "dsa",
+    "title": "Fenwick Trees",
+    "summary": "A compact prefix-sum tree: range sums and point updates in O(log n).",
+    "level": "advanced",
+    "prereqs": [
+      "arrays",
+      "prefix-sum"
+    ],
+    "related": [
+      "segment-trees"
+    ],
+    "next": "graphs"
+  },
+  {
+    "slug": "graphs",
+    "section": "dsa",
+    "title": "Graphs",
+    "summary": "Vertices and edges. The universal model for networks, dependencies, and state spaces.",
+    "level": "intermediate",
+    "prereqs": [
+      "trees"
+    ],
+    "related": [
+      "bfs",
+      "dfs",
+      "dijkstra"
+    ],
+    "next": "dsu",
+    "viz": "graph-search",
+    "lab": "graph-search"
+  },
+  {
+    "slug": "dsu",
+    "section": "dsa",
+    "title": "Disjoint Set Union",
+    "summary": "Near-O(1) union and find — the backbone of Kruskal and connected components.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs"
+    ],
+    "related": [
+      "kruskal"
+    ],
+    "next": "asymptotic-notation"
+  },
+  {
+    "slug": "asymptotic-notation",
+    "section": "dsa",
+    "title": "Big-O, Theta, Omega",
+    "summary": "How runtime and memory grow: upper, tight, and lower bounds as n → ∞.",
+    "level": "beginner",
+    "prereqs": [
+      "functions"
+    ],
+    "related": [
+      "sorting",
+      "searching"
+    ],
+    "next": "searching"
+  },
+  {
+    "slug": "searching",
+    "section": "dsa",
+    "title": "Searching",
+    "summary": "Finding a value in a collection: linear, binary, and hash-based membership.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays",
+      "asymptotic-notation"
+    ],
+    "related": [
+      "binary-search"
+    ],
+    "next": "sorting"
+  },
+  {
+    "slug": "sorting",
+    "section": "dsa",
+    "title": "Sorting",
+    "summary": "Putting elements in order. Stability, adaptivity, and n log n lower bounds matter.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays",
+      "asymptotic-notation"
+    ],
+    "related": [
+      "binary-search",
+      "divide-conquer"
+    ],
+    "next": "binary-search",
+    "viz": "algorithm-visualizer",
+    "lab": "algorithm-visualizer"
+  },
+  {
+    "slug": "binary-search",
+    "section": "dsa",
+    "title": "Binary Search",
+    "summary": "Halve a monotonic search space until the answer remains. The idea is bigger than arrays.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays",
+      "searching"
+    ],
+    "related": [
+      "two-pointers"
+    ],
+    "next": "two-pointers",
+    "viz": "algorithm-visualizer",
+    "lab": "algorithm-visualizer"
+  },
+  {
+    "slug": "two-pointers",
+    "section": "dsa",
+    "title": "Two Pointers",
+    "summary": "Two indices walking a sequence to find pairs, partitions, or a window in linear time.",
+    "level": "intermediate",
+    "prereqs": [
+      "arrays"
+    ],
+    "related": [
+      "sliding-window"
+    ],
+    "next": "sliding-window"
+  },
+  {
+    "slug": "sliding-window",
+    "section": "dsa",
+    "title": "Sliding Window",
+    "summary": "A subarray that grows and shrinks to maintain a constraint while scanning once.",
+    "level": "intermediate",
+    "prereqs": [
+      "two-pointers"
+    ],
+    "related": [
+      "prefix-sum"
+    ],
+    "next": "prefix-sum"
+  },
+  {
+    "slug": "prefix-sum",
+    "section": "dsa",
+    "title": "Prefix Sum",
+    "summary": "Precomputed partial sums so any range sum is two lookups.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays"
+    ],
+    "related": [
+      "fenwick-trees"
+    ],
+    "next": "recursion-algo"
+  },
+  {
+    "slug": "recursion-algo",
+    "section": "dsa",
+    "title": "Recursion (Algorithms)",
+    "summary": "The algorithmic use of recursion: divide, conquer, and the call-tree cost.",
+    "level": "intermediate",
+    "prereqs": [
+      "recursion"
+    ],
+    "related": [
+      "backtracking",
+      "divide-conquer"
+    ],
+    "next": "backtracking"
+  },
+  {
+    "slug": "backtracking",
+    "section": "dsa",
+    "title": "Backtracking",
+    "summary": "Build a solution incrementally and undo when a partial assignment cannot work.",
+    "level": "intermediate",
+    "prereqs": [
+      "recursion-algo"
+    ],
+    "related": [
+      "dynamic-programming"
+    ],
+    "next": "divide-conquer"
+  },
+  {
+    "slug": "divide-conquer",
+    "section": "dsa",
+    "title": "Divide & Conquer",
+    "summary": "Split, solve subproblems independently, combine. Recurrences describe the cost.",
+    "level": "intermediate",
+    "prereqs": [
+      "recursion-algo"
+    ],
+    "related": [
+      "sorting",
+      "dynamic-programming"
+    ],
+    "next": "greedy"
+  },
+  {
+    "slug": "greedy",
+    "section": "dsa",
+    "title": "Greedy",
+    "summary": "Commit to a locally optimal choice. Correct only when an exchange argument says so.",
+    "level": "intermediate",
+    "prereqs": [
+      "asymptotic-notation"
+    ],
+    "related": [
+      "dynamic-programming",
+      "kruskal"
+    ],
+    "next": "dynamic-programming"
+  },
+  {
+    "slug": "dynamic-programming",
+    "section": "dsa",
+    "title": "Dynamic Programming",
+    "summary": "Optimal substructure plus overlapping subproblems: remember the answer instead of recomputing it.",
+    "level": "intermediate",
+    "prereqs": [
+      "recursion-algo"
+    ],
+    "related": [
+      "greedy",
+      "dijkstra"
+    ],
+    "next": "bfs"
+  },
+  {
+    "slug": "bfs",
+    "section": "dsa",
+    "title": "Breadth-First Search",
+    "summary": "Explore by distance from the source. Shortest paths in unweighted graphs.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "queue"
+    ],
+    "related": [
+      "dfs",
+      "dijkstra"
+    ],
+    "next": "dfs",
+    "viz": "graph-search",
+    "lab": "graph-search"
+  },
+  {
+    "slug": "dfs",
+    "section": "dsa",
+    "title": "Depth-First Search",
+    "summary": "Explore a path to the end, then backtrack. Cycle detection, topology, components.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "stack-ds"
+    ],
+    "related": [
+      "bfs",
+      "topological-sort"
+    ],
+    "next": "topological-sort",
+    "viz": "graph-search",
+    "lab": "graph-search"
+  },
+  {
+    "slug": "topological-sort",
+    "section": "dsa",
+    "title": "Topological Sort",
+    "summary": "A linear order of a DAG so every edge goes forward. Build systems and course schedules.",
+    "level": "intermediate",
+    "prereqs": [
+      "dfs",
+      "graphs"
+    ],
+    "related": [
+      "dfs"
+    ],
+    "next": "dijkstra"
+  },
+  {
+    "slug": "dijkstra",
+    "section": "dsa",
+    "title": "Dijkstra's Algorithm",
+    "summary": "Non-negative shortest paths via a greedy frontier and a priority queue.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "priority-queues"
+    ],
+    "related": [
+      "bellman-ford",
+      "bfs"
+    ],
+    "next": "bellman-ford",
+    "viz": "dijkstra",
+    "lab": "dijkstra"
+  },
+  {
+    "slug": "bellman-ford",
+    "section": "dsa",
+    "title": "Bellman-Ford",
+    "summary": "Relax all edges |V|−1 times. Handles negative weights and reports negative cycles.",
+    "level": "advanced",
+    "prereqs": [
+      "graphs"
+    ],
+    "related": [
+      "dijkstra",
+      "floyd-warshall"
+    ],
+    "next": "floyd-warshall"
+  },
+  {
+    "slug": "floyd-warshall",
+    "section": "dsa",
+    "title": "Floyd-Warshall",
+    "summary": "All-pairs shortest paths by trying each vertex as an intermediate.",
+    "level": "advanced",
+    "prereqs": [
+      "dynamic-programming",
+      "graphs"
+    ],
+    "related": [
+      "bellman-ford"
+    ],
+    "next": "kruskal"
+  },
+  {
+    "slug": "kruskal",
+    "section": "dsa",
+    "title": "Kruskal's Algorithm",
+    "summary": "MST by sorting edges and adding those that do not form a cycle (DSU).",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "dsu",
+      "greedy"
+    ],
+    "related": [
+      "prim"
+    ],
+    "next": "prim"
+  },
+  {
+    "slug": "prim",
+    "section": "dsa",
+    "title": "Prim's Algorithm",
+    "summary": "MST by growing a tree from a seed, always adding the cheapest leaving edge.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "priority-queues"
+    ],
+    "related": [
+      "kruskal"
+    ],
+    "next": "bit-manipulation"
+  },
+  {
+    "slug": "bit-manipulation",
+    "section": "dsa",
+    "title": "Bit Manipulation",
+    "summary": "Using the binary representation: masks, shifts, and counting bits as constant-time tricks.",
+    "level": "intermediate",
+    "prereqs": [
+      "data-types"
+    ],
+    "related": [
+      "randomized-algorithms"
+    ],
+    "next": "string-algorithms"
+  },
+  {
+    "slug": "string-algorithms",
+    "section": "dsa",
+    "title": "String Algorithms",
+    "summary": "Matching, hashing, KMP, Z-function, and suffix structures for pattern search.",
+    "level": "advanced",
+    "prereqs": [
+      "strings-ds",
+      "tries"
+    ],
+    "related": [
+      "tries"
+    ],
+    "next": "randomized-algorithms"
+  },
+  {
+    "slug": "randomized-algorithms",
+    "section": "dsa",
+    "title": "Randomized Algorithms",
+    "summary": "Algorithms that flip coins: expected time, Monte Carlo vs Las Vegas, hashing.",
+    "level": "advanced",
+    "prereqs": [
+      "hash-tables",
+      "asymptotic-notation"
+    ],
+    "related": [
+      "hash-tables"
+    ],
+    "next": "logic"
+  },
+  {
+    "slug": "logic",
+    "section": "discrete-math",
+    "title": "Logic",
+    "summary": "The rules of valid inference. Every spec, type system, and proof sits on it.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "propositional-logic"
+    ],
+    "next": "propositional-logic"
+  },
+  {
+    "slug": "propositional-logic",
+    "section": "discrete-math",
+    "title": "Propositional Logic",
+    "summary": "Boolean variables and connectives. Truth tables, SAT, and circuit equivalence.",
+    "level": "beginner",
+    "prereqs": [
+      "logic"
+    ],
+    "related": [
+      "predicate-logic",
+      "boolean-algebra"
+    ],
+    "next": "predicate-logic"
+  },
+  {
+    "slug": "predicate-logic",
+    "section": "discrete-math",
+    "title": "Predicate Logic",
+    "summary": "Quantifiers over domains. This is the language of specifications and most proofs.",
+    "level": "intermediate",
+    "prereqs": [
+      "propositional-logic"
+    ],
+    "related": [
+      "proofs"
+    ],
+    "next": "sets"
+  },
+  {
+    "slug": "sets",
+    "section": "discrete-math",
+    "title": "Sets",
+    "summary": "Collections defined by membership. Union, intersection, power set, cardinality.",
+    "level": "beginner",
+    "prereqs": [
+      "logic"
+    ],
+    "related": [
+      "relations",
+      "functions-math"
+    ],
+    "next": "relations"
+  },
+  {
+    "slug": "relations",
+    "section": "discrete-math",
+    "title": "Relations",
+    "summary": "Subsets of a product. Reflexive, symmetric, transitive — and the closures you take.",
+    "level": "intermediate",
+    "prereqs": [
+      "sets"
+    ],
+    "related": [
+      "functions-math",
+      "graph-theory"
+    ],
+    "next": "functions-math"
+  },
+  {
+    "slug": "functions-math",
+    "section": "discrete-math",
+    "title": "Functions",
+    "summary": "Mappings from a domain to a codomain: injective, surjective, bijective, invertible.",
+    "level": "beginner",
+    "prereqs": [
+      "sets"
+    ],
+    "related": [
+      "relations"
+    ],
+    "next": "proofs"
+  },
+  {
+    "slug": "proofs",
+    "section": "discrete-math",
+    "title": "Proofs",
+    "summary": "Direct, contrapositive, contradiction, construction, and the habits that make arguments checkable.",
+    "level": "intermediate",
+    "prereqs": [
+      "logic"
+    ],
+    "related": [
+      "induction"
+    ],
+    "next": "induction"
+  },
+  {
+    "slug": "induction",
+    "section": "discrete-math",
+    "title": "Mathematical Induction",
+    "summary": "Prove P(n0), assume P(k), prove P(k+1). Strong induction and structural induction included.",
+    "level": "intermediate",
+    "prereqs": [
+      "proofs"
+    ],
+    "related": [
+      "recurrence-relations"
+    ],
+    "next": "combinatorics"
+  },
+  {
+    "slug": "combinatorics",
+    "section": "discrete-math",
+    "title": "Combinatorics",
+    "summary": "Counting: products, permutations, combinations, inclusion-exclusion, pigeonhole.",
+    "level": "intermediate",
+    "prereqs": [
+      "sets"
+    ],
+    "related": [
+      "probability"
+    ],
+    "next": "probability"
+  },
+  {
+    "slug": "probability",
+    "section": "discrete-math",
+    "title": "Probability",
+    "summary": "Sample spaces, independence, expectation, and the inequalities used in algorithms.",
+    "level": "intermediate",
+    "prereqs": [
+      "combinatorics"
+    ],
+    "related": [
+      "randomized-algorithms"
+    ],
+    "next": "graph-theory"
+  },
+  {
+    "slug": "graph-theory",
+    "section": "discrete-math",
+    "title": "Graph Theory",
+    "summary": "The mathematics of graphs: connectivity, coloring, matching, planarity, cuts.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "sets"
+    ],
+    "related": [
+      "trees-math"
+    ],
+    "next": "trees-math"
+  },
+  {
+    "slug": "trees-math",
+    "section": "discrete-math",
+    "title": "Trees (Math)",
+    "summary": "Acyclic connected graphs. Spanning trees, rooted trees, and counting labeled trees.",
+    "level": "intermediate",
+    "prereqs": [
+      "graph-theory"
+    ],
+    "related": [
+      "trees",
+      "kruskal"
+    ],
+    "next": "recurrence-relations"
+  },
+  {
+    "slug": "recurrence-relations",
+    "section": "discrete-math",
+    "title": "Recurrence Relations",
+    "summary": "Equations that define a sequence from earlier terms. Master theorem lives here.",
+    "level": "intermediate",
+    "prereqs": [
+      "induction"
+    ],
+    "related": [
+      "divide-conquer"
+    ],
+    "next": "boolean-algebra"
+  },
+  {
+    "slug": "boolean-algebra",
+    "section": "discrete-math",
+    "title": "Boolean Algebra",
+    "summary": "Algebra of 0/1 with AND, OR, NOT. Normal forms, minimization, and hardware.",
+    "level": "intermediate",
+    "prereqs": [
+      "propositional-logic"
+    ],
+    "related": [
+      "alu"
+    ],
+    "next": "cpu"
+  },
+  {
+    "slug": "cpu",
+    "section": "architecture",
+    "title": "CPU",
+    "summary": "The processor: fetch an instruction, decode it, execute it, repeat.",
+    "level": "beginner",
+    "prereqs": [
+      "memory"
+    ],
+    "related": [
+      "alu",
+      "registers",
+      "isa"
+    ],
+    "next": "alu",
+    "viz": "cpu-pipeline",
+    "lab": "cpu-pipeline"
+  },
+  {
+    "slug": "alu",
+    "section": "architecture",
+    "title": "ALU",
+    "summary": "The arithmetic-logic unit: adders, shifters, comparators, and flags.",
+    "level": "beginner",
+    "prereqs": [
+      "cpu",
+      "boolean-algebra"
+    ],
+    "related": [
+      "registers"
+    ],
+    "next": "registers"
+  },
+  {
+    "slug": "registers",
+    "section": "architecture",
+    "title": "Registers",
+    "summary": "The fastest named storage in the CPU. Architectural vs microarchitectural.",
+    "level": "beginner",
+    "prereqs": [
+      "cpu"
+    ],
+    "related": [
+      "isa"
+    ],
+    "next": "control-unit"
+  },
+  {
+    "slug": "control-unit",
+    "section": "architecture",
+    "title": "Control Unit",
+    "summary": "The logic that sequences fetch/decode/execute and drives datapath muxes.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu"
+    ],
+    "related": [
+      "isa",
+      "cpu-pipeline"
+    ],
+    "next": "isa"
+  },
+  {
+    "slug": "isa",
+    "section": "architecture",
+    "title": "Instruction Set Architecture",
+    "summary": "The contract between software and hardware: opcodes, registers, addressing, memory model.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu"
+    ],
+    "related": [
+      "assembly",
+      "machine-instructions"
+    ],
+    "next": "machine-instructions"
+  },
+  {
+    "slug": "machine-instructions",
+    "section": "architecture",
+    "title": "Machine Instructions",
+    "summary": "The binary encoding of operations the CPU actually executes.",
+    "level": "intermediate",
+    "prereqs": [
+      "isa"
+    ],
+    "related": [
+      "assembly"
+    ],
+    "next": "assembly"
+  },
+  {
+    "slug": "assembly",
+    "section": "architecture",
+    "title": "Assembly",
+    "summary": "A human-readable form of machine code, with labels, directives, and addressing modes.",
+    "level": "intermediate",
+    "prereqs": [
+      "machine-instructions"
+    ],
+    "related": [
+      "isa",
+      "compiler"
+    ],
+    "next": "memory-hierarchy"
+  },
+  {
+    "slug": "memory-hierarchy",
+    "section": "architecture",
+    "title": "Memory Hierarchy",
+    "summary": "Registers, caches, DRAM, disk — a pyramid that trades capacity for latency.",
+    "level": "intermediate",
+    "prereqs": [
+      "memory",
+      "cpu"
+    ],
+    "related": [
+      "cache",
+      "ram"
+    ],
+    "next": "cache",
+    "viz": "cache-simulator",
+    "lab": "cache-simulator"
+  },
+  {
+    "slug": "cache",
+    "section": "architecture",
+    "title": "Cache",
+    "summary": "Small fast memory that stores recently used blocks. Hits, misses, and associativity.",
+    "level": "intermediate",
+    "prereqs": [
+      "memory-hierarchy"
+    ],
+    "related": [
+      "tlb",
+      "cache-coherence"
+    ],
+    "next": "ram",
+    "viz": "cache-simulator",
+    "lab": "cache-simulator"
+  },
+  {
+    "slug": "ram",
+    "section": "architecture",
+    "title": "RAM",
+    "summary": "Volatile main memory. DRAM cells, DIMMs, and why random access is not actually equal-cost.",
+    "level": "beginner",
+    "prereqs": [
+      "memory-hierarchy"
+    ],
+    "related": [
+      "rom",
+      "virtual-memory"
+    ],
+    "next": "rom"
+  },
+  {
+    "slug": "rom",
+    "section": "architecture",
+    "title": "ROM",
+    "summary": "Read-mostly memory for firmware and bootstrap. Modern 'ROM' is often flash.",
+    "level": "beginner",
+    "prereqs": [
+      "memory-hierarchy"
+    ],
+    "related": [
+      "storage"
+    ],
+    "next": "storage"
+  },
+  {
+    "slug": "storage",
+    "section": "architecture",
+    "title": "Storage",
+    "summary": "Persistent devices: HDD, SSD, and the block interface the OS sees.",
+    "level": "beginner",
+    "prereqs": [
+      "memory-hierarchy"
+    ],
+    "related": [
+      "file-systems"
+    ],
+    "next": "cpu-pipeline"
+  },
+  {
+    "slug": "cpu-pipeline",
+    "section": "architecture",
+    "title": "CPU Pipeline",
+    "summary": "Overlapping fetch, decode, execute, memory, write-back so several instructions are in flight.",
+    "level": "advanced",
+    "prereqs": [
+      "cpu",
+      "control-unit"
+    ],
+    "related": [
+      "branch-prediction"
+    ],
+    "next": "branch-prediction",
+    "viz": "cpu-pipeline",
+    "lab": "cpu-pipeline"
+  },
+  {
+    "slug": "branch-prediction",
+    "section": "architecture",
+    "title": "Branch Prediction",
+    "summary": "Guessing the next PC so the pipeline does not stall on every if.",
+    "level": "advanced",
+    "prereqs": [
+      "cpu-pipeline"
+    ],
+    "related": [
+      "cpu-pipeline"
+    ],
+    "next": "multicore"
+  },
+  {
+    "slug": "multicore",
+    "section": "architecture",
+    "title": "Multicore Processors",
+    "summary": "Several cores on one die, sharing some caches and all of memory — and the problems that follow.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu"
+    ],
+    "related": [
+      "cache-coherence",
+      "numa"
+    ],
+    "next": "gpu"
+  },
+  {
+    "slug": "gpu",
+    "section": "architecture",
+    "title": "GPU",
+    "summary": "A throughput processor: thousands of lanes, SIMT, and a memory system built for bandwidth.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu",
+      "simd"
+    ],
+    "related": [
+      "simd",
+      "computer-graphics-fundamentals"
+    ],
+    "next": "simd"
+  },
+  {
+    "slug": "simd",
+    "section": "architecture",
+    "title": "SIMD",
+    "summary": "One instruction, many data. Vector units, warps, and data-parallel loops.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu"
+    ],
+    "related": [
+      "gpu"
+    ],
+    "next": "dma"
+  },
+  {
+    "slug": "dma",
+    "section": "architecture",
+    "title": "DMA",
+    "summary": "Devices that copy memory without occupying the CPU for every byte.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu",
+      "memory"
+    ],
+    "related": [
+      "interrupts-arch"
+    ],
+    "next": "interrupts-arch"
+  },
+  {
+    "slug": "interrupts-arch",
+    "section": "architecture",
+    "title": "Interrupts (Hardware)",
+    "summary": "An asynchronous signal that vectors the CPU into a handler, then returns.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu"
+    ],
+    "related": [
+      "interrupts-os",
+      "dma"
+    ],
+    "next": "cache-coherence"
+  },
+  {
+    "slug": "cache-coherence",
+    "section": "architecture",
+    "title": "Cache Coherence",
+    "summary": "The protocol that keeps per-core caches from disagreeing about a line (MESI and friends).",
+    "level": "advanced",
+    "prereqs": [
+      "cache",
+      "multicore"
+    ],
+    "related": [
+      "numa"
+    ],
+    "next": "numa"
+  },
+  {
+    "slug": "numa",
+    "section": "architecture",
+    "title": "NUMA",
+    "summary": "Non-uniform memory access: local DRAM is faster than remote DRAM on another socket.",
+    "level": "advanced",
+    "prereqs": [
+      "multicore",
+      "memory-hierarchy"
+    ],
+    "related": [
+      "cache-coherence"
+    ],
+    "next": "what-is-os"
+  },
+  {
+    "slug": "what-is-os",
+    "section": "os",
+    "title": "What is an OS?",
+    "summary": "The program that multiplexes hardware and offers processes a usable machine.",
+    "level": "beginner",
+    "prereqs": [
+      "cpu",
+      "memory"
+    ],
+    "related": [
+      "kernel"
+    ],
+    "next": "kernel"
+  },
+  {
+    "slug": "kernel",
+    "section": "os",
+    "title": "Kernel",
+    "summary": "The privileged core of the OS: syscalls, scheduling, virtual memory, drivers.",
+    "level": "intermediate",
+    "prereqs": [
+      "what-is-os"
+    ],
+    "related": [
+      "system-calls",
+      "user-mode"
+    ],
+    "next": "system-calls"
+  },
+  {
+    "slug": "system-calls",
+    "section": "os",
+    "title": "System Calls",
+    "summary": "The trap into the kernel: the only legal way a user program asks for privileged work.",
+    "level": "intermediate",
+    "prereqs": [
+      "kernel"
+    ],
+    "related": [
+      "user-mode",
+      "kernel-mode"
+    ],
+    "next": "user-mode"
+  },
+  {
+    "slug": "user-mode",
+    "section": "os",
+    "title": "User Mode",
+    "summary": "Unprivileged execution. Page faults and syscalls are how you leave it.",
+    "level": "beginner",
+    "prereqs": [
+      "kernel"
+    ],
+    "related": [
+      "kernel-mode"
+    ],
+    "next": "kernel-mode"
+  },
+  {
+    "slug": "kernel-mode",
+    "section": "os",
+    "title": "Kernel Mode",
+    "summary": "Privileged execution: the CPU will honor instructions that touch control registers and I/O.",
+    "level": "intermediate",
+    "prereqs": [
+      "user-mode"
+    ],
+    "related": [
+      "system-calls"
+    ],
+    "next": "processes"
+  },
+  {
+    "slug": "processes",
+    "section": "os",
+    "title": "Processes",
+    "summary": "An OS abstraction: address space, at least one thread, and a pile of kernel metadata.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-os",
+      "memory"
+    ],
+    "related": [
+      "threads",
+      "process-states"
+    ],
+    "next": "threads",
+    "viz": "process-states",
+    "lab": "process-states"
+  },
+  {
+    "slug": "threads",
+    "section": "os",
+    "title": "Threads",
+    "summary": "A schedulable execution context. Threads in one process share an address space.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "synchronization",
+      "context-switching"
+    ],
+    "next": "process-states"
+  },
+  {
+    "slug": "process-states",
+    "section": "os",
+    "title": "Process States",
+    "summary": "New, ready, running, waiting, terminated — and the events that move a process between them.",
+    "level": "beginner",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "cpu-scheduling",
+      "context-switching"
+    ],
+    "next": "context-switching",
+    "viz": "process-states",
+    "lab": "process-states"
+  },
+  {
+    "slug": "context-switching",
+    "section": "os",
+    "title": "Context Switching",
+    "summary": "Saving one thread's registers and loading another's so the CPU can change jobs.",
+    "level": "intermediate",
+    "prereqs": [
+      "threads",
+      "registers"
+    ],
+    "related": [
+      "cpu-scheduling"
+    ],
+    "next": "cpu-scheduling"
+  },
+  {
+    "slug": "cpu-scheduling",
+    "section": "os",
+    "title": "CPU Scheduling",
+    "summary": "The policy that picks the next ready thread. Fairness, latency, and throughput trade off.",
+    "level": "intermediate",
+    "prereqs": [
+      "process-states"
+    ],
+    "related": [
+      "fcfs",
+      "sjf",
+      "round-robin"
+    ],
+    "next": "fcfs",
+    "viz": "cpu-scheduler",
+    "lab": "cpu-scheduler"
+  },
+  {
+    "slug": "fcfs",
+    "section": "os",
+    "title": "FCFS",
+    "summary": "First-come, first-served. Simple, convoy-prone, no preemption required.",
+    "level": "beginner",
+    "prereqs": [
+      "cpu-scheduling"
+    ],
+    "related": [
+      "sjf",
+      "round-robin"
+    ],
+    "next": "sjf",
+    "viz": "cpu-scheduler",
+    "lab": "cpu-scheduler"
+  },
+  {
+    "slug": "sjf",
+    "section": "os",
+    "title": "SJF",
+    "summary": "Shortest job first. Optimal average waiting time if you magically know run times.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu-scheduling"
+    ],
+    "related": [
+      "fcfs",
+      "priority-scheduling"
+    ],
+    "next": "round-robin",
+    "viz": "cpu-scheduler",
+    "lab": "cpu-scheduler"
+  },
+  {
+    "slug": "round-robin",
+    "section": "os",
+    "title": "Round Robin",
+    "summary": "Time slices in a cycle. The quantum is the whole design.",
+    "level": "beginner",
+    "prereqs": [
+      "cpu-scheduling",
+      "queue"
+    ],
+    "related": [
+      "fcfs",
+      "priority-scheduling"
+    ],
+    "next": "priority-scheduling",
+    "viz": "cpu-scheduler",
+    "lab": "cpu-scheduler"
+  },
+  {
+    "slug": "priority-scheduling",
+    "section": "os",
+    "title": "Priority Scheduling",
+    "summary": "Run the highest-priority ready thread. Starvation and aging come with it.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu-scheduling"
+    ],
+    "related": [
+      "round-robin"
+    ],
+    "next": "synchronization"
+  },
+  {
+    "slug": "synchronization",
+    "section": "os",
+    "title": "Synchronization",
+    "summary": "Coordinating threads that share state so the result could have been sequential.",
+    "level": "intermediate",
+    "prereqs": [
+      "threads"
+    ],
+    "related": [
+      "race-conditions",
+      "mutex"
+    ],
+    "next": "race-conditions"
+  },
+  {
+    "slug": "race-conditions",
+    "section": "os",
+    "title": "Race Conditions",
+    "summary": "When the result depends on an unlucky interleaving of concurrent accesses.",
+    "level": "intermediate",
+    "prereqs": [
+      "synchronization"
+    ],
+    "related": [
+      "critical-sections",
+      "mutex"
+    ],
+    "next": "critical-sections"
+  },
+  {
+    "slug": "critical-sections",
+    "section": "os",
+    "title": "Critical Sections",
+    "summary": "Code that must run as if atomic with respect to other threads touching the same data.",
+    "level": "intermediate",
+    "prereqs": [
+      "race-conditions"
+    ],
+    "related": [
+      "mutex",
+      "semaphore"
+    ],
+    "next": "mutex"
+  },
+  {
+    "slug": "mutex",
+    "section": "os",
+    "title": "Mutex",
+    "summary": "Mutual exclusion: at most one holder. The lock you actually want most of the time.",
+    "level": "intermediate",
+    "prereqs": [
+      "critical-sections"
+    ],
+    "related": [
+      "semaphore",
+      "deadlocks"
+    ],
+    "next": "semaphore"
+  },
+  {
+    "slug": "semaphore",
+    "section": "os",
+    "title": "Semaphore",
+    "summary": "A counter with wait/signal. Mutexes are semaphores of 1; producer-consumer uses more.",
+    "level": "intermediate",
+    "prereqs": [
+      "mutex"
+    ],
+    "related": [
+      "monitors",
+      "deadlocks"
+    ],
+    "next": "monitors"
+  },
+  {
+    "slug": "monitors",
+    "section": "os",
+    "title": "Monitors",
+    "summary": "A language-level construct: a mutex plus condition variables bundled with the data.",
+    "level": "intermediate",
+    "prereqs": [
+      "mutex"
+    ],
+    "related": [
+      "semaphore"
+    ],
+    "next": "deadlocks"
+  },
+  {
+    "slug": "deadlocks",
+    "section": "os",
+    "title": "Deadlocks",
+    "summary": "A cycle of waits. Coffman conditions, detection, and the ways out.",
+    "level": "intermediate",
+    "prereqs": [
+      "mutex",
+      "semaphore"
+    ],
+    "related": [
+      "deadlock-prevention",
+      "bankers-algorithm"
+    ],
+    "next": "deadlock-prevention",
+    "viz": "deadlock-simulator",
+    "lab": "deadlock-simulator"
+  },
+  {
+    "slug": "deadlock-prevention",
+    "section": "os",
+    "title": "Deadlock Prevention",
+    "summary": "Break a Coffman condition so a cycle cannot form: no hold-and-wait, preemption, ordering.",
+    "level": "intermediate",
+    "prereqs": [
+      "deadlocks"
+    ],
+    "related": [
+      "deadlock-avoidance"
+    ],
+    "next": "deadlock-avoidance"
+  },
+  {
+    "slug": "deadlock-avoidance",
+    "section": "os",
+    "title": "Deadlock Avoidance",
+    "summary": "Admit a request only if the resulting state is safe. Banker's algorithm is the classic.",
+    "level": "advanced",
+    "prereqs": [
+      "deadlocks"
+    ],
+    "related": [
+      "bankers-algorithm"
+    ],
+    "next": "bankers-algorithm"
+  },
+  {
+    "slug": "bankers-algorithm",
+    "section": "os",
+    "title": "Banker's Algorithm",
+    "summary": "Dijkstra's safety algorithm: pretend to allocate, see if a finish order exists.",
+    "level": "advanced",
+    "prereqs": [
+      "deadlock-avoidance"
+    ],
+    "related": [
+      "deadlocks"
+    ],
+    "next": "memory-management",
+    "viz": "deadlock-simulator",
+    "lab": "deadlock-simulator"
+  },
+  {
+    "slug": "memory-management",
+    "section": "os",
+    "title": "Memory Management",
+    "summary": "How the OS carves physical memory for processes: allocation, protection, sharing.",
+    "level": "intermediate",
+    "prereqs": [
+      "memory",
+      "processes"
+    ],
+    "related": [
+      "paging",
+      "segmentation"
+    ],
+    "next": "paging"
+  },
+  {
+    "slug": "paging",
+    "section": "os",
+    "title": "Paging",
+    "summary": "Fixed-size pages and frames. The idea that makes virtual memory practical.",
+    "level": "intermediate",
+    "prereqs": [
+      "memory-management"
+    ],
+    "related": [
+      "page-tables",
+      "virtual-memory"
+    ],
+    "next": "segmentation",
+    "viz": "paging-simulator",
+    "lab": "paging-simulator"
+  },
+  {
+    "slug": "segmentation",
+    "section": "os",
+    "title": "Segmentation",
+    "summary": "Variable-sized logical regions (code, heap, stack) with base and limit.",
+    "level": "intermediate",
+    "prereqs": [
+      "memory-management"
+    ],
+    "related": [
+      "paging"
+    ],
+    "next": "virtual-memory"
+  },
+  {
+    "slug": "virtual-memory",
+    "section": "os",
+    "title": "Virtual Memory",
+    "summary": "Each process sees its own address space, backed by RAM and disk as needed.",
+    "level": "intermediate",
+    "prereqs": [
+      "paging"
+    ],
+    "related": [
+      "page-tables",
+      "page-replacement"
+    ],
+    "next": "page-tables"
+  },
+  {
+    "slug": "page-tables",
+    "section": "os",
+    "title": "Page Tables",
+    "summary": "The map from virtual page to frame (or disk). Multi-level to keep them sparse.",
+    "level": "intermediate",
+    "prereqs": [
+      "paging",
+      "virtual-memory"
+    ],
+    "related": [
+      "tlb"
+    ],
+    "next": "tlb"
+  },
+  {
+    "slug": "tlb",
+    "section": "os",
+    "title": "TLB",
+    "summary": "A cache of page-table entries so every load does not walk the page table.",
+    "level": "intermediate",
+    "prereqs": [
+      "page-tables",
+      "cache"
+    ],
+    "related": [
+      "paging"
+    ],
+    "next": "page-replacement",
+    "viz": "paging-simulator",
+    "lab": "paging-simulator"
+  },
+  {
+    "slug": "page-replacement",
+    "section": "os",
+    "title": "Page Replacement",
+    "summary": "Which resident page to evict on a fault. The policy is the whole game.",
+    "level": "intermediate",
+    "prereqs": [
+      "virtual-memory"
+    ],
+    "related": [
+      "lru",
+      "fifo-replacement"
+    ],
+    "next": "lru",
+    "viz": "page-replacement",
+    "lab": "page-replacement"
+  },
+  {
+    "slug": "lru",
+    "section": "os",
+    "title": "LRU",
+    "summary": "Replace the page unused for the longest time. Stack algorithms and clock approximations.",
+    "level": "intermediate",
+    "prereqs": [
+      "page-replacement"
+    ],
+    "related": [
+      "fifo-replacement"
+    ],
+    "next": "fifo-replacement",
+    "viz": "page-replacement",
+    "lab": "page-replacement"
+  },
+  {
+    "slug": "fifo-replacement",
+    "section": "os",
+    "title": "FIFO Replacement",
+    "summary": "Evict the oldest page. Belady's anomaly is the interview sting.",
+    "level": "beginner",
+    "prereqs": [
+      "page-replacement"
+    ],
+    "related": [
+      "lru"
+    ],
+    "next": "thrashing",
+    "viz": "page-replacement",
+    "lab": "page-replacement"
+  },
+  {
+    "slug": "thrashing",
+    "section": "os",
+    "title": "Thrashing",
+    "summary": "When the working set does not fit, the system spends its time paging, not computing.",
+    "level": "intermediate",
+    "prereqs": [
+      "page-replacement",
+      "virtual-memory"
+    ],
+    "related": [
+      "working-set"
+    ],
+    "next": "file-systems"
+  },
+  {
+    "slug": "file-systems",
+    "section": "os",
+    "title": "File Systems",
+    "summary": "The on-disk (and in-memory) structures that turn bytes into files, directories, and mounts.",
+    "level": "intermediate",
+    "prereqs": [
+      "storage"
+    ],
+    "related": [
+      "disk-scheduling"
+    ],
+    "next": "disk-scheduling"
+  },
+  {
+    "slug": "disk-scheduling",
+    "section": "os",
+    "title": "Disk Scheduling",
+    "summary": "FCFS, SSTF, SCAN — algorithms from the HDD era that still show up in interviews.",
+    "level": "intermediate",
+    "prereqs": [
+      "file-systems"
+    ],
+    "related": [
+      "io"
+    ],
+    "next": "io"
+  },
+  {
+    "slug": "io",
+    "section": "os",
+    "title": "I/O",
+    "summary": "How the kernel talks to devices: programmed I/O, interrupts, DMA, block vs character.",
+    "level": "intermediate",
+    "prereqs": [
+      "dma",
+      "interrupts-os"
+    ],
+    "related": [
+      "interrupts-os"
+    ],
+    "next": "interrupts-os"
+  },
+  {
+    "slug": "interrupts-os",
+    "section": "os",
+    "title": "Interrupts (OS)",
+    "summary": "The kernel's view: interrupt context, bottom halves, and why you cannot sleep in a handler.",
+    "level": "intermediate",
+    "prereqs": [
+      "interrupts-arch",
+      "kernel"
+    ],
+    "related": [
+      "os-signals",
+      "io"
+    ],
+    "next": "os-signals"
+  },
+  {
+    "slug": "os-signals",
+    "section": "os",
+    "title": "Signals",
+    "summary": "Software interrupts to a process: SIGINT, SIGCHLD, handlers, and async-signal-safety.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "ipc"
+    ],
+    "next": "ipc"
+  },
+  {
+    "slug": "ipc",
+    "section": "os",
+    "title": "IPC",
+    "summary": "Pipes, sockets, shared memory, message queues — how processes exchange data.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "os-signals",
+      "message-passing"
+    ],
+    "next": "linux-process-model"
+  },
+  {
+    "slug": "linux-process-model",
+    "section": "os",
+    "title": "Linux Process Model",
+    "summary": "Tasks, fork, clone, copy-on-write, namespaces, and cgroups as the real Unix.",
+    "level": "advanced",
+    "prereqs": [
+      "processes",
+      "linux-fundamentals"
+    ],
+    "related": [
+      "fork",
+      "threads"
+    ],
+    "next": "what-is-networking"
+  },
+  {
+    "slug": "what-is-networking",
+    "section": "networks",
+    "title": "What is Networking?",
+    "summary": "Independent machines exchanging messages over a shared, unreliable medium.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "lan",
+      "osi-model"
+    ],
+    "next": "lan"
+  },
+  {
+    "slug": "lan",
+    "section": "networks",
+    "title": "LAN",
+    "summary": "A local area network: one broadcast domain or a few, under one administration.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "wan",
+      "ethernet"
+    ],
+    "next": "wan"
+  },
+  {
+    "slug": "wan",
+    "section": "networks",
+    "title": "WAN",
+    "summary": "A wide-area network spanning sites and usually several providers.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "lan",
+      "routing"
+    ],
+    "next": "man"
+  },
+  {
+    "slug": "man",
+    "section": "networks",
+    "title": "MAN",
+    "summary": "A metropolitan network: a city-scale fabric, often provider-owned fiber.",
+    "level": "beginner",
+    "prereqs": [
+      "lan"
+    ],
+    "related": [
+      "wan"
+    ],
+    "next": "pan"
+  },
+  {
+    "slug": "pan",
+    "section": "networks",
+    "title": "PAN",
+    "summary": "A personal area network: Bluetooth, USB, the devices around one person.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "lan"
+    ],
+    "next": "network-topology"
+  },
+  {
+    "slug": "network-topology",
+    "section": "networks",
+    "title": "Network Topology",
+    "summary": "Bus, star, ring, mesh, hybrid — how nodes are wired, logically and physically.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "switch",
+      "router"
+    ],
+    "next": "client-server"
+  },
+  {
+    "slug": "client-server",
+    "section": "networks",
+    "title": "Client/Server",
+    "summary": "A role split: clients initiate, servers wait and respond. Most of the internet.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "peer-to-peer",
+      "http"
+    ],
+    "next": "peer-to-peer"
+  },
+  {
+    "slug": "peer-to-peer",
+    "section": "networks",
+    "title": "Peer-to-Peer",
+    "summary": "Nodes that are both client and server. BitTorrent, some overlay networks, some blockchains.",
+    "level": "intermediate",
+    "prereqs": [
+      "client-server"
+    ],
+    "related": [
+      "distributed-fundamentals"
+    ],
+    "next": "network-devices"
+  },
+  {
+    "slug": "network-devices",
+    "section": "networks",
+    "title": "Network Devices",
+    "summary": "The box-level view: hubs, switches, routers, firewalls, and where each sits in the stack.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model"
+    ],
+    "related": [
+      "hub",
+      "switch",
+      "router"
+    ],
+    "next": "hub"
+  },
+  {
+    "slug": "hub",
+    "section": "networks",
+    "title": "Hub",
+    "summary": "A physical-layer repeater: every bit out every port. Collision domain = the whole hub.",
+    "level": "beginner",
+    "prereqs": [
+      "l1-physical"
+    ],
+    "related": [
+      "switch",
+      "repeater"
+    ],
+    "next": "switch"
+  },
+  {
+    "slug": "switch",
+    "section": "networks",
+    "title": "Switch",
+    "summary": "A data-link device that forwards frames by MAC and splits collision domains.",
+    "level": "beginner",
+    "prereqs": [
+      "l2-data-link",
+      "mac-addresses"
+    ],
+    "related": [
+      "bridge",
+      "vlan"
+    ],
+    "next": "router"
+  },
+  {
+    "slug": "router",
+    "section": "networks",
+    "title": "Router",
+    "summary": "A network-layer device that forwards packets between subnets using a routing table.",
+    "level": "beginner",
+    "prereqs": [
+      "l3-network",
+      "ip"
+    ],
+    "related": [
+      "routing",
+      "gateway"
+    ],
+    "next": "bridge"
+  },
+  {
+    "slug": "bridge",
+    "section": "networks",
+    "title": "Bridge",
+    "summary": "Connects two L2 segments and learns MACs. A switch is a multi-port bridge.",
+    "level": "beginner",
+    "prereqs": [
+      "switch"
+    ],
+    "related": [
+      "switch"
+    ],
+    "next": "gateway"
+  },
+  {
+    "slug": "gateway",
+    "section": "networks",
+    "title": "Gateway",
+    "summary": "A node that translates between networks or protocols — often just 'the router'.",
+    "level": "beginner",
+    "prereqs": [
+      "router"
+    ],
+    "related": [
+      "nat",
+      "firewall"
+    ],
+    "next": "repeater"
+  },
+  {
+    "slug": "repeater",
+    "section": "networks",
+    "title": "Repeater",
+    "summary": "Amplifies or retimes a signal to extend a physical segment.",
+    "level": "beginner",
+    "prereqs": [
+      "l1-physical"
+    ],
+    "related": [
+      "hub"
+    ],
+    "next": "modem"
+  },
+  {
+    "slug": "modem",
+    "section": "networks",
+    "title": "Modem",
+    "summary": "Modulator-demodulator: analog carrier on, bits off, and the reverse.",
+    "level": "beginner",
+    "prereqs": [
+      "l1-physical"
+    ],
+    "related": [
+      "signals"
+    ],
+    "next": "access-point"
+  },
+  {
+    "slug": "access-point",
+    "section": "networks",
+    "title": "Access Point",
+    "summary": "A bridge between wireless stations and a wired LAN, with association and encryption.",
+    "level": "beginner",
+    "prereqs": [
+      "l2-data-link"
+    ],
+    "related": [
+      "wifi"
+    ],
+    "next": "firewall"
+  },
+  {
+    "slug": "firewall",
+    "section": "networks",
+    "title": "Firewall",
+    "summary": "A policy box: filter, NAT, or proxy traffic by rule. Host or network, stateful or not.",
+    "level": "intermediate",
+    "prereqs": [
+      "network-security"
+    ],
+    "related": [
+      "nat",
+      "router"
+    ],
+    "next": "osi-model"
+  },
+  {
+    "slug": "osi-model",
+    "section": "networks",
+    "title": "OSI Model",
+    "summary": "Seven layers of function, from photons to application messages. The shared language of networking.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "tcp-ip-model",
+      "l7-application",
+      "l1-physical"
+    ],
+    "next": "l7-application",
+    "viz": "osi-explorer",
+    "lab": "osi-explorer"
+  },
+  {
+    "slug": "l7-application",
+    "section": "networks",
+    "title": "Layer 7 — Application",
+    "summary": "The OSI layer where applications meet the network: HTTP, DNS, SMTP, and their data.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model"
+    ],
+    "related": [
+      "dns",
+      "http",
+      "smtp"
+    ],
+    "next": "l6-presentation",
+    "viz": "osi-explorer",
+    "lab": "osi-explorer"
+  },
+  {
+    "slug": "l6-presentation",
+    "section": "networks",
+    "title": "Layer 6 — Presentation",
+    "summary": "Syntax and encryption: encoding, compression, TLS as it is often taught at this layer.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model"
+    ],
+    "related": [
+      "tls",
+      "encryption"
+    ],
+    "next": "l5-session",
+    "viz": "osi-explorer",
+    "lab": "osi-explorer"
+  },
+  {
+    "slug": "l5-session",
+    "section": "networks",
+    "title": "Layer 5 — Session",
+    "summary": "Dialogs: setup, teardown, and checkpoints. Thin in TCP/IP, explicit in some RPC systems.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model"
+    ],
+    "related": [
+      "rpc",
+      "tcp"
+    ],
+    "next": "l4-transport",
+    "viz": "osi-explorer",
+    "lab": "osi-explorer"
+  },
+  {
+    "slug": "l4-transport",
+    "section": "networks",
+    "title": "Layer 4 — Transport",
+    "summary": "Process-to-process: ports, reliability, and congestion control. TCP and UDP live here.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model"
+    ],
+    "related": [
+      "tcp",
+      "udp",
+      "ports"
+    ],
+    "next": "l3-network",
+    "viz": "osi-explorer",
+    "lab": "osi-explorer"
+  },
+  {
+    "slug": "l3-network",
+    "section": "networks",
+    "title": "Layer 3 — Network",
+    "summary": "Host-to-host across hops: IP, routing, ICMP. Packets and logical addresses.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model"
+    ],
+    "related": [
+      "ip",
+      "routing",
+      "icmp"
+    ],
+    "next": "l2-data-link",
+    "viz": "osi-explorer",
+    "lab": "osi-explorer"
+  },
+  {
+    "slug": "l2-data-link",
+    "section": "networks",
+    "title": "Layer 2 — Data Link",
+    "summary": "Hop-to-hop frames: MAC addresses, Ethernet, switches, and error detection.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model"
+    ],
+    "related": [
+      "ethernet",
+      "mac-addresses",
+      "frames"
+    ],
+    "next": "l1-physical",
+    "viz": "osi-explorer",
+    "lab": "osi-explorer"
+  },
+  {
+    "slug": "l1-physical",
+    "section": "networks",
+    "title": "Layer 1 — Physical",
+    "summary": "Bits on a medium: voltage, light, radio, connectors, and the limits of Shannon.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model"
+    ],
+    "related": [
+      "signals",
+      "transmission-media"
+    ],
+    "next": "tcp-ip-model",
+    "viz": "osi-explorer",
+    "lab": "osi-explorer"
+  },
+  {
+    "slug": "tcp-ip-model",
+    "section": "networks",
+    "title": "TCP/IP Model",
+    "summary": "Four layers the internet actually runs: application, transport, internet, network access.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model"
+    ],
+    "related": [
+      "osi-vs-tcpip",
+      "ip",
+      "tcp"
+    ],
+    "next": "osi-vs-tcpip",
+    "viz": "osi-explorer",
+    "lab": "osi-explorer"
+  },
+  {
+    "slug": "osi-vs-tcpip",
+    "section": "networks",
+    "title": "OSI vs TCP/IP",
+    "summary": "A seven-layer teaching model versus a four-layer running model. Same ideas, different cuts.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model",
+      "tcp-ip-model"
+    ],
+    "related": [
+      "osi-model"
+    ],
+    "next": "signals"
+  },
+  {
+    "slug": "signals",
+    "section": "networks",
+    "title": "Signals",
+    "summary": "The physical representation of bits: analog vs digital, encoding, and noise.",
+    "level": "intermediate",
+    "prereqs": [
+      "l1-physical"
+    ],
+    "related": [
+      "bandwidth",
+      "modulation"
+    ],
+    "next": "bandwidth"
+  },
+  {
+    "slug": "bandwidth",
+    "section": "networks",
+    "title": "Bandwidth",
+    "summary": "How much spectrum or bit-rate a channel offers. Not the same thing as throughput.",
+    "level": "beginner",
+    "prereqs": [
+      "signals"
+    ],
+    "related": [
+      "latency",
+      "throughput"
+    ],
+    "next": "latency"
+  },
+  {
+    "slug": "latency",
+    "section": "networks",
+    "title": "Latency",
+    "summary": "One-way or round-trip delay. Propagation, transmission, queueing, processing.",
+    "level": "beginner",
+    "prereqs": [
+      "bandwidth"
+    ],
+    "related": [
+      "throughput"
+    ],
+    "next": "transmission-media"
+  },
+  {
+    "slug": "transmission-media",
+    "section": "networks",
+    "title": "Transmission Media",
+    "summary": "Copper, fiber, and wireless — each with a noise, cost, and distance story.",
+    "level": "beginner",
+    "prereqs": [
+      "l1-physical"
+    ],
+    "related": [
+      "fiber",
+      "copper",
+      "wireless-phy"
+    ],
+    "next": "fiber"
+  },
+  {
+    "slug": "fiber",
+    "section": "networks",
+    "title": "Fiber",
+    "summary": "Light in glass. Huge bandwidth, long reach, immunity to electrical noise.",
+    "level": "beginner",
+    "prereqs": [
+      "transmission-media"
+    ],
+    "related": [
+      "copper"
+    ],
+    "next": "copper"
+  },
+  {
+    "slug": "copper",
+    "section": "networks",
+    "title": "Copper",
+    "summary": "Twisted pair and coax. Cheap, familiar, and still how most desks are wired.",
+    "level": "beginner",
+    "prereqs": [
+      "transmission-media"
+    ],
+    "related": [
+      "fiber"
+    ],
+    "next": "wireless-phy"
+  },
+  {
+    "slug": "wireless-phy",
+    "section": "networks",
+    "title": "Wireless",
+    "summary": "Shared spectrum, fading, and a MAC that is nothing like a wire.",
+    "level": "intermediate",
+    "prereqs": [
+      "transmission-media"
+    ],
+    "related": [
+      "access-point"
+    ],
+    "next": "modulation"
+  },
+  {
+    "slug": "modulation",
+    "section": "networks",
+    "title": "Modulation",
+    "summary": "Imprinting bits on a carrier: AM, FM, PSK, QAM — the physical alphabet.",
+    "level": "intermediate",
+    "prereqs": [
+      "signals"
+    ],
+    "related": [
+      "modem"
+    ],
+    "next": "frames"
+  },
+  {
+    "slug": "frames",
+    "section": "networks",
+    "title": "Frames",
+    "summary": "The data-link PDU: header, payload, trailer. Ethernet's 14-byte header is the one you will draw.",
+    "level": "beginner",
+    "prereqs": [
+      "l2-data-link"
+    ],
+    "related": [
+      "mac-addresses",
+      "ethernet"
+    ],
+    "next": "mac-addresses"
+  },
+  {
+    "slug": "mac-addresses",
+    "section": "networks",
+    "title": "MAC Addresses",
+    "summary": "48-bit link-layer identifiers. Unique-ish, local or universal, unicast or group.",
+    "level": "beginner",
+    "prereqs": [
+      "l2-data-link"
+    ],
+    "related": [
+      "ethernet",
+      "arp"
+    ],
+    "next": "ethernet"
+  },
+  {
+    "slug": "ethernet",
+    "section": "networks",
+    "title": "Ethernet",
+    "summary": "The LAN technology: CSMA/CD history, switching present, 802.3 framing.",
+    "level": "beginner",
+    "prereqs": [
+      "frames",
+      "mac-addresses"
+    ],
+    "related": [
+      "switching",
+      "vlan"
+    ],
+    "next": "switching"
+  },
+  {
+    "slug": "switching",
+    "section": "networks",
+    "title": "Switching",
+    "summary": "Learn MACs, flood unknowns, forward knowns, filter the rest. CAM tables and STP.",
+    "level": "intermediate",
+    "prereqs": [
+      "switch",
+      "ethernet"
+    ],
+    "related": [
+      "vlan",
+      "stp"
+    ],
+    "next": "arp"
+  },
+  {
+    "slug": "arp",
+    "section": "networks",
+    "title": "ARP",
+    "summary": "Resolve IPv4 to MAC on a LAN. The cache, the timeout, and the spoof.",
+    "level": "intermediate",
+    "prereqs": [
+      "ip",
+      "mac-addresses"
+    ],
+    "related": [
+      "ipv4",
+      "ethernet"
+    ],
+    "next": "error-detection"
+  },
+  {
+    "slug": "error-detection",
+    "section": "networks",
+    "title": "Error Detection",
+    "summary": "Parity, checksums, CRC. Detecting corruption is cheaper than preventing it.",
+    "level": "intermediate",
+    "prereqs": [
+      "frames"
+    ],
+    "related": [
+      "ethernet"
+    ],
+    "next": "vlan"
+  },
+  {
+    "slug": "vlan",
+    "section": "networks",
+    "title": "VLANs",
+    "summary": "One physical switch, many broadcast domains. 802.1Q tags and trunk ports.",
+    "level": "intermediate",
+    "prereqs": [
+      "switching"
+    ],
+    "related": [
+      "ethernet"
+    ],
+    "next": "ip"
+  },
+  {
+    "slug": "ip",
+    "section": "networks",
+    "title": "IP",
+    "summary": "The internet's network protocol: best-effort datagrams and hierarchical addresses.",
+    "level": "beginner",
+    "prereqs": [
+      "l3-network"
+    ],
+    "related": [
+      "ipv4",
+      "ipv6",
+      "routing"
+    ],
+    "next": "ipv4"
+  },
+  {
+    "slug": "ipv4",
+    "section": "networks",
+    "title": "IPv4",
+    "summary": "32-bit addresses, dotted quad, fragmentation, and a header you should be able to sketch.",
+    "level": "beginner",
+    "prereqs": [
+      "ip"
+    ],
+    "related": [
+      "ipv6",
+      "subnetting",
+      "nat"
+    ],
+    "next": "ipv6"
+  },
+  {
+    "slug": "ipv6",
+    "section": "networks",
+    "title": "IPv6",
+    "summary": "128-bit addresses, no NAT-as-crutch, SLAAC, and a simpler header.",
+    "level": "intermediate",
+    "prereqs": [
+      "ip"
+    ],
+    "related": [
+      "ipv4"
+    ],
+    "next": "subnetting"
+  },
+  {
+    "slug": "subnetting",
+    "section": "networks",
+    "title": "Subnetting",
+    "summary": "Carving a prefix into smaller networks. Masks, hosts, and the all-zero/all-one rules.",
+    "level": "intermediate",
+    "prereqs": [
+      "ipv4"
+    ],
+    "related": [
+      "cidr"
+    ],
+    "next": "cidr"
+  },
+  {
+    "slug": "cidr",
+    "section": "networks",
+    "title": "CIDR",
+    "summary": "Classless addressing: a prefix and a length. Aggregation is the point.",
+    "level": "intermediate",
+    "prereqs": [
+      "subnetting",
+      "ipv4"
+    ],
+    "related": [
+      "routing"
+    ],
+    "next": "routing"
+  },
+  {
+    "slug": "routing",
+    "section": "networks",
+    "title": "Routing",
+    "summary": "Choosing a next hop. Tables, longest prefix match, and intra- vs inter-domain.",
+    "level": "intermediate",
+    "prereqs": [
+      "ip",
+      "router"
+    ],
+    "related": [
+      "routing-protocols",
+      "bgp"
+    ],
+    "next": "icmp",
+    "viz": "routing-simulator",
+    "lab": "routing-simulator"
+  },
+  {
+    "slug": "icmp",
+    "section": "networks",
+    "title": "ICMP",
+    "summary": "IP's control plane for errors and diagnostics. Ping and traceroute ride it.",
+    "level": "beginner",
+    "prereqs": [
+      "ip"
+    ],
+    "related": [
+      "ipv4"
+    ],
+    "next": "nat"
+  },
+  {
+    "slug": "nat",
+    "section": "networks",
+    "title": "NAT",
+    "summary": "Rewriting addresses (and usually ports) so many hosts share a public IP.",
+    "level": "intermediate",
+    "prereqs": [
+      "ipv4",
+      "router"
+    ],
+    "related": [
+      "firewall"
+    ],
+    "next": "routing-protocols"
+  },
+  {
+    "slug": "routing-protocols",
+    "section": "networks",
+    "title": "Routing Protocols",
+    "summary": "RIP, OSPF, BGP: how routers learn paths they did not configure by hand.",
+    "level": "advanced",
+    "prereqs": [
+      "routing"
+    ],
+    "related": [
+      "bgp",
+      "ospf"
+    ],
+    "next": "tcp"
+  },
+  {
+    "slug": "tcp",
+    "section": "networks",
+    "title": "TCP",
+    "summary": "Reliable, ordered, congestion-controlled byte streams between two ports.",
+    "level": "beginner",
+    "prereqs": [
+      "l4-transport"
+    ],
+    "related": [
+      "udp",
+      "tcp-handshake"
+    ],
+    "next": "udp",
+    "viz": "tcp-simulator",
+    "lab": "tcp-simulator"
+  },
+  {
+    "slug": "udp",
+    "section": "networks",
+    "title": "UDP",
+    "summary": "Datagrams with ports and a checksum. No connection, no retransmission, no congestion control.",
+    "level": "beginner",
+    "prereqs": [
+      "l4-transport"
+    ],
+    "related": [
+      "tcp",
+      "ports"
+    ],
+    "next": "ports"
+  },
+  {
+    "slug": "ports",
+    "section": "networks",
+    "title": "Ports",
+    "summary": "16-bit transport addresses that multiplex a host. Well-known, registered, ephemeral.",
+    "level": "beginner",
+    "prereqs": [
+      "tcp",
+      "udp"
+    ],
+    "related": [
+      "tcp",
+      "nat"
+    ],
+    "next": "tcp-handshake"
+  },
+  {
+    "slug": "tcp-handshake",
+    "section": "networks",
+    "title": "TCP Handshake",
+    "summary": "SYN, SYN-ACK, ACK. Sequence numbers exchanged so a connection can start.",
+    "level": "beginner",
+    "prereqs": [
+      "tcp"
+    ],
+    "related": [
+      "tcp-teardown",
+      "tcp"
+    ],
+    "next": "tcp-teardown",
+    "viz": "tcp-simulator",
+    "lab": "tcp-simulator"
+  },
+  {
+    "slug": "tcp-teardown",
+    "section": "networks",
+    "title": "TCP Teardown",
+    "summary": "Four-way (or three-way with FIN-ACK) close, TIME-WAIT, and why half-open exists.",
+    "level": "intermediate",
+    "prereqs": [
+      "tcp-handshake"
+    ],
+    "related": [
+      "tcp"
+    ],
+    "next": "flow-control",
+    "viz": "tcp-simulator",
+    "lab": "tcp-simulator"
+  },
+  {
+    "slug": "flow-control",
+    "section": "networks",
+    "title": "Flow Control",
+    "summary": "Stopping a fast sender from drowning a slow receiver. TCP's window.",
+    "level": "intermediate",
+    "prereqs": [
+      "tcp"
+    ],
+    "related": [
+      "congestion-control"
+    ],
+    "next": "congestion-control"
+  },
+  {
+    "slug": "congestion-control",
+    "section": "networks",
+    "title": "Congestion Control",
+    "summary": "Protecting the network from collapse: slow start, AIMD, ECN, and BBR.",
+    "level": "advanced",
+    "prereqs": [
+      "tcp",
+      "flow-control"
+    ],
+    "related": [
+      "tcp"
+    ],
+    "next": "dns"
+  },
+  {
+    "slug": "dns",
+    "section": "networks",
+    "title": "DNS",
+    "summary": "The hierarchical lookup that turns names into records — usually addresses.",
+    "level": "beginner",
+    "prereqs": [
+      "l7-application"
+    ],
+    "related": [
+      "dhcp",
+      "http"
+    ],
+    "next": "dhcp",
+    "viz": "dns-simulator",
+    "lab": "dns-simulator"
+  },
+  {
+    "slug": "dhcp",
+    "section": "networks",
+    "title": "DHCP",
+    "summary": "Automatic host configuration: address, mask, gateway, DNS, lease.",
+    "level": "beginner",
+    "prereqs": [
+      "ipv4"
+    ],
+    "related": [
+      "dns"
+    ],
+    "next": "http"
+  },
+  {
+    "slug": "http",
+    "section": "networks",
+    "title": "HTTP",
+    "summary": "The application protocol of the web: methods, status codes, headers, and now HTTP/2 and /3.",
+    "level": "beginner",
+    "prereqs": [
+      "l7-application",
+      "tcp"
+    ],
+    "related": [
+      "https",
+      "rest"
+    ],
+    "next": "https",
+    "viz": "http-simulator",
+    "lab": "http-simulator"
+  },
+  {
+    "slug": "https",
+    "section": "networks",
+    "title": "HTTPS",
+    "summary": "HTTP over TLS. Confidentiality, integrity, and (usually) server authentication.",
+    "level": "beginner",
+    "prereqs": [
+      "http",
+      "tls"
+    ],
+    "related": [
+      "tls",
+      "certificates"
+    ],
+    "next": "ftp",
+    "viz": "http-simulator",
+    "lab": "http-simulator"
+  },
+  {
+    "slug": "ftp",
+    "section": "networks",
+    "title": "FTP",
+    "summary": "A historic file protocol with separate control and data channels. Prefer SFTP/HTTPS.",
+    "level": "beginner",
+    "prereqs": [
+      "tcp"
+    ],
+    "related": [
+      "ssh"
+    ],
+    "next": "smtp"
+  },
+  {
+    "slug": "smtp",
+    "section": "networks",
+    "title": "SMTP",
+    "summary": "How mail moves between MTAs. Store-and-forward, MX records, and spam as an adversarial load.",
+    "level": "beginner",
+    "prereqs": [
+      "dns",
+      "l7-application"
+    ],
+    "related": [
+      "dns"
+    ],
+    "next": "ssh"
+  },
+  {
+    "slug": "ssh",
+    "section": "networks",
+    "title": "SSH",
+    "summary": "Authenticated, encrypted remote shells and tunnels. Keys, not passwords, if you can.",
+    "level": "beginner",
+    "prereqs": [
+      "tcp",
+      "encryption"
+    ],
+    "related": [
+      "linux-fundamentals"
+    ],
+    "next": "websockets"
+  },
+  {
+    "slug": "websockets",
+    "section": "networks",
+    "title": "WebSockets",
+    "summary": "A TCP-backed, full-duplex channel started with an HTTP upgrade.",
+    "level": "intermediate",
+    "prereqs": [
+      "http",
+      "tcp"
+    ],
+    "related": [
+      "http"
+    ],
+    "next": "database-fundamentals"
+  }
+]

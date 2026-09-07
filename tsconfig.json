@@ -5,6 +5,7 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": false,
     "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,

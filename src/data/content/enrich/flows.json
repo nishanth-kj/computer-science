@@ -1,0 +1,238 @@
+{
+  "fundamentals": [
+    "Source code",
+    "Compiler / interpreter",
+    "Machine code",
+    "Loader",
+    "Memory",
+    "CPU"
+  ],
+  "languages": [
+    "Syntax",
+    "Types",
+    "Runtime",
+    "Memory model",
+    "Concurrency",
+    "Stdlib"
+  ],
+  "dsa": [
+    "Data shape",
+    "Walk / update",
+    "Invariants",
+    "Cost as n grows",
+    "Edge cases"
+  ],
+  "discrete-math": [
+    "Statement",
+    "Definitions",
+    "Proof or count",
+    "Small example",
+    "What it buys algorithms"
+  ],
+  "architecture": [
+    "Program",
+    "Compiler",
+    "Machine code",
+    "Fetch",
+    "Decode",
+    "Execute",
+    "Memory",
+    "Write-back"
+  ],
+  "os": [
+    "New",
+    "Ready",
+    "Running",
+    "Waiting",
+    "Terminated"
+  ],
+  "networks": [
+    "Application data",
+    "Transport segment",
+    "Network packet",
+    "Data-link frame",
+    "Physical bits"
+  ],
+  "dbms": [
+    "SQL text",
+    "Parser",
+    "Binder",
+    "Planner",
+    "Executor",
+    "Storage / WAL"
+  ],
+  "oop": [
+    "Domain noun",
+    "Interface",
+    "Implementation",
+    "Composition",
+    "Tests around the seam"
+  ],
+  "software-engineering": [
+    "Change",
+    "Review",
+    "CI",
+    "Deploy",
+    "Observe",
+    "Learn"
+  ],
+  "web": [
+    "URL",
+    "DNS",
+    "TCP / TLS",
+    "HTTP",
+    "Render",
+    "JS"
+  ],
+  "cybersecurity": [
+    "Asset",
+    "Threat",
+    "Control",
+    "Failure mode",
+    "Detection"
+  ],
+  "compilers": [
+    "Source",
+    "Lexer",
+    "Tokens",
+    "Parser",
+    "AST",
+    "IR",
+    "Optimize",
+    "Machine code"
+  ],
+  "theory": [
+    "Alphabet",
+    "Language",
+    "Machine",
+    "Accept / reject",
+    "Limitations"
+  ],
+  "distributed": [
+    "Request",
+    "Replicas",
+    "Quorum / leader",
+    "Failure",
+    "Repair"
+  ],
+  "system-design": [
+    "Requirements",
+    "Capacity",
+    "API",
+    "Data",
+    "Architecture",
+    "Scale",
+    "Failure"
+  ],
+  "linux": [
+    "Shell",
+    "Process",
+    "File descriptors",
+    "Kernel",
+    "Hardware"
+  ],
+  "cloud": [
+    "API call",
+    "Control plane",
+    "Hypervisor / runtime",
+    "Hardware",
+    "Bill"
+  ],
+  "devops": [
+    "Commit",
+    "Build",
+    "Test",
+    "Deploy",
+    "SLI",
+    "Incident"
+  ],
+  "ai": [
+    "State",
+    "Search / knowledge",
+    "Action",
+    "Evaluate"
+  ],
+  "ml": [
+    "Data",
+    "Features",
+    "Model",
+    "Loss",
+    "Evaluate",
+    "Deploy"
+  ],
+  "deep-learning": [
+    "Input",
+    "Layers",
+    "Activations",
+    "Loss",
+    "Backprop",
+    "Updated weights"
+  ],
+  "llm": [
+    "Tokens",
+    "Embeddings",
+    "Attention",
+    "Next token",
+    "Tools / RAG"
+  ],
+  "graphics": [
+    "Vertices",
+    "Transforms",
+    "Rasterize",
+    "Shade",
+    "Framebuffer"
+  ],
+  "vision": [
+    "Pixels",
+    "Filters",
+    "Features",
+    "Heads (class / box / mask)"
+  ],
+  "nlp": [
+    "Text",
+    "Tokens",
+    "Embeddings",
+    "Sequence model",
+    "Label or generation"
+  ],
+  "ir": [
+    "Crawl",
+    "Index",
+    "Query",
+    "Retrieve",
+    "Rank"
+  ],
+  "parallel": [
+    "Work",
+    "Split across cores",
+    "Synchronize",
+    "Join"
+  ],
+  "robotics": [
+    "Sense",
+    "Localize",
+    "Plan",
+    "Act"
+  ],
+  "mobile": [
+    "Launch",
+    "Foreground",
+    "Background",
+    "Killed",
+    "Restore"
+  ],
+  "research": [
+    "Question",
+    "Related work",
+    "Method",
+    "Evidence",
+    "Threats"
+  ],
+  "interview": [
+    "Clarify",
+    "Approach",
+    "Code / diagram",
+    "Complexity",
+    "Follow-ups"
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "arrays": {
+    "time": "Index O(1); scan O(n)",
+    "space": "O(n)",
+    "tradeoffs": [
+      "Best locality",
+      "Insert/delete in the middle is O(n)"
+    ]
+  },
+  "linked-lists": {
+    "time": "Access O(n); insert at known node O(1)",
+    "space": "O(n)",
+    "tradeoffs": [
+      "Flexible size",
+      "Pointer chasing, no binary search"
+    ]
+  },
+  "stack-ds": {
+    "time": "Push/pop O(1)",
+    "space": "O(n)",
+    "tradeoffs": [
+      "Simple",
+      "No random access"
+    ]
+  },
+  "queue": {
+    "time": "Enqueue/dequeue O(1)",
+    "space": "O(n)",
+    "tradeoffs": [
+      "Fair order",
+      "No interior deletes"
+    ]
+  },
+  "hash-tables": {
+    "time": "Average O(1); worst O(n)",
+    "space": "O(n)",
+    "tradeoffs": [
+      "Fast exact lookup",
+      "No order; hash quality matters"
+    ]
+  },
+  "bst": {
+    "time": "O(h); O(log n) if balanced",
+    "space": "O(n)",
+    "tradeoffs": [
+      "Ordered ops",
+      "Must stay balanced"
+    ]
+  },
+  "heaps": {
+    "time": "Insert/extract O(log n); peek O(1)",
+    "space": "O(n)",
+    "tradeoffs": [
+      "Priority ops",
+      "No arbitrary find"
+    ]
+  },
+  "graphs": {
+    "time": "Typically O(V+E) to walk",
+    "space": "O(V+E)",
+    "tradeoffs": [
+      "Adj list for sparse; matrix for dense"
+    ]
+  },
+  "bfs": {
+    "time": "O(V+E)",
+    "space": "O(V)",
+    "tradeoffs": [
+      "Unweighted shortest path",
+      "Not for positive weights"
+    ]
+  },
+  "dfs": {
+    "time": "O(V+E)",
+    "space": "O(V) stack",
+    "tradeoffs": [
+      "Cycle / topology / components",
+      "Not shortest path"
+    ]
+  },
+  "dijkstra": {
+    "time": "O((V+E) log V)",
+    "space": "O(V)",
+    "tradeoffs": [
+      "Nonnegative weights",
+      "No negatives"
+    ]
+  },
+  "sorting": {
+    "time": "O(n log n) comparison",
+    "space": "O(1)–O(n)",
+    "tradeoffs": [
+      "Stability vs in-place vs worst-case"
+    ]
+  },
+  "binary-search": {
+    "time": "O(log n)",
+    "space": "O(1)",
+    "tradeoffs": [
+      "Needs sorted / monotonic input"
+    ]
+  },
+  "dynamic-programming": {
+    "time": "States × transitions",
+    "space": "Often O(states); sometimes rolling",
+    "tradeoffs": [
+      "Polynomial vs exponential naive",
+      "Must prove substructure"
+    ]
+  },
+  "tries": {
+    "time": "O(length)",
+    "space": "O(alphabet × nodes)",
+    "tradeoffs": [
+      "Prefix ops",
+      "Memory vs hash maps"
+    ]
+  }
+}
