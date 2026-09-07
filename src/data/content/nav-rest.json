@@ -303,7 +303,8 @@
     "related": [
       "2nf"
     ],
-    "next": "2nf"
+    "next": "2nf",
+    "viz": "normalization-stepper"
   },
   {
     "slug": "2nf",
@@ -317,7 +318,8 @@
     "related": [
       "3nf"
     ],
-    "next": "3nf"
+    "next": "3nf",
+    "viz": "normalization-stepper"
   },
   {
     "slug": "3nf",
@@ -331,7 +333,8 @@
     "related": [
       "bcnf"
     ],
-    "next": "bcnf"
+    "next": "bcnf",
+    "viz": "normalization-stepper"
   },
   {
     "slug": "bcnf",
@@ -345,7 +348,8 @@
     "related": [
       "normalization"
     ],
-    "next": "query-optimization"
+    "next": "query-optimization",
+    "viz": "normalization-stepper"
   },
   {
     "slug": "query-optimization",
@@ -476,7 +480,8 @@
     "related": [
       "partitioning"
     ],
-    "next": "partitioning"
+    "next": "partitioning",
+    "viz": "consistent-hashing"
   },
   {
     "slug": "partitioning",
@@ -504,7 +509,8 @@
     "related": [
       "document-stores"
     ],
-    "next": "document-stores"
+    "next": "document-stores",
+    "viz": "hash-collisions"
   },
   {
     "slug": "document-stores",

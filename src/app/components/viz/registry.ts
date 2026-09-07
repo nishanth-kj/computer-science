@@ -1,28 +1,8 @@
 import { Component, input } from "@angular/core";
-import { AlgorithmVisualizer, BstExplorer, DijkstraViz, GraphSearch, HashCollisions, StackQueue } from "./dsa-labs";
-import { DnsSimulator, HttpSimulator, OsiExplorer, RoutingSim, TcpSimulator } from "./network-labs";
-import {
-  CpuPipelineViz,
-  CpuScheduler,
-  DeadlockSim,
-  MemoryMap,
-  PageReplacement,
-  PagingSim,
-  ProcessStates,
-} from "./os-labs";
-import {
-  BPlusTreeViz,
-  CacheSim,
-  CompilerExplorer,
-  ConsistentHashViz,
-  DfaSim,
-  LeaderElection,
-  LinuxTerminal,
-  LoadBalancerViz,
-  NeuralNetViz,
-  SqlPlayground,
-  TransactionIso,
-} from "./systems-labs";
+import { HashCollisions } from "./dsa-labs";
+import { DnsSimulator, HttpSimulator, NetworkTopologyExplorer, OsiExplorer, PacketHeaderInspector, RoutingSim, TcpSimulator } from "./network-labs";
+import { CpuScheduler, DeadlockSim, MemoryMap, PageReplacement, PagingSim, ProcessStates, SyncRaceDemo } from "./os-labs";
+import { BPlusTreeViz, ConsistentHashViz, NormalizationStepper, SqlPlayground, TransactionIso } from "./systems-labs";
 
 @Component({
   selector: "cs-viz",
@@ -32,30 +12,21 @@ import {
     DnsSimulator,
     HttpSimulator,
     RoutingSim,
-    AlgorithmVisualizer,
-    BstExplorer,
-    GraphSearch,
-    DijkstraViz,
     HashCollisions,
-    StackQueue,
     CpuScheduler,
     ProcessStates,
     PagingSim,
     PageReplacement,
     DeadlockSim,
-    CpuPipelineViz,
     MemoryMap,
     SqlPlayground,
     BPlusTreeViz,
     TransactionIso,
-    CacheSim,
-    LoadBalancerViz,
     ConsistentHashViz,
-    LeaderElection,
-    CompilerExplorer,
-    DfaSim,
-    NeuralNetViz,
-    LinuxTerminal,
+    NetworkTopologyExplorer,
+    PacketHeaderInspector,
+    SyncRaceDemo,
+    NormalizationStepper,
   ],
   template: `
     <div class="my-4">
@@ -75,23 +46,8 @@ import {
         @case ("routing-simulator") {
           <cs-routing />
         }
-        @case ("algorithm-visualizer") {
-          <cs-algo />
-        }
-        @case ("bst-explorer") {
-          <cs-bst />
-        }
-        @case ("graph-search") {
-          <cs-graph-search />
-        }
-        @case ("dijkstra") {
-          <cs-dijkstra />
-        }
         @case ("hash-collisions") {
           <cs-hash />
-        }
-        @case ("stack-queue") {
-          <cs-stack-queue />
         }
         @case ("cpu-scheduler") {
           <cs-cpu-sched />
@@ -108,9 +64,6 @@ import {
         @case ("deadlock-simulator") {
           <cs-deadlock />
         }
-        @case ("cpu-pipeline") {
-          <cs-cpu-pipe />
-        }
         @case ("memory-map") {
           <cs-memory />
         }
@@ -123,29 +76,20 @@ import {
         @case ("transaction-simulator") {
           <cs-tx />
         }
-        @case ("cache-simulator") {
-          <cs-cache />
-        }
-        @case ("load-balancer") {
-          <cs-lb />
-        }
         @case ("consistent-hashing") {
           <cs-hash-ring />
         }
-        @case ("distributed-simulator") {
-          <cs-leader />
+        @case ("network-topology-explorer") {
+          <cs-net-topology />
         }
-        @case ("compiler-explorer") {
-          <cs-compiler />
+        @case ("packet-header-inspector") {
+          <cs-packet-header />
         }
-        @case ("dfa-simulator") {
-          <cs-dfa />
+        @case ("sync-race-demo") {
+          <cs-sync-race />
         }
-        @case ("neural-net") {
-          <cs-nn />
-        }
-        @case ("linux-terminal") {
-          <cs-linux />
+        @case ("normalization-stepper") {
+          <cs-normalize />
         }
       }
     </div>

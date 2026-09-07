@@ -175,3 +175,181 @@ export class RoutingSim {
     return dest.startsWith("10.1.4") ? "R3" : dest.startsWith("10.1") ? "R2" : dest.startsWith("10.0") ? "R1" : "ISP";
   }
 }
+
+type Device = { id: string; label: string; layer: string; color: string; desc: string };
+const DEVICES: Device[] = [
+  { id: "repeater", label: "Repeater", layer: "L1 Physical", color: "bg-layer-phy", desc: "Amplifies or retimes a signal to extend a physical segment's reach. No addressing — just physics." },
+  { id: "hub", label: "Hub", layer: "L1 Physical", color: "bg-layer-phy", desc: "A physical-layer repeater with multiple ports: every bit in is repeated out every other port. The whole hub is one collision domain." },
+  { id: "modem", label: "Modem", layer: "L1 Physical", color: "bg-layer-phy", desc: "Modulator-demodulator: converts digital bits to an analog carrier signal (and back) over phone line, cable, or fiber." },
+  { id: "bridge", label: "Bridge", layer: "L2 Data Link", color: "bg-layer-dl", desc: "Connects two L2 segments and learns which MAC addresses live on which side, forwarding only when needed. A switch is a multi-port bridge." },
+  { id: "switch", label: "Switch", layer: "L2 Data Link", color: "bg-layer-dl", desc: "Learns MAC addresses per port, forwards frames only to the port that needs them, and gives each port its own collision domain." },
+  { id: "access-point", label: "Access Point", layer: "L2 Data Link", color: "bg-layer-dl", desc: "Bridges wireless stations to a wired LAN, handling association, authentication, and radio-to-Ethernet framing." },
+  { id: "router", label: "Router", layer: "L3 Network", color: "bg-layer-net", desc: "Forwards packets between different subnets using a routing table and IP addresses, not MAC addresses." },
+  { id: "gateway", label: "Gateway", layer: "L3 Network", color: "bg-layer-net", desc: "A node that translates between two different networks or protocols — often just another name for 'the router' at a network's edge." },
+  { id: "firewall", label: "Firewall", layer: "Policy (L3–L4)", color: "bg-layer-trans", desc: "Filters, blocks, or NATs traffic by rule. Can be a dedicated box, or software running on a host or router." },
+];
+
+@Component({
+  selector: "cs-net-topology",
+  template: `
+    <div class="rounded-xl border border-border bg-surface p-3">
+      <p class="mb-3 text-sm text-muted">Click a device to see what it does and which layer it operates at.</p>
+      <div class="flex flex-wrap gap-2">
+        @for (d of devices; track d.id) {
+          <button
+            type="button"
+            class="rounded-md px-3 py-2 text-left text-[#0c0e11] transition-opacity"
+            [class]="d.color"
+            [class.opacity-100]="selected().id === d.id"
+            [class.opacity-70]="selected().id !== d.id"
+            (click)="select(d)"
+          >
+            <span class="block text-sm font-medium">{{ d.label }}</span>
+            <span class="block font-mono text-[10px] opacity-80">{{ d.layer }}</span>
+          </button>
+        }
+      </div>
+      <div class="mt-4 rounded-lg border border-border bg-bg p-4">
+        <p class="font-mono text-[11px] text-muted">{{ selected().layer }}</p>
+        <h3 class="font-display text-xl text-fg">{{ selected().label }}</h3>
+        <p class="mt-2 text-sm leading-relaxed text-muted">{{ selected().desc }}</p>
+      </div>
+    </div>
+  `,
+})
+export class NetworkTopologyExplorer {
+  readonly devices = DEVICES;
+  readonly selected = signal<Device>(DEVICES[0]);
+  select(d: Device) {
+    this.selected.set(d);
+  }
+}
+
+type HeaderField = { name: string; bytes: number; variable?: boolean; desc: string };
+const PROTOCOLS: Record<string, { title: string; fields: HeaderField[] }> = {
+  ipv4: {
+    title: "IPv4 header (20 bytes)",
+    fields: [
+      { name: "Version / IHL", bytes: 1, desc: "IP version (4) and header length in 32-bit words — usually 5 (20 bytes) with no options." },
+      { name: "DSCP / ECN", bytes: 1, desc: "Differentiated services (QoS marking) and explicit congestion notification." },
+      { name: "Total Length", bytes: 2, desc: "Length of the whole packet — header plus data — in bytes." },
+      { name: "Identification", bytes: 2, desc: "Identifies which fragments belong to the same original datagram." },
+      { name: "Flags / Fragment Offset", bytes: 2, desc: "Fragmentation control (Don't Fragment, More Fragments) and the fragment's offset." },
+      { name: "TTL", bytes: 1, desc: "Time to live: decremented at every hop; the datagram is dropped when it hits 0." },
+      { name: "Protocol", bytes: 1, desc: "Which transport protocol follows: 6 = TCP, 17 = UDP, 1 = ICMP." },
+      { name: "Header Checksum", bytes: 2, desc: "Checksum over the header only — recomputed at every hop since TTL changes." },
+      { name: "Source IP", bytes: 4, desc: "32-bit address of the sender." },
+      { name: "Destination IP", bytes: 4, desc: "32-bit address of the receiver." },
+    ],
+  },
+  ipv6: {
+    title: "IPv6 header (40 bytes, fixed)",
+    fields: [
+      { name: "Version / Traffic Class / Flow Label", bytes: 4, desc: "Version (6), QoS traffic class, and a flow label for routers to keep packets of one flow together." },
+      { name: "Payload Length", bytes: 2, desc: "Length of the payload that follows the header, in bytes." },
+      { name: "Next Header", bytes: 1, desc: "Which header or protocol follows — plays the role IPv4's Protocol field does." },
+      { name: "Hop Limit", bytes: 1, desc: "IPv6's name for TTL: decremented per hop, packet dropped at 0." },
+      { name: "Source Address", bytes: 16, desc: "128-bit address of the sender." },
+      { name: "Destination Address", bytes: 16, desc: "128-bit address of the receiver." },
+    ],
+  },
+  ethernet: {
+    title: "Ethernet II frame",
+    fields: [
+      { name: "Preamble", bytes: 7, desc: "Alternating 1010… bits so the receiver's clock can sync. Not counted as frame data." },
+      { name: "SFD", bytes: 1, desc: "Start Frame Delimiter: marks where the actual frame begins." },
+      { name: "Destination MAC", bytes: 6, desc: "48-bit hardware address of the intended receiver on this link." },
+      { name: "Source MAC", bytes: 6, desc: "48-bit hardware address of the sender on this link." },
+      { name: "EtherType", bytes: 2, desc: "Identifies the payload's protocol — 0x0800 = IPv4, 0x86DD = IPv6, 0x0806 = ARP." },
+      { name: "Payload", bytes: 20, variable: true, desc: "The data being carried — commonly an IP packet. 46–1500 bytes." },
+      { name: "FCS", bytes: 4, desc: "Frame Check Sequence: a CRC-32 checksum used to detect corruption." },
+    ],
+  },
+  arp: {
+    title: "ARP packet (28 bytes, Ethernet + IPv4)",
+    fields: [
+      { name: "Hardware Type", bytes: 2, desc: "Link-layer type; 1 = Ethernet." },
+      { name: "Protocol Type", bytes: 2, desc: "Network-layer protocol being resolved; 0x0800 = IPv4." },
+      { name: "HW Addr Len", bytes: 1, desc: "Length of a hardware address — 6 for MAC." },
+      { name: "Proto Addr Len", bytes: 1, desc: "Length of a protocol address — 4 for IPv4." },
+      { name: "Operation", bytes: 2, desc: "1 = request ('who has this IP?'), 2 = reply ('here is my MAC')." },
+      { name: "Sender MAC", bytes: 6, desc: "MAC address of the machine sending the ARP packet." },
+      { name: "Sender IP", bytes: 4, desc: "IP address of the machine sending the ARP packet." },
+      { name: "Target MAC", bytes: 6, desc: "MAC address of the target — all zero in a request, since that's what's being asked for." },
+      { name: "Target IP", bytes: 4, desc: "IP address being resolved to a MAC address." },
+    ],
+  },
+  icmp: {
+    title: "ICMP echo (ping) message",
+    fields: [
+      { name: "Type", bytes: 1, desc: "8 = echo request, 0 = echo reply, 3 = destination unreachable, 11 = time exceeded." },
+      { name: "Code", bytes: 1, desc: "A subtype that refines the Type field's meaning." },
+      { name: "Checksum", bytes: 2, desc: "Checksum over the whole ICMP message." },
+      { name: "Identifier", bytes: 2, desc: "Matches replies to requests, e.g. per running instance of ping." },
+      { name: "Sequence Number", bytes: 2, desc: "Increments with every echo request, so replies can be matched and timed." },
+      { name: "Data", bytes: 12, variable: true, desc: "Payload echoed back unchanged — often a timestamp, used to measure round-trip time." },
+    ],
+  },
+  udp: {
+    title: "UDP header (8 bytes) + data",
+    fields: [
+      { name: "Source Port", bytes: 2, desc: "The sending application's port — often ephemeral." },
+      { name: "Destination Port", bytes: 2, desc: "The receiving application's well-known or registered port." },
+      { name: "Length", bytes: 2, desc: "Length of the UDP header plus data, in bytes." },
+      { name: "Checksum", bytes: 2, desc: "Optional in IPv4, mandatory in IPv6 — covers header and data." },
+      { name: "Data", bytes: 20, variable: true, desc: "The application payload. No reliability, ordering, or congestion control." },
+    ],
+  },
+};
+
+@Component({
+  selector: "cs-packet-header",
+  template: `
+    <div class="rounded-xl border border-border bg-surface p-3">
+      <select class="mb-3 h-8 rounded-sm border border-border bg-bg px-2 text-xs" [value]="protoId()" (change)="setProto($any($event.target).value)">
+        @for (id of protoIds; track id) {
+          <option [value]="id">{{ protocols[id].title }}</option>
+        }
+      </select>
+      <div class="flex flex-wrap gap-0.5">
+        @for (f of proto().fields; track f.name; let i = $index) {
+          <button
+            type="button"
+            class="rounded-sm border px-2 py-2 text-left"
+            [style.flex-grow]="f.bytes"
+            [style.flex-basis.px]="f.bytes * 10"
+            [class.border-primary]="selected() === i"
+            [class.bg-primary/15]="selected() === i"
+            [class.border-border]="selected() !== i"
+            [class.bg-bg]="selected() !== i"
+            [class.border-dashed]="f.variable"
+            (click)="selected.set(i)"
+          >
+            <span class="block truncate text-[11px] font-medium">{{ f.name }}</span>
+            <span class="block font-mono text-[10px] text-muted">{{ f.variable ? "variable" : f.bytes + " B" }}</span>
+          </button>
+        }
+      </div>
+      <div class="mt-3 rounded-lg border border-border bg-bg p-3">
+        <p class="text-sm font-medium">{{ field().name }}</p>
+        <p class="mt-1 text-sm leading-relaxed text-muted">{{ field().desc }}</p>
+      </div>
+    </div>
+  `,
+})
+export class PacketHeaderInspector {
+  readonly protocols = PROTOCOLS;
+  readonly protoIds = Object.keys(PROTOCOLS);
+  readonly protoId = signal("ipv4");
+  readonly selected = signal(0);
+  proto() {
+    return this.protocols[this.protoId()];
+  }
+  field() {
+    return this.proto().fields[Math.min(this.selected(), this.proto().fields.length - 1)];
+  }
+  setProto(id: string) {
+    this.protoId.set(id);
+    this.selected.set(0);
+  }
+}

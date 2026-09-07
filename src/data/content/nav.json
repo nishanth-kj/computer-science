@@ -243,7 +243,8 @@
       "critical-sections",
       "mutex"
     ],
-    "next": "critical-sections"
+    "next": "critical-sections",
+    "viz": "sync-race-demo"
   },
   {
     "slug": "critical-sections",
@@ -258,7 +259,8 @@
       "mutex",
       "semaphore"
     ],
-    "next": "mutex"
+    "next": "mutex",
+    "viz": "sync-race-demo"
   },
   {
     "slug": "mutex",
@@ -273,7 +275,8 @@
       "semaphore",
       "deadlocks"
     ],
-    "next": "semaphore"
+    "next": "semaphore",
+    "viz": "sync-race-demo"
   },
   {
     "slug": "semaphore",
@@ -288,7 +291,8 @@
       "monitors",
       "deadlocks"
     ],
-    "next": "monitors"
+    "next": "monitors",
+    "viz": "sync-race-demo"
   },
   {
     "slug": "monitors",
@@ -302,7 +306,8 @@
     "related": [
       "semaphore"
     ],
-    "next": "deadlocks"
+    "next": "deadlocks",
+    "viz": "sync-race-demo"
   },
   {
     "slug": "deadlocks",
@@ -425,7 +430,8 @@
       "page-tables",
       "page-replacement"
     ],
-    "next": "page-tables"
+    "next": "page-tables",
+    "viz": "memory-map"
   },
   {
     "slug": "page-tables",
@@ -631,7 +637,8 @@
       "lan",
       "osi-model"
     ],
-    "next": "lan"
+    "next": "lan",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "lan",
@@ -646,7 +653,8 @@
       "wan",
       "ethernet"
     ],
-    "next": "wan"
+    "next": "wan",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "wan",
@@ -661,7 +669,8 @@
       "lan",
       "routing"
     ],
-    "next": "man"
+    "next": "man",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "man",
@@ -675,7 +684,8 @@
     "related": [
       "wan"
     ],
-    "next": "pan"
+    "next": "pan",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "pan",
@@ -689,7 +699,8 @@
     "related": [
       "lan"
     ],
-    "next": "network-topology"
+    "next": "network-topology",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "network-topology",
@@ -704,7 +715,8 @@
       "switch",
       "router"
     ],
-    "next": "client-server"
+    "next": "client-server",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "client-server",
@@ -719,7 +731,8 @@
       "peer-to-peer",
       "http"
     ],
-    "next": "peer-to-peer"
+    "next": "peer-to-peer",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "peer-to-peer",
@@ -731,7 +744,8 @@
       "client-server"
     ],
     "related": [],
-    "next": "network-devices"
+    "next": "network-devices",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "network-devices",
@@ -747,7 +761,8 @@
       "switch",
       "router"
     ],
-    "next": "hub"
+    "next": "hub",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "hub",
@@ -762,7 +777,8 @@
       "switch",
       "repeater"
     ],
-    "next": "switch"
+    "next": "switch",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "switch",
@@ -778,7 +794,8 @@
       "bridge",
       "vlan"
     ],
-    "next": "router"
+    "next": "router",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "router",
@@ -794,7 +811,8 @@
       "routing",
       "gateway"
     ],
-    "next": "bridge"
+    "next": "bridge",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "bridge",
@@ -808,7 +826,8 @@
     "related": [
       "switch"
     ],
-    "next": "gateway"
+    "next": "gateway",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "gateway",
@@ -823,7 +842,8 @@
       "nat",
       "firewall"
     ],
-    "next": "repeater"
+    "next": "repeater",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "repeater",
@@ -837,7 +857,8 @@
     "related": [
       "hub"
     ],
-    "next": "modem"
+    "next": "modem",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "modem",
@@ -851,7 +872,8 @@
     "related": [
       "signals"
     ],
-    "next": "access-point"
+    "next": "access-point",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "access-point",
@@ -865,7 +887,8 @@
     "related": [
       "wifi"
     ],
-    "next": "firewall"
+    "next": "firewall",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "firewall",
@@ -878,7 +901,8 @@
       "nat",
       "router"
     ],
-    "next": "osi-model"
+    "next": "osi-model",
+    "viz": "network-topology-explorer"
   },
   {
     "slug": "osi-model",
@@ -1176,7 +1200,8 @@
       "mac-addresses",
       "ethernet"
     ],
-    "next": "mac-addresses"
+    "next": "mac-addresses",
+    "viz": "packet-header-inspector"
   },
   {
     "slug": "mac-addresses",
@@ -1191,7 +1216,8 @@
       "ethernet",
       "arp"
     ],
-    "next": "ethernet"
+    "next": "ethernet",
+    "viz": "packet-header-inspector"
   },
   {
     "slug": "ethernet",
@@ -1207,7 +1233,8 @@
       "switching",
       "vlan"
     ],
-    "next": "switching"
+    "next": "switching",
+    "viz": "packet-header-inspector"
   },
   {
     "slug": "switching",
@@ -1239,7 +1266,8 @@
       "ipv4",
       "ethernet"
     ],
-    "next": "error-detection"
+    "next": "error-detection",
+    "viz": "packet-header-inspector"
   },
   {
     "slug": "error-detection",
@@ -1299,7 +1327,8 @@
       "subnetting",
       "nat"
     ],
-    "next": "ipv6"
+    "next": "ipv6",
+    "viz": "packet-header-inspector"
   },
   {
     "slug": "ipv6",
@@ -1313,7 +1342,8 @@
     "related": [
       "ipv4"
     ],
-    "next": "subnetting"
+    "next": "subnetting",
+    "viz": "packet-header-inspector"
   },
   {
     "slug": "subnetting",
@@ -1374,7 +1404,8 @@
     "related": [
       "ipv4"
     ],
-    "next": "nat"
+    "next": "nat",
+    "viz": "packet-header-inspector"
   },
   {
     "slug": "nat",
@@ -1436,7 +1467,8 @@
       "tcp",
       "ports"
     ],
-    "next": "ports"
+    "next": "ports",
+    "viz": "packet-header-inspector"
   },
   {
     "slug": "ports",

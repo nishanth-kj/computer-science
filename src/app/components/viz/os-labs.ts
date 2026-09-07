@@ -269,34 +269,6 @@ export class DeadlockSim {
   readonly sim = useSim(DEAD.length - 1);
 }
 
-const PIPE = ["Fetch", "Decode", "Execute", "Memory", "Writeback"];
-const INSTR = ["ld r1", "add r2", "st r1", "bne", "nop"];
-
-@Component({
-  selector: "cs-cpu-pipe",
-  imports: [SimShell],
-  template: `
-    <cs-sim-shell title="5-stage pipeline" [sim]="sim">
-      <div class="grid grid-cols-5 gap-1">
-        @for (p of pipe; track p; let i = $index) {
-          <div class="rounded-md border border-border bg-bg p-2">
-            <p class="font-mono text-[10px] text-muted">{{ p }}</p>
-            <p class="text-sm">{{ slot(i) }}</p>
-          </div>
-        }
-      </div>
-    </cs-sim-shell>
-  `,
-})
-export class CpuPipelineViz {
-  readonly pipe = PIPE;
-  readonly sim = useSim(8, 3);
-  slot(i: number) {
-    const idx = this.sim.step() - i;
-    return idx >= 0 && idx < INSTR.length ? INSTR[idx] : "—";
-  }
-}
-
 @Component({
   selector: "cs-memory",
   template: `
@@ -357,5 +329,69 @@ export class MemoryMap {
     this.frames.set([{ name: "main", locals: ["argc", "argv"] }]);
     this.heap.set([{ id: "h0", label: "config {}" }]);
     this.n.set(1);
+  }
+}
+
+type RaceFrame = { thread: "T1" | "T2" | null; action: string; counter: number; regT1: number | null; regT2: number | null; note: string };
+
+const RACY: RaceFrame[] = [
+  { thread: null, action: "start", counter: 0, regT1: null, regT2: null, note: "Both threads run counter++ twice. No lock." },
+  { thread: "T1", action: "read counter → r1", counter: 0, regT1: 0, regT2: null, note: "T1 reads counter into its register." },
+  { thread: "T2", action: "read counter → r2", counter: 0, regT1: 0, regT2: 0, note: "T2 reads counter before T1 writes back — both have 0." },
+  { thread: "T1", action: "write r1+1 → counter", counter: 1, regT1: 0, regT2: 0, note: "T1 writes back 1." },
+  { thread: "T2", action: "write r2+1 → counter", counter: 1, regT1: 0, regT2: 0, note: "T2 writes back 1 too — from its stale r2=0. T1's update is overwritten." },
+  { thread: "T1", action: "read counter → r1", counter: 1, regT1: 1, regT2: 0, note: "T1's second increment begins." },
+  { thread: "T2", action: "read counter → r2", counter: 1, regT1: 1, regT2: 1, note: "T2 reads before T1 writes back — race again." },
+  { thread: "T1", action: "write r1+1 → counter", counter: 2, regT1: 1, regT2: 1, note: "T1 writes back 2." },
+  { thread: "T2", action: "write r2+1 → counter", counter: 2, regT1: 1, regT2: 1, note: "Final: counter = 2, but 4 increments were attempted. Two were lost to the race." },
+];
+
+const LOCKED: RaceFrame[] = [
+  { thread: null, action: "start", counter: 0, regT1: null, regT2: null, note: "Both threads run counter++ twice, each increment holding a mutex." },
+  { thread: "T1", action: "lock, read counter → r1", counter: 0, regT1: 0, regT2: null, note: "T1 acquires the mutex before touching the counter." },
+  { thread: "T1", action: "write r1+1 → counter, unlock", counter: 1, regT1: 0, regT2: null, note: "T1 writes back 1 and releases the lock." },
+  { thread: "T2", action: "lock, read counter → r2", counter: 1, regT1: 0, regT2: 1, note: "T2 could not run until T1 unlocked — no stale read." },
+  { thread: "T2", action: "write r2+1 → counter, unlock", counter: 2, regT1: 0, regT2: 1, note: "T2 writes back 2 and releases the lock." },
+  { thread: "T1", action: "lock, read counter → r1", counter: 2, regT1: 2, regT2: 1, note: "T1's second increment begins, sees the up-to-date value." },
+  { thread: "T1", action: "write r1+1 → counter, unlock", counter: 3, regT1: 2, regT2: 1, note: "T1 writes back 3." },
+  { thread: "T2", action: "lock, read counter → r2", counter: 3, regT1: 2, regT2: 3, note: "T2's second increment begins." },
+  { thread: "T2", action: "write r2+1 → counter, unlock", counter: 4, regT1: 2, regT2: 3, note: "Final: counter = 4 — correct. Mutual exclusion serialized every read-modify-write." },
+];
+
+@Component({
+  selector: "cs-sync-race",
+  imports: [SimShell],
+  template: `
+    <cs-sim-shell title="Shared counter: race vs. mutex" [sim]="sim">
+      <select extra class="h-8 rounded-sm border border-border bg-bg px-2 text-xs" [value]="locked() ? 'lock' : 'race'" (change)="setLocked($any($event.target).value === 'lock')">
+        <option value="race">No lock (racy)</option>
+        <option value="lock">With mutex</option>
+      </select>
+      <div class="grid grid-cols-2 gap-3 text-sm">
+        <div class="rounded-md border p-3" [class.border-primary]="f().thread === 'T1'" [class.border-border]="f().thread !== 'T1'">
+          <p class="font-medium">T1</p>
+          <p class="font-mono text-xs text-muted">r1 = {{ f().regT1 ?? "—" }}</p>
+        </div>
+        <div class="rounded-md border p-3" [class.border-primary]="f().thread === 'T2'" [class.border-border]="f().thread !== 'T2'">
+          <p class="font-medium">T2</p>
+          <p class="font-mono text-xs text-muted">r2 = {{ f().regT2 ?? "—" }}</p>
+        </div>
+      </div>
+      <p class="mt-3 text-center font-mono text-3xl text-fg">{{ f().counter }}</p>
+      <p class="text-center text-xs text-muted">shared counter</p>
+      <p class="mt-3 text-sm text-muted">{{ f().thread ? f().thread + ": " : "" }}{{ f().action }}. {{ f().note }}</p>
+    </cs-sim-shell>
+  `,
+})
+export class SyncRaceDemo {
+  readonly locked = signal(false);
+  readonly frames = computed(() => (this.locked() ? LOCKED : RACY));
+  readonly sim = useSim(() => this.frames().length - 1);
+  f() {
+    return this.frames()[Math.min(this.sim.step(), this.frames().length - 1)];
+  }
+  setLocked(v: boolean) {
+    this.locked.set(v);
+    this.sim.reset();
   }
 }
