@@ -48,7 +48,7 @@
       </div>
     </div>
     <div class="hero__panel" aria-label="Curriculum spine">
-      <p class="kicker">The spine</p>
+      <p class="kicker">{{ phase.title }} · The spine</p>
       <ol>
         @for (g of featured; track g.id) {
           <li>
@@ -101,9 +101,9 @@
 
   <section class="block">
     <header class="block__head">
-      <p class="kicker">Catalog</p>
-      <h2>The field, laid out.</h2>
-      <p>Ten neighborhoods. Open one and keep walking.</p>
+      <p class="kicker">{{ phase.title }}</p>
+      <h2>{{ phase.subtitle }}.</h2>
+      <p>{{ phase.blurb }} <a [routerLink]="'/' + phase.id" class="text-link hover:underline">See the whole phase &rarr;</a></p>
     </header>
     <div class="mosaic">
       @for (g of featured; track g.id; let i = $index) {

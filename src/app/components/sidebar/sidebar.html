@@ -8,6 +8,14 @@
     />
   </div>
   <nav class="sidebar__nav scroll" aria-label="Library">
+    @if (phase && !q()) {
+      <a
+        [routerLink]="'/' + phase.id"
+        class="block px-2 pt-1 pb-1 font-mono text-[11px] tracking-wider text-subtle uppercase hover:text-fg"
+        (click)="navigated.emit()"
+        >{{ phase.title }} &middot; {{ phase.subtitle }}</a
+      >
+    }
     @for (group of groups(); track group.id) {
       <div class="mb-3">
         @if (group.showTitle) {
@@ -25,7 +33,7 @@
                 <span [class.rotate-90]="b.open" class="inline-flex transition-transform"><cs-icon name="chevron" /></span>
               </button>
               <a
-                [routerLink]="'/' + b.id"
+                [routerLink]="topicHref(b.id)"
                 class="flex min-h-10 min-w-0 flex-1 items-center rounded-md px-1.5 text-sm hover:bg-surface-2"
                 [class.bg-surface-2]="current() === b.id"
                 [class.text-fg]="current() === b.id"

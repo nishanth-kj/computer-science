@@ -4,6 +4,14 @@ import path from "node:path";
 const ORIGIN = (process.env.SITE_ORIGIN || "https://neuro-kodes.github.io/computer-science").replace(/\/$/, "");
 const sectionGroups = JSON.parse(fs.readFileSync("src/data/content/section-groups.json", "utf8"));
 const PROGRAMMING = new Set(sectionGroups.find((g) => g.id === "programming")?.sections ?? []);
+const phases = JSON.parse(fs.readFileSync("src/data/content/phases.json", "utf8"));
+const sectionMeta = Object.fromEntries(
+  JSON.parse(fs.readFileSync("src/data/content/sections.json", "utf8")).map((s) => [s.id, s]),
+);
+
+function sectionTitle(id) {
+  return sectionMeta[id]?.title ?? id.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 function parseNav(file) {
   return JSON.parse(fs.readFileSync(file, "utf8"));
@@ -47,7 +55,7 @@ const staticPages = [
   {
     path: "/library",
     title: "Library · CS",
-    desc: "The full computer science catalog covering networking, operating systems, and databases in depth.",
+    desc: "The full computer science catalog covering programming, operating systems, databases, and networking in depth.",
     h1: "Library",
   },
   {
@@ -81,6 +89,24 @@ const staticPages = [
     h1: "Contact Us",
   },
 ];
+
+// Phase pages and multi-section group hubs (for example /programming) are real routes too.
+staticPages.push(
+  ...phases.map((p) => ({
+    path: `/${p.id}`,
+    title: `${p.title} · ${p.subtitle} · CS`,
+    desc: p.blurb,
+    h1: `${p.title}: ${p.subtitle}`,
+  })),
+  ...sectionGroups
+    .filter((g) => g.sections.length > 1)
+    .map((g) => ({
+      path: `/${g.id}`,
+      title: `${g.title} · CS`,
+      desc: g.sections.map(sectionTitle).join(", ") + ".",
+      h1: g.title,
+    })),
+);
 
 function escapeHtml(str) {
   return str
@@ -214,7 +240,7 @@ for (const s of sectionsList) {
   const routeDir = path.join("dist", routePath.replace(/^\//, ""));
   fs.mkdirSync(routeDir, { recursive: true });
 
-  const sTitle = s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const sTitle = sectionTitle(s);
   const title = `${sTitle} · Computer Science Handbook`;
   const desc = `In-depth curriculum and reference guide for ${sTitle}.`;
   const body = `
@@ -243,7 +269,7 @@ for (const t of navItems) {
   const routeDir = path.join("dist", routePath.replace(/^\//, ""));
   fs.mkdirSync(routeDir, { recursive: true });
 
-  const sTitle = t.section.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const sTitle = sectionTitle(t.section);
   const title = `${t.title} · ${sTitle} · CS`;
   const desc = t.summary;
   const canonicalUrl = `${ORIGIN}${routePath}`;

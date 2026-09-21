@@ -639,5 +639,735 @@
       "page-replacement"
     ],
     "next": "file-systems"
+  },
+  {
+    "slug": "what-is-programming",
+    "section": "fundamentals",
+    "title": "What is Programming?",
+    "summary": "Writing precise instructions a machine can execute, and choosing the data those instructions work on.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "compiled-vs-interpreted",
+      "processes"
+    ],
+    "next": "variables"
+  },
+  {
+    "slug": "variables",
+    "section": "fundamentals",
+    "title": "Variables",
+    "summary": "A name bound to a value in memory. Assignment rebinds or overwrites; scope decides where the name is visible.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-programming"
+    ],
+    "related": [
+      "pointers",
+      "stack-and-heap"
+    ],
+    "next": "data-types"
+  },
+  {
+    "slug": "data-types",
+    "section": "fundamentals",
+    "title": "Data Types",
+    "summary": "The kind of value: integers, floats, booleans, text, and collections. The type decides the operations, the memory, and the pitfalls.",
+    "level": "beginner",
+    "prereqs": [
+      "variables"
+    ],
+    "related": [
+      "type-systems",
+      "arrays",
+      "hash-tables"
+    ],
+    "next": "conditionals"
+  },
+  {
+    "slug": "conditionals",
+    "section": "fundamentals",
+    "title": "Conditionals",
+    "summary": "Branching: run one path or another based on a Boolean expression. The first decision a program can make.",
+    "level": "beginner",
+    "prereqs": [
+      "data-types"
+    ],
+    "related": [
+      "functions",
+      "error-handling"
+    ],
+    "next": "loops"
+  },
+  {
+    "slug": "loops",
+    "section": "fundamentals",
+    "title": "Loops",
+    "summary": "Repeat work while a condition holds or for each item in a collection. The source of both power and infinite loops.",
+    "level": "beginner",
+    "prereqs": [
+      "conditionals"
+    ],
+    "related": [
+      "recursion",
+      "arrays",
+      "big-o"
+    ],
+    "next": "functions"
+  },
+  {
+    "slug": "functions",
+    "section": "fundamentals",
+    "title": "Functions",
+    "summary": "A named, reusable computation with inputs (parameters) and an output (return value). The unit of abstraction and of testing.",
+    "level": "beginner",
+    "prereqs": [
+      "loops"
+    ],
+    "related": [
+      "stack-and-heap",
+      "error-handling"
+    ],
+    "next": "recursion"
+  },
+  {
+    "slug": "recursion",
+    "section": "fundamentals",
+    "title": "Recursion",
+    "summary": "A function that solves a problem by calling itself on a smaller piece. It needs a base case and progress toward it.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions"
+    ],
+    "related": [
+      "dfs",
+      "dynamic-programming",
+      "bst"
+    ],
+    "next": "stack-and-heap"
+  },
+  {
+    "slug": "stack-and-heap",
+    "section": "fundamentals",
+    "title": "Stack and Heap",
+    "summary": "Where a running program keeps its data: the fast, automatic call stack and the flexible, longer-lived heap.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions",
+      "recursion"
+    ],
+    "related": [
+      "garbage-collection",
+      "virtual-memory",
+      "processes"
+    ],
+    "next": "pointers",
+    "viz": "memory-map",
+    "lab": "memory-map"
+  },
+  {
+    "slug": "pointers",
+    "section": "fundamentals",
+    "title": "Pointers and References",
+    "summary": "A value that is a memory address. Pointers let code share, modify, and link data without copying it.",
+    "level": "intermediate",
+    "prereqs": [
+      "variables",
+      "stack-and-heap"
+    ],
+    "related": [
+      "arrays",
+      "linked-lists",
+      "c-language",
+      "virtual-memory"
+    ],
+    "next": "error-handling"
+  },
+  {
+    "slug": "error-handling",
+    "section": "fundamentals",
+    "title": "Error Handling",
+    "summary": "Deciding what a program does when something goes wrong: raise, return, retry, or stop — and always clean up.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions",
+      "conditionals"
+    ],
+    "related": [
+      "system-calls",
+      "http"
+    ],
+    "next": "testing-debugging"
+  },
+  {
+    "slug": "testing-debugging",
+    "section": "fundamentals",
+    "title": "Testing and Debugging",
+    "summary": "Checking behavior against expectations, and finding why it differs. Reproduce, hypothesize, observe, fix, lock in with a test.",
+    "level": "intermediate",
+    "prereqs": [
+      "error-handling"
+    ],
+    "related": [
+      "functions",
+      "system-calls"
+    ],
+    "next": "compiled-vs-interpreted"
+  },
+  {
+    "slug": "compiled-vs-interpreted",
+    "section": "languages",
+    "title": "Compiled vs Interpreted",
+    "summary": "How source text becomes behavior: translated ahead of time, executed by a program, or both. A property of implementations, not languages.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-programming"
+    ],
+    "related": [
+      "python",
+      "c-language",
+      "java",
+      "javascript"
+    ],
+    "next": "type-systems"
+  },
+  {
+    "slug": "type-systems",
+    "section": "languages",
+    "title": "Type Systems",
+    "summary": "The rules a language uses to classify values and reject nonsense: static or dynamic, nominal or structural, with or without inference.",
+    "level": "intermediate",
+    "prereqs": [
+      "data-types"
+    ],
+    "related": [
+      "typescript",
+      "python",
+      "java",
+      "c-language"
+    ],
+    "next": "garbage-collection"
+  },
+  {
+    "slug": "garbage-collection",
+    "section": "languages",
+    "title": "Garbage Collection",
+    "summary": "Automatic memory management: the runtime finds objects nothing can reach any more and reclaims them.",
+    "level": "intermediate",
+    "prereqs": [
+      "stack-and-heap"
+    ],
+    "related": [
+      "java",
+      "cpp",
+      "virtual-memory"
+    ],
+    "next": "python"
+  },
+  {
+    "slug": "python",
+    "section": "languages",
+    "title": "Python",
+    "summary": "A readable, dynamically typed, batteries-included language. Fast to write, slower to run, dominant for scripting, data, and glue.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-programming"
+    ],
+    "related": [
+      "compiled-vs-interpreted",
+      "type-systems",
+      "garbage-collection",
+      "functions"
+    ],
+    "next": "c-language"
+  },
+  {
+    "slug": "c-language",
+    "section": "languages",
+    "title": "C",
+    "summary": "A small, compiled language close to the hardware. Manual memory, pointers, and no safety net — the language operating systems are written in.",
+    "level": "intermediate",
+    "prereqs": [
+      "pointers"
+    ],
+    "related": [
+      "system-calls",
+      "virtual-memory",
+      "kernel"
+    ],
+    "next": "cpp"
+  },
+  {
+    "slug": "cpp",
+    "section": "languages",
+    "title": "C++",
+    "summary": "C plus abstractions with no run-time tax: classes, templates, and RAII. Powerful and large.",
+    "level": "intermediate",
+    "prereqs": [
+      "c-language"
+    ],
+    "related": [
+      "classes-objects",
+      "garbage-collection",
+      "polymorphism"
+    ],
+    "next": "java"
+  },
+  {
+    "slug": "java",
+    "section": "languages",
+    "title": "Java",
+    "summary": "A statically typed, class-based language that compiles to bytecode for the JVM. Portable, safe, and everywhere in back ends.",
+    "level": "intermediate",
+    "prereqs": [
+      "compiled-vs-interpreted"
+    ],
+    "related": [
+      "classes-objects",
+      "garbage-collection",
+      "threads",
+      "type-systems"
+    ],
+    "next": "javascript"
+  },
+  {
+    "slug": "javascript",
+    "section": "languages",
+    "title": "JavaScript",
+    "summary": "The language of the browser and, through Node.js, of servers. Dynamic, function-first, and single-threaded on an event loop.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions"
+    ],
+    "related": [
+      "http",
+      "websockets",
+      "compiled-vs-interpreted"
+    ],
+    "next": "typescript"
+  },
+  {
+    "slug": "typescript",
+    "section": "languages",
+    "title": "TypeScript",
+    "summary": "JavaScript with a static type system on top. The checker runs at build time and the types are erased before the code runs.",
+    "level": "intermediate",
+    "prereqs": [
+      "javascript",
+      "type-systems"
+    ],
+    "related": [
+      "polymorphism",
+      "java",
+      "compiled-vs-interpreted"
+    ],
+    "next": "classes-objects"
+  },
+  {
+    "slug": "classes-objects",
+    "section": "oop",
+    "title": "Classes and Objects",
+    "summary": "A class is a blueprint that bundles data with the operations on it; an object is one instance with its own state.",
+    "level": "beginner",
+    "prereqs": [
+      "functions",
+      "data-types"
+    ],
+    "related": [
+      "python",
+      "java",
+      "pointers"
+    ],
+    "next": "encapsulation"
+  },
+  {
+    "slug": "encapsulation",
+    "section": "oop",
+    "title": "Encapsulation",
+    "summary": "Hide an object's state behind a small interface so it can protect its own invariants.",
+    "level": "beginner",
+    "prereqs": [
+      "classes-objects"
+    ],
+    "related": [
+      "solid-principles",
+      "java",
+      "inheritance"
+    ],
+    "next": "abstraction"
+  },
+  {
+    "slug": "abstraction",
+    "section": "oop",
+    "title": "Abstraction and Interfaces",
+    "summary": "Depend on what something does, not how it does it. Interfaces name the behavior and hide the implementation.",
+    "level": "intermediate",
+    "prereqs": [
+      "encapsulation"
+    ],
+    "related": [
+      "polymorphism",
+      "solid-principles",
+      "type-systems"
+    ],
+    "next": "inheritance"
+  },
+  {
+    "slug": "inheritance",
+    "section": "oop",
+    "title": "Inheritance",
+    "summary": "A subclass reuses and extends a superclass. It models 'is-a' relationships — and creates the tightest coupling in OOP.",
+    "level": "intermediate",
+    "prereqs": [
+      "classes-objects"
+    ],
+    "related": [
+      "composition-vs-inheritance",
+      "solid-principles"
+    ],
+    "next": "polymorphism"
+  },
+  {
+    "slug": "polymorphism",
+    "section": "oop",
+    "title": "Polymorphism",
+    "summary": "One call, many behaviors: the actual method that runs depends on the object's type at run time.",
+    "level": "intermediate",
+    "prereqs": [
+      "inheritance",
+      "abstraction"
+    ],
+    "related": [
+      "cpp",
+      "typescript",
+      "java",
+      "solid-principles"
+    ],
+    "next": "composition-vs-inheritance"
+  },
+  {
+    "slug": "composition-vs-inheritance",
+    "section": "oop",
+    "title": "Composition vs Inheritance",
+    "summary": "Build behavior by combining objects (has-a) rather than extending classes (is-a). It is looser, more flexible, and easier to change.",
+    "level": "intermediate",
+    "prereqs": [
+      "inheritance",
+      "polymorphism"
+    ],
+    "related": [
+      "abstraction",
+      "design-patterns"
+    ],
+    "next": "solid-principles"
+  },
+  {
+    "slug": "solid-principles",
+    "section": "oop",
+    "title": "SOLID Principles",
+    "summary": "Five heuristics for object-oriented design that keep code easy to change: single responsibility, open/closed, Liskov, interface segregation, dependency inversion.",
+    "level": "advanced",
+    "prereqs": [
+      "polymorphism",
+      "composition-vs-inheritance"
+    ],
+    "related": [
+      "abstraction",
+      "encapsulation"
+    ],
+    "next": "design-patterns"
+  },
+  {
+    "slug": "design-patterns",
+    "section": "oop",
+    "title": "Design Patterns",
+    "summary": "Named, reusable solutions to recurring design problems: creational, structural, and behavioral.",
+    "level": "advanced",
+    "prereqs": [
+      "solid-principles"
+    ],
+    "related": [
+      "composition-vs-inheritance",
+      "polymorphism",
+      "abstraction"
+    ],
+    "next": "big-o"
+  },
+  {
+    "slug": "big-o",
+    "section": "dsa",
+    "title": "Big-O and Complexity",
+    "summary": "How an algorithm's cost grows with input size, ignoring constants. The language for comparing solutions before you run them.",
+    "level": "beginner",
+    "prereqs": [
+      "loops",
+      "functions"
+    ],
+    "related": [
+      "sorting",
+      "binary-search",
+      "hash-tables"
+    ],
+    "next": "arrays"
+  },
+  {
+    "slug": "arrays",
+    "section": "dsa",
+    "title": "Arrays",
+    "summary": "A contiguous block of same-sized elements. Constant-time indexing, cache-friendly scans, and costly middle inserts.",
+    "level": "beginner",
+    "prereqs": [
+      "variables",
+      "loops",
+      "big-o"
+    ],
+    "related": [
+      "hash-tables",
+      "pointers",
+      "binary-search"
+    ],
+    "next": "linked-lists"
+  },
+  {
+    "slug": "linked-lists",
+    "section": "dsa",
+    "title": "Linked Lists",
+    "summary": "Nodes that each hold a value and a pointer to the next. Cheap splicing, no random access.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays",
+      "pointers"
+    ],
+    "related": [
+      "queue",
+      "bst"
+    ],
+    "next": "stack-ds"
+  },
+  {
+    "slug": "stack-ds",
+    "section": "dsa",
+    "title": "Stacks",
+    "summary": "Last in, first out. Push and pop at one end in constant time — the structure behind calls, undo, and depth-first search.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays"
+    ],
+    "related": [
+      "recursion",
+      "dfs",
+      "stack-and-heap"
+    ],
+    "next": "queue"
+  },
+  {
+    "slug": "queue",
+    "section": "dsa",
+    "title": "Queues",
+    "summary": "First in, first out. Enqueue at the back and dequeue at the front — the shape of fairness, buffers, and breadth-first search.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays",
+      "linked-lists"
+    ],
+    "related": [
+      "bfs",
+      "heaps",
+      "fcfs",
+      "round-robin"
+    ],
+    "next": "hash-tables"
+  },
+  {
+    "slug": "hash-tables",
+    "section": "dsa",
+    "title": "Hash Tables",
+    "summary": "Turn a key into an array index with a hash function. Average constant-time lookup, insert, and delete.",
+    "level": "intermediate",
+    "prereqs": [
+      "arrays",
+      "big-o"
+    ],
+    "related": [
+      "indexes",
+      "bst"
+    ],
+    "next": "sorting",
+    "viz": "hash-collisions",
+    "lab": "hash-collisions"
+  },
+  {
+    "slug": "sorting",
+    "section": "dsa",
+    "title": "Sorting",
+    "summary": "Arrange items in order. Comparison sorts cannot beat O(n log n); merge sort and quicksort get there by dividing the problem.",
+    "level": "intermediate",
+    "prereqs": [
+      "arrays",
+      "recursion",
+      "big-o"
+    ],
+    "related": [
+      "heaps",
+      "hash-tables",
+      "dynamic-programming"
+    ],
+    "next": "binary-search"
+  },
+  {
+    "slug": "binary-search",
+    "section": "dsa",
+    "title": "Binary Search",
+    "summary": "Halve a sorted search space each step. O(log n) lookups — and a template for searching on any monotonic condition.",
+    "level": "intermediate",
+    "prereqs": [
+      "sorting",
+      "arrays"
+    ],
+    "related": [
+      "indexes",
+      "b-trees"
+    ],
+    "next": "bst"
+  },
+  {
+    "slug": "bst",
+    "section": "dsa",
+    "title": "Binary Search Trees",
+    "summary": "A tree where left descendants are smaller and right descendants are larger. Ordered data with O(log n) operations — when balanced.",
+    "level": "intermediate",
+    "prereqs": [
+      "recursion",
+      "linked-lists",
+      "binary-search"
+    ],
+    "related": [
+      "b-trees",
+      "hash-tables",
+      "tries"
+    ],
+    "next": "heaps"
+  },
+  {
+    "slug": "heaps",
+    "section": "dsa",
+    "title": "Heaps and Priority Queues",
+    "summary": "A tree stored in an array where every parent is smaller (min-heap) than its children. Constant-time min and logarithmic push/pop.",
+    "level": "intermediate",
+    "prereqs": [
+      "arrays",
+      "bst"
+    ],
+    "related": [
+      "dijkstra",
+      "sorting",
+      "queue",
+      "priority-scheduling"
+    ],
+    "next": "tries"
+  },
+  {
+    "slug": "tries",
+    "section": "dsa",
+    "title": "Tries",
+    "summary": "A tree keyed by characters or bits that shares prefixes. Prefix search and longest-prefix match in time proportional to the key length.",
+    "level": "intermediate",
+    "prereqs": [
+      "bst",
+      "hash-tables"
+    ],
+    "related": [
+      "cidr",
+      "routing",
+      "dns"
+    ],
+    "next": "graphs"
+  },
+  {
+    "slug": "graphs",
+    "section": "dsa",
+    "title": "Graphs",
+    "summary": "Vertices connected by edges. The general model for networks, maps, dependencies, and relationships.",
+    "level": "intermediate",
+    "prereqs": [
+      "linked-lists",
+      "hash-tables"
+    ],
+    "related": [
+      "dfs",
+      "dijkstra",
+      "network-topology",
+      "routing"
+    ],
+    "next": "bfs"
+  },
+  {
+    "slug": "bfs",
+    "section": "dsa",
+    "title": "Breadth-First Search",
+    "summary": "Explore a graph level by level using a queue. Finds shortest paths in unweighted graphs.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "queue"
+    ],
+    "related": [
+      "dijkstra",
+      "network-topology",
+      "routing"
+    ],
+    "next": "dfs"
+  },
+  {
+    "slug": "dfs",
+    "section": "dsa",
+    "title": "Depth-First Search",
+    "summary": "Follow one path as far as it goes, then backtrack. The basis for cycle detection, topological sort, and exhaustive search.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "recursion",
+      "stack-ds"
+    ],
+    "related": [
+      "bfs",
+      "stack-and-heap"
+    ],
+    "next": "dijkstra"
+  },
+  {
+    "slug": "dijkstra",
+    "section": "dsa",
+    "title": "Dijkstra's Algorithm",
+    "summary": "Shortest paths from one vertex in a graph with non-negative weights, by repeatedly settling the closest unsettled vertex.",
+    "level": "advanced",
+    "prereqs": [
+      "graphs",
+      "heaps",
+      "bfs"
+    ],
+    "related": [
+      "ospf",
+      "routing",
+      "routing-protocols"
+    ],
+    "next": "dynamic-programming"
+  },
+  {
+    "slug": "dynamic-programming",
+    "section": "dsa",
+    "title": "Dynamic Programming",
+    "summary": "Solve a problem by combining solutions to overlapping subproblems, computed once each. Recursion plus a table.",
+    "level": "advanced",
+    "prereqs": [
+      "recursion",
+      "arrays",
+      "big-o"
+    ],
+    "related": [
+      "sorting",
+      "dfs",
+      "bfs"
+    ]
   }
 ]

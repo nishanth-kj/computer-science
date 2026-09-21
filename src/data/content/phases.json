@@ -1,0 +1,15 @@
+[
+  {
+    "id": "phase-2",
+    "n": 2,
+    "title": "Phase 2",
+    "subtitle": "Systems and Programming",
+    "blurb": "Operating systems, databases, networking, and programming: the four fields every backend engineer builds on, each broken into its sub-topics.",
+    "groups": [
+      "os",
+      "dbms",
+      "networks",
+      "programming"
+    ]
+  }
+]

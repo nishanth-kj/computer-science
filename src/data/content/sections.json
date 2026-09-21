@@ -19,5 +19,33 @@
     "short": "DBMS",
     "blurb": "Relational theory, SQL, storage engines, transactions, and how queries get fast.",
     "icon": "Database"
+  },
+  {
+    "id": "fundamentals",
+    "title": "Programming Fundamentals",
+    "short": "Fundamentals",
+    "blurb": "Variables, types, control flow, functions, recursion, memory, errors, and testing: the ideas every language shares.",
+    "icon": "Code"
+  },
+  {
+    "id": "languages",
+    "title": "Programming Languages",
+    "short": "Languages",
+    "blurb": "How languages run and how they differ: execution models, type systems, memory management, and a tour of Python, C, C++, Java, JavaScript, and TypeScript.",
+    "icon": "Braces"
+  },
+  {
+    "id": "oop",
+    "title": "Object-Oriented Design",
+    "short": "OOP",
+    "blurb": "Classes, encapsulation, inheritance, polymorphism, and the design principles and patterns that keep code easy to change.",
+    "icon": "Boxes"
+  },
+  {
+    "id": "dsa",
+    "title": "Data Structures & Algorithms",
+    "short": "DSA",
+    "blurb": "Big-O, arrays to graphs, sorting and searching, and dynamic programming: choosing a shape for the data and a way to walk it.",
+    "icon": "Binary"
   }
 ]

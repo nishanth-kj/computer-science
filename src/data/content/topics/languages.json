@@ -1,1 +1,728 @@
-[]
+[
+  {
+    "slug": "compiled-vs-interpreted",
+    "section": "languages",
+    "title": "Compiled vs Interpreted",
+    "summary": "How source text becomes behavior: translated ahead of time, executed by a program, or both. A property of implementations, not languages.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-programming"
+    ],
+    "related": [
+      "python",
+      "c-language",
+      "java",
+      "javascript"
+    ],
+    "next": "type-systems",
+    "tags": [
+      "languages",
+      "execution"
+    ],
+    "what": "A compiled language is translated ahead of time into machine code (C, C++, Rust, Go) that the CPU runs directly. An interpreted language is executed by another program, the interpreter, which reads source or bytecode at run time (classic Python and Ruby). Most modern systems mix the two: Java and C# compile to bytecode that a virtual machine interprets and just-in-time compiles, and JavaScript engines do the same. 'Compiled' and 'interpreted' describe an implementation, not the language.",
+    "why": "The execution model explains start-up time, peak speed, how you ship software, what an error message can tell you, and why a language can or cannot be embedded, sandboxed, or run in a browser. It is also the first step toward understanding what a compiler actually does.",
+    "mental": "Translating a book. A compiler translates the whole book once, and every reader gets the finished translation. An interpreter is a live translator who speaks each sentence as it is read: no wait at the start, but the translator is present every time.",
+    "points": [
+      "Ahead-of-time compilation produces a native executable: fast start, fast run, but built per platform.",
+      "An interpreter runs on any machine that has it, and supports a fast edit-run loop, at the cost of speed.",
+      "Bytecode plus a VM is the middle path: portable bytecode, with a JIT compiling hot code to machine code as the program runs.",
+      "Compilers catch a class of errors (syntax, types) before the program runs. Interpreters find them when the line executes.",
+      "The same language can have several implementations: CPython and PyPy for Python, GCC and Clang for C."
+    ],
+    "steps": [
+      "Source text",
+      "Lex and parse",
+      "Type-check and optimize",
+      "Emit machine code or bytecode",
+      "CPU or virtual machine runs it"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "CPython compiles to bytecode, then interprets it",
+      "code": "import dis\n\ndef add(a, b):\n    return a + b\n\ndis.dis(add)   # prints the bytecode instructions the interpreter will run"
+    },
+    "usage": [
+      "Picking a language for a system service versus a script",
+      "Understanding why a Docker image for Go is tiny and one for Python needs an interpreter",
+      "Reading compiler and interpreter error messages"
+    ],
+    "mistakes": [
+      "Saying 'Python is slow because it is interpreted' — the interpreter loop and dynamic dispatch are the cost, and other implementations differ.",
+      "Assuming compiled means the program cannot be changed at run time.",
+      "Benchmarking a JIT language without warming it up."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between compiled and interpreted languages?",
+        "a": "Compiled code is translated to machine code before it runs; interpreted code is executed by another program at run time. Many real systems combine them, such as bytecode with a JIT.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does a JIT compiler do?",
+        "a": "It watches a running program, finds hot code, and compiles it to machine code at run time using observed types and branches, often generating faster code than a static compile could assume.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why can a compiled language still be slow to start or run poorly?",
+        "a": "Start-up can include dynamic linking or runtime initialization, and generated code can be limited by memory layout, cache behavior, or algorithms. Compilation removes interpreter overhead, not bad design.",
+        "level": "advanced"
+      }
+    ],
+    "extra": [
+      {
+        "type": "table",
+        "headers": [
+          "Approach",
+          "Examples",
+          "Start-up",
+          "Peak speed",
+          "You ship"
+        ],
+        "rows": [
+          [
+            "Ahead-of-time compiled",
+            "C, C++, Go, Rust",
+            "Fast",
+            "High",
+            "A native binary per platform"
+          ],
+          [
+            "Bytecode + VM with JIT",
+            "Java, C#, JavaScript (V8)",
+            "Slower warm-up",
+            "High once warm",
+            "Bytecode plus a runtime"
+          ],
+          [
+            "Interpreted",
+            "CPython, Ruby, shell",
+            "Fast",
+            "Lower",
+            "Source plus an interpreter"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "type-systems",
+    "section": "languages",
+    "title": "Type Systems",
+    "summary": "The rules a language uses to classify values and reject nonsense: static or dynamic, nominal or structural, with or without inference.",
+    "level": "intermediate",
+    "prereqs": [
+      "data-types"
+    ],
+    "related": [
+      "typescript",
+      "python",
+      "java",
+      "c-language"
+    ],
+    "next": "garbage-collection",
+    "tags": [
+      "languages",
+      "types"
+    ],
+    "what": "A type system classifies values and decides which operations are legal on them. Static typing checks before the program runs (Java, C, TypeScript); dynamic typing checks as operations execute (Python, JavaScript). Nominal typing compares by declared name; structural typing compares by shape. Inference lets the compiler work out types you did not write, and generics let one definition work over many types.",
+    "why": "The type system decides which bugs you find at compile time and which in production, how much your editor can help, and how safely you can refactor. It also shapes how a language feels: strictness and ceremony against flexibility and speed of sketching.",
+    "mental": "Airport security for values. A static checker inspects the bag before the flight (compile time). A dynamic checker inspects at the gate, when you are already about to board (run time). Either way, the goal is to stop the wrong thing getting on the plane.",
+    "points": [
+      "Static: types checked before running; errors show up early and tools get smarter. Dynamic: types checked at run time; less ceremony, later errors.",
+      "Strong versus weak describes how freely values convert: Python refuses '1' + 1, while JavaScript quietly returns '11'.",
+      "Nominal: two types are compatible only if declared so (Java interfaces). Structural: compatible if they have the right members (TypeScript, Go interfaces).",
+      "Inference: 'let n = 3' is an int without writing it, though the type is still fixed.",
+      "Generics (List<T>) let one implementation be type-safe for any element type.",
+      "Optional and gradual typing (Python hints, TypeScript) adds static checks to a dynamic ecosystem. Types can be erased before running, so they guard the code, not the data that arrives at run time."
+    ],
+    "steps": [
+      "Declare or infer a type",
+      "Check each operation",
+      "Reject a mismatch",
+      "Erase or keep types at run time"
+    ],
+    "code": {
+      "lang": "typescript",
+      "title": "Structural typing catches a bad call before it runs",
+      "code": "type Point = { x: number; y: number };\n\nfunction norm(p: Point): number {\n  return Math.sqrt(p.x * p.x + p.y * p.y);\n}\n\nconst a = { x: 3, y: 4, label: \"A\" };   // extra fields are fine: the shape matches\nconsole.log(norm(a));                    // 5\n// norm({ x: \"3\", y: 4 });               // compile error: string is not number"
+    },
+    "usage": [
+      "Choosing a language for a large team codebase versus a quick script",
+      "Modeling data so invalid states cannot be represented",
+      "Refactoring with the compiler pointing at every call site"
+    ],
+    "mistakes": [
+      "Believing static types validate data that arrives from a network or file; they do not.",
+      "Turning types off (any, casts) whenever they are inconvenient.",
+      "Equating 'dynamic' with 'untyped' — values still have types; the checks just happen later."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between static and dynamic typing?",
+        "a": "Static typing checks types before the program runs, so many errors surface at compile time. Dynamic typing checks as operations execute, so the same mistakes appear only when that line runs.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is duck typing?",
+        "a": "An object is acceptable if it has the methods or fields the code uses, regardless of its declared class. 'If it walks like a duck and quacks like a duck…' It is a dynamic form of structural typing.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why does TypeScript not protect you from bad JSON at run time?",
+        "a": "Its types are erased when compiled to JavaScript, so nothing checks the actual data. Validate untrusted input at the boundary, for example with a schema library, and then trust the types.",
+        "level": "advanced"
+      }
+    ],
+    "extra": [
+      {
+        "type": "table",
+        "headers": [
+          "Language",
+          "Checking",
+          "Conversions",
+          "Compatibility"
+        ],
+        "rows": [
+          [
+            "Python",
+            "Dynamic (optional hints)",
+            "Strict: no implicit str/int mix",
+            "Duck typing"
+          ],
+          [
+            "JavaScript",
+            "Dynamic",
+            "Loose: heavy coercion",
+            "By shape at run time"
+          ],
+          [
+            "Java",
+            "Static",
+            "Strict",
+            "Nominal"
+          ],
+          [
+            "TypeScript",
+            "Static, erased at run time",
+            "Strict to the checker",
+            "Structural"
+          ],
+          [
+            "C",
+            "Static",
+            "Loose: casts and void*",
+            "By declared type"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "garbage-collection",
+    "section": "languages",
+    "title": "Garbage Collection",
+    "summary": "Automatic memory management: the runtime finds objects nothing can reach any more and reclaims them.",
+    "level": "intermediate",
+    "prereqs": [
+      "stack-and-heap"
+    ],
+    "related": [
+      "java",
+      "cpp",
+      "virtual-memory"
+    ],
+    "next": "python",
+    "tags": [
+      "languages",
+      "memory",
+      "runtime"
+    ],
+    "what": "Garbage collection (GC) frees heap objects the program can no longer reach. Reference counting keeps a count of pointers to each object and frees it at zero (CPython, Swift). Tracing collectors start from roots — stack variables and globals — mark everything reachable, and sweep the rest (Java, Go, JavaScript). Generational collectors exploit the fact that most objects die young.",
+    "why": "GC removes whole classes of bugs — use after free, double free — and lets you write code without tracking ownership. It also introduces costs: pauses, extra memory, and leaks that come from references you forgot to drop. Knowing how it works lets you reason about all three.",
+    "mental": "A cleaning crew that only throws out what nobody can still walk to. Start at the front door (the roots), follow every hallway you can reach, and tag what you see. Anything untagged is behind a locked door with no key — it is safe to clear.",
+    "points": [
+      "An object is garbage when it is unreachable from any root, not when you 'stop using' it. A forgotten reference in a cache or listener list keeps it alive.",
+      "Reference counting frees immediately and predictably but cannot reclaim cycles without an extra cycle detector.",
+      "Mark-and-sweep handles cycles. Compacting and copying collectors also reduce fragmentation.",
+      "Generational GC: young objects are collected often and cheaply; survivors are promoted to an older generation collected rarely.",
+      "Stop-the-world pauses suspend the program. Concurrent and incremental collectors shorten them.",
+      "Without a GC there are alternatives: manual free (C), RAII and smart pointers (C++), or ownership rules checked at compile time (Rust)."
+    ],
+    "steps": [
+      "Start from the roots",
+      "Mark reachable objects",
+      "Sweep the unmarked ones",
+      "Reuse or compact the space",
+      "Resume the program"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "A reference cycle needs the cycle collector",
+      "code": "import gc, weakref\n\nclass Node:\n    pass\n\na, b = Node(), Node()\na.other, b.other = b, a          # a reference cycle\nprobe = weakref.ref(a)\ndel a, b                         # the counts never reach zero\nprint(probe() is not None)       # True: the cycle keeps both alive\ngc.collect()                     # the cycle collector reclaims them\nprint(probe() is None)           # True"
+    },
+    "complexity": {
+      "time": "Tracing cost is proportional to live objects; allocation is usually a pointer bump",
+      "space": "Often 1.5–2× the live data to keep collections infrequent",
+      "tradeoffs": [
+        "Safety and convenience against pauses and memory overhead",
+        "Reference counting: immediate, predictable frees; but cycles and per-assignment cost",
+        "Tracing: handles cycles and is throughput-friendly; but pauses and non-deterministic timing"
+      ]
+    },
+    "usage": [
+      "Managed runtimes: JVM, .NET, Go, JavaScript engines, CPython",
+      "Tuning heap size and collector choice for latency-sensitive services",
+      "Finding leaks with heap dumps and retained-size analysis"
+    ],
+    "mistakes": [
+      "Assuming a GC language cannot leak: static caches, listeners, and closures keep objects alive.",
+      "Relying on finalizers to release files or sockets; use explicit close or with blocks.",
+      "Allocating millions of short-lived objects in a hot loop without measuring."
+    ],
+    "interview": [
+      {
+        "q": "How does a tracing garbage collector decide what to free?",
+        "a": "It starts from roots (stack variables, globals), marks everything reachable by following references, and reclaims everything unmarked.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is a memory leak in a garbage-collected language?",
+        "a": "Objects that are still reachable — from a cache, a static field, or a listener list — but no longer needed. The GC cannot free what the program can still reach.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why is generational collection effective?",
+        "a": "Empirically most objects die young, so collecting a small young generation frequently reclaims much garbage cheaply, and only the survivors pay for full collections.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "python",
+    "section": "languages",
+    "title": "Python",
+    "summary": "A readable, dynamically typed, batteries-included language. Fast to write, slower to run, dominant for scripting, data, and glue.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-programming"
+    ],
+    "related": [
+      "compiled-vs-interpreted",
+      "type-systems",
+      "garbage-collection",
+      "functions"
+    ],
+    "next": "c-language",
+    "tags": [
+      "languages",
+      "python"
+    ],
+    "what": "Python is a dynamically typed, garbage-collected, general-purpose language designed for readability. The reference implementation, CPython, compiles source to bytecode and interprets it. Everything is an object, indentation delimits blocks, and the standard library covers files, networking, JSON, testing, and much more.",
+    "why": "Python has the shortest path from an idea to a working program, and a huge ecosystem for data analysis, machine learning, automation, and web back ends. It is also a good language for learning: you can express algorithms without ceremony.",
+    "mental": "A very capable Swiss Army knife with the blade guard on. It is quick and friendly for almost everything, and when you need the raw speed of a specialized tool, you call out to one — C, NumPy, or a database — from Python.",
+    "points": [
+      "Dynamic typing with optional hints. Duck typing: what matters is the methods an object has.",
+      "Built-in containers: list, tuple, dict, set — with comprehensions like [x * x for x in nums if x > 0].",
+      "CPython's global interpreter lock (GIL) lets only one thread run Python bytecode at a time, so CPU-bound work uses processes or native extensions, while I/O-bound work can use threads or asyncio.",
+      "Virtual environments (venv) and pip isolate dependencies per project.",
+      "Generators and iterators let you process data lazily instead of building whole lists.",
+      "Slower per operation than compiled languages, so move hot loops to libraries or algorithms with better complexity."
+    ],
+    "steps": [
+      "Write source",
+      "CPython compiles to bytecode",
+      "The interpreter loop runs it",
+      "Objects live on the heap",
+      "Reference counts and GC reclaim them"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Batteries included: count words in a few lines",
+      "code": "from collections import Counter\n\ntext = \"the quick brown fox jumps over the lazy dog the end\"\ncounts = Counter(text.split())\nprint(counts.most_common(1))   # [('the', 3)]"
+    },
+    "usage": [
+      "Scripting, automation, and glue code",
+      "Data analysis and machine learning",
+      "Web back ends (Django, FastAPI, Flask) and command-line tools"
+    ],
+    "mistakes": [
+      "Using threads for CPU-bound parallelism and expecting speed-ups under the GIL.",
+      "Mutable default arguments and modifying a list while iterating over it.",
+      "Building huge lists when a generator would stream the data."
+    ],
+    "interview": [
+      {
+        "q": "What is the GIL and what does it mean for concurrency?",
+        "a": "The global interpreter lock lets one thread execute Python bytecode at a time in CPython. Threads still help with I/O waits, but CPU-bound Python code needs multiprocessing, native extensions, or a different implementation.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is the difference between a list and a tuple?",
+        "a": "Lists are mutable and tuples are immutable. Tuples can be dictionary keys and signal a fixed record; lists are for collections that change.",
+        "level": "beginner"
+      },
+      {
+        "q": "How does Python manage memory?",
+        "a": "Objects live on the heap and are reference counted, so most are freed the moment the count reaches zero. A cycle collector reclaims reference cycles.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "c-language",
+    "section": "languages",
+    "title": "C",
+    "summary": "A small, compiled language close to the hardware. Manual memory, pointers, and no safety net — the language operating systems are written in.",
+    "level": "intermediate",
+    "prereqs": [
+      "pointers"
+    ],
+    "related": [
+      "system-calls",
+      "virtual-memory",
+      "kernel"
+    ],
+    "next": "cpp",
+    "tags": [
+      "languages",
+      "c",
+      "systems"
+    ],
+    "what": "C is a compact, statically typed, compiled language that maps closely onto machine instructions and memory. You manage memory yourself with malloc and free, work directly with pointers and arrays, and get no bounds checking. Unix and Linux, most databases, and many language runtimes are written in C, and its calling conventions are the lingua franca of foreign function interfaces.",
+    "why": "Reading C shows how the systems in this curriculum actually work: a system call is a C function, a kernel data structure is a struct, and a segmentation fault is a pointer bug you can now explain. It is also where the cost of every operation is visible.",
+    "mental": "A manual-transmission sports car. Nothing is hidden and you can go exactly as fast as you like, but there is no lane-keeping assistant: if you drift, you crash.",
+    "points": [
+      "Statically typed, compiled to native code through a preprocessor, compiler, assembler, and linker.",
+      "Memory is yours: malloc/free on the heap, automatic storage on the stack, and no garbage collector.",
+      "Arrays are contiguous blocks with no length attached; strings are char arrays ending in a null byte.",
+      "Undefined behavior — out-of-bounds access, signed overflow, use after free — lets the compiler assume it never happens, so bugs can be silent and strange.",
+      "Header files declare interfaces; the linker joins compiled object files into an executable.",
+      "The standard library is small; POSIX adds files, processes, threads, and sockets."
+    ],
+    "steps": [
+      "Preprocess includes and macros",
+      "Compile to assembly",
+      "Assemble to object code",
+      "Link with libraries",
+      "Load and run as a process"
+    ],
+    "code": {
+      "lang": "c",
+      "title": "Strings are bytes you must terminate",
+      "code": "#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char name[16];\n    strncpy(name, \"kernel\", sizeof name - 1);\n    name[sizeof name - 1] = '\\0';          /* always terminate */\n    printf(\"%s has %zu chars\\n\", name, strlen(name));\n    return 0;\n}"
+    },
+    "usage": [
+      "Operating system kernels, drivers, and embedded firmware",
+      "Language runtimes and databases",
+      "Performance-critical libraries exposed to other languages"
+    ],
+    "mistakes": [
+      "Writing past the end of a buffer (the classic security hole).",
+      "Forgetting to free memory, or freeing it twice.",
+      "Trusting sizeof on a pointer parameter as if it were the array's size."
+    ],
+    "interview": [
+      {
+        "q": "What happens between gcc main.c and running ./a.out?",
+        "a": "The preprocessor expands includes and macros, the compiler translates C to assembly, the assembler produces object code, the linker combines it with libraries into an executable, and the OS loader maps it into a new process and starts it.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is undefined behavior?",
+        "a": "Code the standard places no requirements on, such as out-of-bounds access or signed overflow. The compiler may assume it never occurs, so the program can crash, corrupt data, or appear to work, differently between builds.",
+        "level": "advanced"
+      },
+      {
+        "q": "What is the difference between malloc and a local array?",
+        "a": "A local array lives in the stack frame and disappears on return. malloc reserves heap memory that lasts until free is called, and it can be returned from a function.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "cpp",
+    "section": "languages",
+    "title": "C++",
+    "summary": "C plus abstractions with no run-time tax: classes, templates, and RAII. Powerful and large.",
+    "level": "intermediate",
+    "prereqs": [
+      "c-language"
+    ],
+    "related": [
+      "classes-objects",
+      "garbage-collection",
+      "polymorphism"
+    ],
+    "next": "java",
+    "tags": [
+      "languages",
+      "cpp",
+      "systems"
+    ],
+    "what": "C++ extends C with classes, templates, exceptions, and a rich standard library (vector, string, map, algorithms). Its defining idea is RAII: a resource is acquired in a constructor and released in the destructor, so cleanup is tied to scope and runs even when an exception unwinds the stack. Modern C++ (C++11 and later) favors smart pointers, move semantics, and range-based loops over raw new and delete.",
+    "why": "C++ lets you write high-level, generic code that compiles down to what a hand-written C version would do — the 'zero-overhead' principle. It powers game engines, browsers, databases, trading systems, and much of the infrastructure other languages run on.",
+    "mental": "A professional kitchen with every tool hung on the wall. You can cook anything, exactly the way you want, and nothing is done for you — so you need to know which tool you are reaching for and how to put it back.",
+    "points": [
+      "RAII: objects own resources and release them in destructors. Prefer std::vector, std::string, and smart pointers over manual new/delete.",
+      "std::unique_ptr expresses sole ownership; std::shared_ptr shares ownership through a reference count.",
+      "Templates generate type-specific code at compile time, giving generic containers and algorithms with no run-time overhead.",
+      "Move semantics transfer resources from temporaries instead of copying them.",
+      "Virtual functions provide run-time polymorphism through a vtable; non-virtual calls are resolved at compile time.",
+      "Undefined behavior from C is still present. Compilers and sanitizers help, but the burden remains on you."
+    ],
+    "steps": [
+      "Write classes and templates",
+      "Compile with type checking",
+      "Instantiate templates",
+      "Link and run",
+      "Destructors release resources at scope end"
+    ],
+    "code": {
+      "lang": "cpp",
+      "title": "RAII: cleanup is tied to scope",
+      "code": "#include <iostream>\n#include <memory>\n#include <vector>\n\nint main() {\n    std::vector<int> v{3, 1, 2};\n    auto p = std::make_unique<int>(42);      // freed automatically\n    for (int x : v) std::cout << x << ' ';\n    std::cout << *p << '\\n';                 // 3 1 2 42\n}   // v and p release their memory here"
+    },
+    "usage": [
+      "Game engines and graphics",
+      "Browsers, databases, and compilers",
+      "Low-latency finance and embedded systems"
+    ],
+    "mistakes": [
+      "Mixing new/delete with smart pointers and freeing something twice.",
+      "Returning a reference to a local object.",
+      "Slicing a derived object when copying it into a base-class value."
+    ],
+    "interview": [
+      {
+        "q": "What is RAII?",
+        "a": "Resource Acquisition Is Initialization: an object acquires a resource in its constructor and releases it in its destructor. Because destructors run when scope ends, even during exception unwinding, resources are not leaked.",
+        "level": "intermediate"
+      },
+      {
+        "q": "unique_ptr versus shared_ptr?",
+        "a": "unique_ptr has exactly one owner and no overhead over a raw pointer; it can be moved but not copied. shared_ptr allows several owners with a reference count and frees the object when the last owner goes away.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is a virtual function?",
+        "a": "A member function resolved at run time through the object's dynamic type, usually via a vtable pointer. It enables polymorphism through base-class pointers or references.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "java",
+    "section": "languages",
+    "title": "Java",
+    "summary": "A statically typed, class-based language that compiles to bytecode for the JVM. Portable, safe, and everywhere in back ends.",
+    "level": "intermediate",
+    "prereqs": [
+      "compiled-vs-interpreted"
+    ],
+    "related": [
+      "classes-objects",
+      "garbage-collection",
+      "threads",
+      "type-systems"
+    ],
+    "next": "javascript",
+    "tags": [
+      "languages",
+      "java",
+      "jvm"
+    ],
+    "what": "Java is a statically typed, object-oriented, garbage-collected language. The javac compiler emits bytecode, and the Java Virtual Machine interprets it and JIT-compiles hot paths, so the same bytecode runs on any platform with a JVM. It ships with a large standard library, built-in threads and concurrency utilities, and a mature ecosystem of build tools and frameworks.",
+    "why": "Java is the workhorse of large back-end systems and Android, and the JVM hosts Kotlin, Scala, and Clojure too. It is a clear, widely used example of a managed runtime: GC, JIT, class loading, and a strict type system.",
+    "mental": "A shipping container. You pack your program once into bytecode, and any port with a JVM can unload and run it. The container standard, not the cargo, is what makes it portable.",
+    "points": [
+      "Everything lives in a class; single inheritance for classes, multiple interfaces.",
+      "Strong static typing with generics (which are erased at run time), and type inference with var.",
+      "The JVM provides garbage collection, the JIT, security checks, and a memory model for threads.",
+      "Checked exceptions force callers to handle or declare certain failures.",
+      "Records, sealed types, and pattern matching in modern Java reduce boilerplate.",
+      "Threads, executors, and concurrent collections are part of the platform; locks and volatile follow the Java memory model."
+    ],
+    "steps": [
+      "Write .java source",
+      "javac compiles to bytecode",
+      "Class loader loads .class files",
+      "JVM interprets and JIT-compiles",
+      "GC manages the heap"
+    ],
+    "code": {
+      "lang": "java",
+      "title": "A record and a sorted stream",
+      "code": "import java.util.*;\n\npublic class Main {\n    record Point(int x, int y) {}\n\n    public static void main(String[] args) {\n        List<Point> pts = List.of(new Point(2, 1), new Point(1, 5));\n        pts.stream()\n           .sorted(Comparator.comparingInt(Point::x))\n           .forEach(System.out::println);   // Point[x=1, y=5] then Point[x=2, y=1]\n    }\n}"
+    },
+    "usage": [
+      "Enterprise and cloud back ends",
+      "Android applications",
+      "Big-data and streaming infrastructure"
+    ],
+    "mistakes": [
+      "Comparing strings or boxed values with == instead of equals().",
+      "Ignoring the memory cost of many small objects.",
+      "Sharing mutable state between threads without synchronization."
+    ],
+    "interview": [
+      {
+        "q": "What is the JVM and why does it matter?",
+        "a": "The Java Virtual Machine runs bytecode. It provides portability across operating systems, garbage collection, a JIT compiler, and a defined memory model, so the same compiled code runs anywhere a JVM exists.",
+        "level": "beginner"
+      },
+      {
+        "q": "== versus equals() in Java?",
+        "a": "== compares references for objects (whether they are the same object), while equals() compares logical equality as defined by the class. Use equals() for strings and value objects.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does type erasure mean for generics?",
+        "a": "Generic type parameters are checked at compile time and erased in the bytecode, so List<String> and List<Integer> are the same class at run time. That is why you cannot do new T[] or instanceof List<String>.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "javascript",
+    "section": "languages",
+    "title": "JavaScript",
+    "summary": "The language of the browser and, through Node.js, of servers. Dynamic, function-first, and single-threaded on an event loop.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions"
+    ],
+    "related": [
+      "http",
+      "websockets",
+      "compiled-vs-interpreted"
+    ],
+    "next": "typescript",
+    "tags": [
+      "languages",
+      "javascript",
+      "web"
+    ],
+    "what": "JavaScript is a dynamically typed, prototype-based language with first-class functions. It runs in every browser and, through Node.js, Deno, and Bun, on servers. It executes on a single-threaded event loop: long-running work blocks the loop, so I/O is asynchronous through callbacks, promises, and async/await.",
+    "why": "It is the only language browsers run natively, so it sits at the center of web development. Understanding the event loop, closures, and asynchronous flow is what separates writing JavaScript from fighting it.",
+    "mental": "A single waiter in a restaurant. He takes an order, hands it to the kitchen, and moves on to the next table instead of standing there. When the kitchen rings the bell (a promise resolves), he returns with the dish. He is fast because he never waits — but if he stops to cook one dish himself, every table waits.",
+    "points": [
+      "Values are numbers (IEEE doubles), strings, booleans, null, undefined, symbols, bigints, and objects. There is no separate integer type.",
+      "Functions are values, and closures capture the variables around them.",
+      "The event loop runs one task at a time; promises and async/await schedule continuations without blocking it.",
+      "Use === and !== to avoid surprising coercions from == (0 == '' is true).",
+      "Modules (import/export) organize code; npm is the ecosystem's package manager.",
+      "Modern engines (V8, SpiderMonkey, JavaScriptCore) JIT-compile hot code, so JavaScript can be fast."
+    ],
+    "steps": [
+      "Call an async function",
+      "Start I/O and return control",
+      "Event loop runs other work",
+      "I/O completes and queues a callback",
+      "Promise resolves and code continues"
+    ],
+    "code": {
+      "lang": "javascript",
+      "title": "async/await over a promise",
+      "code": "async function getJson(url) {\n  const res = await fetch(url);\n  if (!res.ok) throw new Error(\"HTTP \" + res.status);\n  return res.json();\n}\n\ngetJson(\"https://example.com/api/items\")\n  .then((items) => console.log(items.length))\n  .catch((err) => console.error(err.message));"
+    },
+    "usage": [
+      "Interactive web pages and single-page apps",
+      "Node.js servers and tooling",
+      "Scripting in editors, games, and automation"
+    ],
+    "mistakes": [
+      "Blocking the event loop with a long synchronous computation.",
+      "Forgetting to await a promise or to handle its rejection.",
+      "Depending on == coercion, or on 'this' without understanding how it is bound."
+    ],
+    "interview": [
+      {
+        "q": "How does the JavaScript event loop work?",
+        "a": "JavaScript runs one call stack. Async operations hand work to the environment; when they finish, callbacks are queued. Microtasks (promise continuations) run before the next macrotask, and the loop picks the next task only when the stack is empty.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is a closure?",
+        "a": "A function together with the variables from the scope where it was defined. It keeps access to those variables after the outer function returns.",
+        "level": "intermediate"
+      },
+      {
+        "q": "== versus ===?",
+        "a": "== converts types before comparing; === requires equal type and value. Prefer ===.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "typescript",
+    "section": "languages",
+    "title": "TypeScript",
+    "summary": "JavaScript with a static type system on top. The checker runs at build time and the types are erased before the code runs.",
+    "level": "intermediate",
+    "prereqs": [
+      "javascript",
+      "type-systems"
+    ],
+    "related": [
+      "polymorphism",
+      "java",
+      "compiled-vs-interpreted"
+    ],
+    "next": "classes-objects",
+    "tags": [
+      "languages",
+      "typescript",
+      "web"
+    ],
+    "what": "TypeScript adds static types to JavaScript. The compiler checks types and then erases them, emitting plain JavaScript, so there is no runtime cost and no runtime type checking. It provides interfaces, generics, union and intersection types, and strong inference, and any valid JavaScript is valid TypeScript.",
+    "why": "Types catch a whole class of mistakes before the code runs and make large codebases navigable: autocomplete, safe renames, and precise contracts between modules. Most large JavaScript projects now use it.",
+    "mental": "A spell-checker and a set of blueprints for a language that otherwise lets you write anything. The blueprints are removed before the building opens; what remains is ordinary JavaScript that has already been checked against them.",
+    "points": [
+      "Structural typing: compatibility is by shape, not by declared name.",
+      "Union types and narrowing model 'one of several' precisely: type Shape = Circle | Rect, then switch on a discriminant.",
+      "Generics write reusable, type-safe code: function first<T>(xs: T[]): T | undefined.",
+      "strict mode enables null checks and other rules; turn it on for new projects.",
+      "Types exist only at compile time. Data from the network or storage still needs run-time validation.",
+      "any opts out of checking; unknown is the safe alternative that forces you to narrow first."
+    ],
+    "steps": [
+      "Write .ts source",
+      "Type-check",
+      "Erase types",
+      "Emit JavaScript",
+      "Run it anywhere JavaScript runs"
+    ],
+    "code": {
+      "lang": "typescript",
+      "title": "A discriminated union and an exhaustive switch",
+      "code": "type Shape =\n  | { kind: \"circle\"; r: number }\n  | { kind: \"rect\"; w: number; h: number };\n\nfunction area(s: Shape): number {\n  switch (s.kind) {\n    case \"circle\": return Math.PI * s.r ** 2;\n    case \"rect\": return s.w * s.h;\n  }\n}\n\nconsole.log(area({ kind: \"rect\", w: 3, h: 4 }));   // 12"
+    },
+    "usage": [
+      "Large front-end and Node.js codebases",
+      "Typed API clients and shared contracts",
+      "Libraries that need a safe public interface"
+    ],
+    "mistakes": [
+      "Sprinkling any and casts until the checker is silent and useless.",
+      "Trusting types on parsed JSON without validating it.",
+      "Fighting inference by annotating everything instead of the boundaries."
+    ],
+    "interview": [
+      {
+        "q": "What does TypeScript compile to, and are types available at run time?",
+        "a": "It compiles to plain JavaScript and erases the types, so they are not available at run time. Any run-time check must be written as ordinary JavaScript.",
+        "level": "beginner"
+      },
+      {
+        "q": "any versus unknown?",
+        "a": "any disables checking for a value. unknown accepts any value but forces you to narrow it with a check before use, so it stays type-safe.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is a discriminated union?",
+        "a": "A union of object types that share a literal-typed field such as kind. Checking that field lets the compiler narrow to one member, and lets it warn when a case is missed.",
+        "level": "intermediate"
+      }
+    ]
+  }
+]

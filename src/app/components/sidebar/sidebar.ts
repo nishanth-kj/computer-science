@@ -1,7 +1,7 @@
 import { Component, computed, inject, output, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { NavigationEnd, Router, RouterLink } from "@angular/router";
-import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS, topicHref } from "@/lib/content";
+import { ALL_NAV, PHASES, SECTION_BY_ID, SECTION_GROUPS, topicHref } from "@/lib/content";
 import { filter, map, startWith } from "rxjs";
 import { Icon } from "@/app/components/ui/icon";
 
@@ -17,6 +17,7 @@ const DEFAULT_OPEN: Record<string, boolean> = Object.fromEntries(
 })
 export class Sidebar {
   readonly topicHref = topicHref;
+  readonly phase = PHASES[0];
   readonly navigated = output<void>();
   readonly q = signal("");
   readonly open = signal<Record<string, boolean>>({ ...DEFAULT_OPEN });

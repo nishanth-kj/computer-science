@@ -1,6 +1,7 @@
 import {
   ALL_NAV,
   PATH_BY_ID,
+  PHASES,
   SECTION_BY_ID,
   SECTION_GROUPS,
   getTopic,
@@ -143,6 +144,30 @@ export function describePath(path: string): SeoPage {
     });
   }
 
+  const phase = PHASES.find((p) => p.id === head);
+  if (phase && rest.length === 0) {
+    return page({
+      kind: "collection",
+      description: phase.blurb,
+      keywords: [phase.title, phase.subtitle, "operating systems", "databases", "networks", "programming"],
+      breadcrumbs: [
+        { name: SITE_NAME, path: "/" },
+        { name: `${phase.title} · ${phase.subtitle}`, path: `/${phase.id}` },
+      ],
+    });
+  }
+
+  if ((head === "programming" || head === "program") && rest.length === 0) {
+    return page({
+      kind: "collection",
+      description: "Programming fundamentals, languages, object-oriented design, and data structures and algorithms.",
+      breadcrumbs: [
+        { name: SITE_NAME, path: "/" },
+        { name: "Programming", path: "/programming" },
+      ],
+    });
+  }
+
   const group = SECTION_GROUPS.find((g) => g.id === head);
   if (group && rest.length === 0 && !(head in SECTION_BY_ID)) {
     return page({
@@ -151,17 +176,6 @@ export function describePath(path: string): SeoPage {
       breadcrumbs: [
         { name: SITE_NAME, path: "/" },
         { name: group.title, path: `/${group.id}` },
-      ],
-    });
-  }
-
-  if ((head === "programming" || head === "program") && rest.length === 0) {
-    return page({
-      kind: "collection",
-      description: "Languages, fundamentals, object-oriented design, data structures, and discrete mathematics.",
-      breadcrumbs: [
-        { name: SITE_NAME, path: "/" },
-        { name: "Programming", path: "/programming" },
       ],
     });
   }

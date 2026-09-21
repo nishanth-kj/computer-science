@@ -1,0 +1,1411 @@
+[
+  {
+    "slug": "big-o",
+    "section": "dsa",
+    "title": "Big-O and Complexity",
+    "summary": "How an algorithm's cost grows with input size, ignoring constants. The language for comparing solutions before you run them.",
+    "level": "beginner",
+    "prereqs": [
+      "loops",
+      "functions"
+    ],
+    "related": [
+      "sorting",
+      "binary-search",
+      "hash-tables"
+    ],
+    "next": "arrays",
+    "tags": [
+      "dsa",
+      "analysis"
+    ],
+    "what": "Big-O notation describes how the cost of an algorithm — steps or memory — grows as the input size n grows, dropping constant factors and lower-order terms. O(1) is constant, O(log n) logarithmic, O(n) linear, O(n log n) linearithmic, O(n²) quadratic, O(2ⁿ) exponential. It is an upper bound, usually stated for the worst case; average-case and amortized costs are separate statements.",
+    "why": "A program that is fine on 100 items can take days on a million. Big-O tells you which part of the design will hurt at scale before you run anything, and it is the shared vocabulary of every interview and design review.",
+    "mental": "A taxi meter and a distance. Ignore the starting fare and the exact route; ask only how the price grows as the trip gets longer. Doubling the input on an O(n) algorithm doubles the cost; on O(n²) it quadruples; on O(log n) it adds one step.",
+    "points": [
+      "Count how the number of basic operations grows with n; drop constants (3n is O(n)) and smaller terms (n² + n is O(n²)).",
+      "Sequential steps add (O(n) then O(n) is O(n)); nested loops multiply (O(n) inside O(n) is O(n²)).",
+      "Halving the problem each step gives O(log n); doing linear work per halving gives O(n log n).",
+      "Space complexity counts extra memory beyond the input. Time and space often trade off: a hash set makes lookups O(1) at the cost of O(n) memory.",
+      "Amortized cost averages over a sequence: appending to a dynamic array is O(1) amortized even though an occasional resize costs O(n).",
+      "Big-O hides constants. For small n, or when memory locality dominates, an O(n²) loop can beat an O(n log n) one."
+    ],
+    "steps": [
+      "Pick the input size n",
+      "Count the dominant operation",
+      "Nested loops multiply, sequences add",
+      "Drop constants and small terms",
+      "State the worst case and the space"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "The same question at two costs",
+      "code": "def has_duplicate_quadratic(xs):        # O(n^2) time, O(1) space\n    for i in range(len(xs)):\n        for j in range(i + 1, len(xs)):\n            if xs[i] == xs[j]:\n                return True\n    return False\n\ndef has_duplicate_linear(xs):           # O(n) time, O(n) space\n    seen = set()\n    for x in xs:\n        if x in seen:\n            return True\n        seen.add(x)\n    return False"
+    },
+    "complexity": {
+      "time": "O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ)",
+      "space": "Count the extra memory the algorithm allocates, not the input",
+      "tradeoffs": [
+        "Spending memory (a set, a cache) to save time is the most common trade",
+        "Constants and cache behavior matter at small n; asymptotics win at large n",
+        "Worst case, average case, and amortized cost answer different questions"
+      ]
+    },
+    "usage": [
+      "Choosing between two designs before writing either",
+      "Explaining why a query or endpoint slows down as data grows",
+      "Interview answers: state the cost of every solution you propose"
+    ],
+    "mistakes": [
+      "Reading O(n) as 'n operations' — it is a growth rate, not an exact count.",
+      "Forgetting the hidden loops inside library calls (x in list, string concatenation, list.insert(0, x)).",
+      "Optimizing an O(n) loop while an O(n²) one sits beside it."
+    ],
+    "interview": [
+      {
+        "q": "What is the time complexity of a nested loop over the same array?",
+        "a": "Typically O(n²): the inner loop runs about n times for each of the n outer iterations. If the inner range shrinks (j from i+1), it is still n²/2 comparisons, which is O(n²).",
+        "level": "beginner"
+      },
+      {
+        "q": "What does amortized O(1) mean?",
+        "a": "Averaged over a sequence of operations, each costs constant time, even if a few are expensive. Appending to a dynamic array occasionally copies everything, but resizes double the capacity, so the total cost of n appends is O(n).",
+        "level": "intermediate"
+      },
+      {
+        "q": "Can an O(n²) algorithm be faster than an O(n log n) one?",
+        "a": "Yes for small n or when the constants and memory access patterns favor it; that is why real sorts switch to insertion sort on tiny ranges. Asymptotic order only wins as n grows.",
+        "level": "intermediate"
+      }
+    ],
+    "extra": [
+      {
+        "type": "table",
+        "headers": [
+          "Class",
+          "Operations at n = 1,000",
+          "Typical source"
+        ],
+        "rows": [
+          [
+            "O(1)",
+            "1",
+            "Array index, hash lookup"
+          ],
+          [
+            "O(log n)",
+            "≈ 10",
+            "Binary search, balanced tree"
+          ],
+          [
+            "O(n)",
+            "1,000",
+            "Linear scan"
+          ],
+          [
+            "O(n log n)",
+            "≈ 10,000",
+            "Merge sort, heap sort"
+          ],
+          [
+            "O(n²)",
+            "1,000,000",
+            "Nested loops, bubble sort"
+          ],
+          [
+            "O(2ⁿ)",
+            "≈ 10³⁰¹",
+            "Trying every subset"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "arrays",
+    "section": "dsa",
+    "title": "Arrays",
+    "summary": "A contiguous block of same-sized elements. Constant-time indexing, cache-friendly scans, and costly middle inserts.",
+    "level": "beginner",
+    "prereqs": [
+      "variables",
+      "loops",
+      "big-o"
+    ],
+    "related": [
+      "hash-tables",
+      "pointers",
+      "binary-search"
+    ],
+    "next": "linked-lists",
+    "tags": [
+      "dsa",
+      "sequence"
+    ],
+    "what": "An array stores elements one after another in memory. Because every element has the same size, the address of element i is base + i × size, so any element is reached in constant time. Dynamic arrays (Python list, Java ArrayList, C++ vector) grow by allocating a bigger block, copying, and doubling capacity, which makes appends O(1) amortized.",
+    "why": "Arrays are the default sequence and the foundation for strings, heaps, hash tables, matrices, and buffers. Their contiguous layout is friendly to the CPU cache, so they often beat 'better' asymptotic structures in practice.",
+    "mental": "A row of numbered mailboxes of equal size. You can jump to box 500 without opening the first 499. But to insert a new box at position 0 you must slide every other box one place over.",
+    "points": [
+      "Index read and write are O(1): address = base + i × element size.",
+      "Search in an unsorted array is O(n); in a sorted array binary search makes it O(log n).",
+      "Insert or delete in the middle is O(n) because later elements shift.",
+      "Append at the end is O(1) amortized for a dynamic array; each resize copies all elements.",
+      "Contiguous memory means sequential scans use the cache well.",
+      "Bounds matter: reading outside the array is an error in safe languages and undefined behavior in C."
+    ],
+    "steps": [
+      "Allocate a contiguous block",
+      "Compute base + i × size",
+      "Read or write the slot",
+      "On overflow allocate double and copy",
+      "Shift elements for middle inserts"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "What is cheap and what is not",
+      "code": "a = [10, 20, 30]\na[1] = 25            # O(1): index write\na.append(40)         # O(1) amortized\na.insert(0, 5)       # O(n): every element shifts right\nprint(a)             # [5, 10, 25, 30, 40]\nprint(30 in a)       # O(n): linear scan -> True"
+    },
+    "complexity": {
+      "time": "Index O(1); search O(n); insert/delete O(n); append O(1) amortized",
+      "space": "O(n)",
+      "tradeoffs": [
+        "Best locality and the smallest overhead per element",
+        "Middle inserts and deletes are expensive",
+        "Fixed-size arrays cannot grow; dynamic arrays pay for occasional copies"
+      ]
+    },
+    "usage": [
+      "The default list of things in nearly every program",
+      "Buffers, pixel data, and matrices",
+      "The backing store for heaps, hash tables, and stacks"
+    ],
+    "mistakes": [
+      "Using insert(0, x) or pop(0) in a loop and getting O(n²).",
+      "Off-by-one errors at the ends (n elements, indexes 0 to n-1).",
+      "Assuming a resize never happens and holding a pointer into the old block."
+    ],
+    "interview": [
+      {
+        "q": "Why is array indexing O(1)?",
+        "a": "Elements are contiguous and equally sized, so the address of element i is the base address plus i times the element size — one multiplication and one addition regardless of n.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why is append amortized O(1) for a dynamic array?",
+        "a": "When full, the array allocates double the capacity and copies everything, costing O(n). But that happens after n cheap appends, so the average cost per append stays constant.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Array versus linked list?",
+        "a": "Arrays give O(1) indexing and cache-friendly scans but O(n) middle inserts. Linked lists give O(1) insert at a known node but O(n) access and poor locality. In practice arrays win most of the time.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "linked-lists",
+    "section": "dsa",
+    "title": "Linked Lists",
+    "summary": "Nodes that each hold a value and a pointer to the next. Cheap splicing, no random access.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays",
+      "pointers"
+    ],
+    "related": [
+      "queue",
+      "bst"
+    ],
+    "next": "stack-ds",
+    "tags": [
+      "dsa",
+      "sequence",
+      "pointers"
+    ],
+    "what": "A linked list stores each element in a node that also holds a reference to the next node. A singly linked list has one direction; a doubly linked list keeps previous pointers too. There is no contiguous block, so there is no index arithmetic: to reach the k-th element you follow k links from the head.",
+    "why": "Linked lists teach pointer manipulation, the same skill needed for trees and graphs, and they give O(1) insertion and removal when you already hold the node. They also show why arrays usually win: pointer chasing is slow on modern hardware.",
+    "mental": "A treasure hunt. Each clue tells you where the next one is, and you cannot skip ahead. Adding a new clue in the middle is trivial — rewrite two notes — but finding clue number 500 means following 499 notes.",
+    "points": [
+      "Each node: value plus next (and prev in a doubly linked list).",
+      "Insert or delete after a known node: change a couple of pointers, O(1).",
+      "Access or search by position: walk from the head, O(n).",
+      "Keeping a tail pointer makes appends O(1); a doubly linked list makes removal of a known node O(1).",
+      "Nodes are scattered in memory, so traversal has poor cache locality and per-node pointer overhead.",
+      "Classic interview moves: reverse a list, detect a cycle with slow and fast pointers, and merge two sorted lists."
+    ],
+    "steps": [
+      "Create a node",
+      "Point its next at the successor",
+      "Point the predecessor at the node",
+      "Walk by following next",
+      "Stop at null"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Reversing a list by flipping links",
+      "code": "class Node:\n    def __init__(self, value, next=None):\n        self.value, self.next = value, next\n\ndef reverse(head):\n    prev = None\n    while head:\n        nxt = head.next      # remember the rest\n        head.next = prev     # flip this link\n        prev, head = head, nxt\n    return prev\n\nhead = Node(1, Node(2, Node(3)))\nhead = reverse(head)\nprint(head.value, head.next.value, head.next.next.value)   # 3 2 1"
+    },
+    "complexity": {
+      "time": "Access/search O(n); insert/delete at a known node O(1)",
+      "space": "O(n) plus one pointer per node",
+      "tradeoffs": [
+        "Cheap splicing and no resizing",
+        "No random access and poor cache behavior",
+        "Extra memory for pointers"
+      ]
+    },
+    "usage": [
+      "Free lists and allocators, LRU caches (with a hash map), and OS process queues",
+      "Building blocks for stacks, queues, and adjacency lists",
+      "Undo history and browser navigation"
+    ],
+    "mistakes": [
+      "Losing the rest of the list by overwriting next before saving it.",
+      "Forgetting the empty-list and single-node cases.",
+      "Choosing a linked list for speed when an array would be faster in practice."
+    ],
+    "interview": [
+      {
+        "q": "How do you detect a cycle in a linked list?",
+        "a": "Floyd's tortoise and hare: advance one pointer by one step and another by two. If there is a cycle they eventually meet; if the fast pointer reaches null there is none. It uses O(1) extra space.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why is inserting into a linked list O(1) but often slower than an array in practice?",
+        "a": "The pointer update is constant once you hold the node, but finding that node is O(n), and nodes scattered across memory cause cache misses, which arrays avoid.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What does a doubly linked list add?",
+        "a": "A prev pointer, so you can walk backward and remove a node in O(1) without finding its predecessor, at the cost of more memory and pointers to maintain.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "stack-ds",
+    "section": "dsa",
+    "title": "Stacks",
+    "summary": "Last in, first out. Push and pop at one end in constant time — the structure behind calls, undo, and depth-first search.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays"
+    ],
+    "related": [
+      "recursion",
+      "dfs",
+      "stack-and-heap"
+    ],
+    "next": "queue",
+    "tags": [
+      "dsa",
+      "lifo"
+    ],
+    "what": "A stack allows two main operations: push adds an element to the top and pop removes the top element. The last item in is the first out (LIFO). It can be built on an array or a linked list, and both make push, pop, and peek O(1).",
+    "why": "Whenever something must be undone in reverse order, a stack is the natural shape: function calls, undo history, backtracking, expression parsing, and depth-first search all reduce to one. The program's call stack is a literal instance.",
+    "mental": "A stack of plates in a cafeteria. You put a clean one on top and take one from the top. You never dig to the middle, and the plate placed last is the first you use.",
+    "points": [
+      "Operations: push, pop, peek, is_empty — each O(1).",
+      "The call stack is a stack of frames; recursion is an implicit use of it.",
+      "Matching brackets, evaluating postfix expressions, and parsing use an explicit stack.",
+      "Depth-first search replaces recursion with an explicit stack to avoid recursion limits.",
+      "A monotonic stack keeps elements sorted as you push, solving 'next greater element' problems in O(n)."
+    ],
+    "steps": [
+      "Push onto the top",
+      "Peek at the top",
+      "Pop from the top",
+      "Repeat until empty",
+      "Underflow means an unmatched pop"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Balanced brackets with a stack",
+      "code": "def balanced(s):\n    pairs = {\")\": \"(\", \"]\": \"[\", \"}\": \"{\"}\n    stack = []\n    for ch in s:\n        if ch in \"([{\":\n            stack.append(ch)\n        elif ch in pairs:\n            if not stack or stack.pop() != pairs[ch]:\n                return False\n    return not stack\n\nprint(balanced(\"{[()]}\"), balanced(\"([)]\"))   # True False"
+    },
+    "complexity": {
+      "time": "Push, pop, peek O(1)",
+      "space": "O(n)",
+      "tradeoffs": [
+        "Simple and fast",
+        "Access is limited to the top; no random access or search"
+      ]
+    },
+    "usage": [
+      "Call stacks and undo/redo",
+      "Expression evaluation and parsers",
+      "Depth-first search and backtracking"
+    ],
+    "mistakes": [
+      "Popping from an empty stack without checking.",
+      "Forgetting to check that the stack is empty at the end (unmatched openers).",
+      "Using recursion where a stack would avoid the depth limit."
+    ],
+    "interview": [
+      {
+        "q": "Why are stacks used for expression evaluation?",
+        "a": "Operators and operands must be resolved in reverse order of appearance, with inner expressions finishing first. A stack holds pending operands and operators until their partners arrive.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How do you implement a stack with an array?",
+        "a": "Keep an array and a top index or length. Push writes at the end (growing if needed) and pop removes from the end, both O(1) amortized.",
+        "level": "beginner"
+      },
+      {
+        "q": "How is recursion related to a stack?",
+        "a": "Each call pushes a frame onto the call stack, and each return pops it. Any recursion can be rewritten as a loop with an explicit stack.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "queue",
+    "section": "dsa",
+    "title": "Queues",
+    "summary": "First in, first out. Enqueue at the back and dequeue at the front — the shape of fairness, buffers, and breadth-first search.",
+    "level": "beginner",
+    "prereqs": [
+      "arrays",
+      "linked-lists"
+    ],
+    "related": [
+      "bfs",
+      "heaps",
+      "fcfs",
+      "round-robin"
+    ],
+    "next": "hash-tables",
+    "tags": [
+      "dsa",
+      "fifo"
+    ],
+    "what": "A queue removes elements in the order they were added (FIFO). Enqueue adds to the back and dequeue removes from the front. A naive array makes dequeue O(n), so real queues use a linked list, a circular buffer, or two indices, giving O(1) at both ends. A deque allows adding and removing at either end.",
+    "why": "Queues model waiting: requests, print jobs, packets, and tasks. They are the buffer between a producer and a consumer that run at different speeds, and they drive breadth-first search and first-come-first-served scheduling.",
+    "mental": "The line at a coffee shop. People join at the back and are served from the front, in order. Nobody is served twice, and nobody jumps ahead.",
+    "points": [
+      "Operations: enqueue, dequeue, peek, is_empty — each O(1) in a proper implementation.",
+      "A circular buffer reuses a fixed array by wrapping the head and tail indices.",
+      "A bounded queue applies back-pressure: when full, producers block or drop.",
+      "A priority queue dequeues by priority, not arrival; it is usually a heap.",
+      "OS schedulers use queues (FCFS, round robin), and network routers buffer packets in queues."
+    ],
+    "steps": [
+      "Enqueue at the back",
+      "Wait behind earlier items",
+      "Dequeue from the front",
+      "Process in arrival order",
+      "Empty means nothing to serve"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "A deque is a real queue",
+      "code": "from collections import deque\n\nq = deque()\nq.append(\"job-1\")        # enqueue at the back: O(1)\nq.append(\"job-2\")\nprint(q.popleft())       # dequeue from the front: O(1) -> job-1\n# list.pop(0) would be O(n): never use a plain list as a queue"
+    },
+    "complexity": {
+      "time": "Enqueue, dequeue, peek O(1) with a deque or circular buffer",
+      "space": "O(n)",
+      "tradeoffs": [
+        "Preserves arrival order and decouples producers from consumers",
+        "An unbounded queue hides overload until memory runs out"
+      ]
+    },
+    "usage": [
+      "Task and message queues",
+      "Breadth-first search",
+      "Buffers in networking, I/O, and streaming pipelines"
+    ],
+    "mistakes": [
+      "Using a list and pop(0), so each dequeue costs O(n).",
+      "An unbounded queue with a slow consumer, ending in an out-of-memory failure.",
+      "Confusing a queue with a priority queue when order should depend on urgency."
+    ],
+    "interview": [
+      {
+        "q": "How do you implement a queue with two stacks?",
+        "a": "Push onto an input stack. When you need to dequeue and the output stack is empty, pop everything from input onto output, which reverses the order. Each element moves at most twice, so operations are O(1) amortized.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why use a circular buffer?",
+        "a": "It gives a fixed-size queue in one array with O(1) enqueue and dequeue and no shifting, by wrapping the head and tail indices with modulo arithmetic.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Queue versus stack?",
+        "a": "A queue is first in, first out; a stack is last in, first out. Use a queue when order of arrival matters (BFS, scheduling) and a stack when you must unwind in reverse (undo, DFS, recursion).",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "hash-tables",
+    "section": "dsa",
+    "title": "Hash Tables",
+    "summary": "Turn a key into an array index with a hash function. Average constant-time lookup, insert, and delete.",
+    "level": "intermediate",
+    "prereqs": [
+      "arrays",
+      "big-o"
+    ],
+    "related": [
+      "indexes",
+      "bst"
+    ],
+    "next": "sorting",
+    "tags": [
+      "dsa",
+      "hashing",
+      "map"
+    ],
+    "viz": "hash-collisions",
+    "lab": "hash-collisions",
+    "what": "A hash table stores key-value pairs in an array of buckets. A hash function converts the key into an integer, and the index is that integer modulo the array size. Different keys can land in the same bucket (a collision), handled by chaining (each bucket holds a list) or open addressing (probe for another free slot). When the load factor grows too high the table resizes and rehashes.",
+    "why": "It is the most useful data structure in practice: dictionaries, sets, caches, symbol tables, deduplication, and counting all rely on average O(1) lookups. It also turns many O(n²) solutions into O(n).",
+    "mental": "A coat check. You hand over a coat and get a numbered ticket; the number tells the attendant exactly which hook to check, so retrieval does not depend on how many coats there are. Two coats on the same hook is a collision.",
+    "points": [
+      "index = hash(key) mod capacity. A good hash function spreads keys evenly and is deterministic.",
+      "Keys must be hashable: equal keys must give equal hashes, and the key must not change while stored (use immutable keys).",
+      "Chaining stores colliding entries in a list per bucket; open addressing probes for the next free slot.",
+      "Load factor = entries / buckets. Keep it below about 0.7 by doubling and rehashing, which is O(n) but amortized away.",
+      "No ordering: iteration order is arbitrary in principle (Python dicts preserve insertion order, but the structure is still a hash table).",
+      "Worst case is O(n) if many keys collide, which is why hash functions are randomized in security-sensitive code."
+    ],
+    "steps": [
+      "Hash the key to an integer",
+      "Take it modulo the bucket count",
+      "Look in that bucket",
+      "Compare keys to resolve collisions",
+      "Resize when the load factor is high"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "A tiny hash map with chaining",
+      "code": "class ChainedMap:\n    def __init__(self, buckets=8):\n        self.buckets = [[] for _ in range(buckets)]\n\n    def _bucket(self, key):\n        return self.buckets[hash(key) % len(self.buckets)]\n\n    def put(self, key, value):\n        b = self._bucket(key)\n        for i, (k, _) in enumerate(b):\n            if k == key:\n                b[i] = (key, value)       # update existing key\n                return\n        b.append((key, value))\n\n    def get(self, key):\n        for k, v in self._bucket(key):\n            if k == key:\n                return v\n        raise KeyError(key)\n\nm = ChainedMap()\nm.put(\"cat\", 1)\nm.put(\"dog\", 2)\nprint(m.get(\"dog\"))   # 2"
+    },
+    "complexity": {
+      "time": "Average O(1) for get/put/delete; worst case O(n)",
+      "space": "O(n) plus spare capacity",
+      "tradeoffs": [
+        "Fastest exact-match lookup available",
+        "No ordering and no range queries — use a tree or sorted array for those",
+        "Resizing causes occasional O(n) pauses; poor hashes cause collisions"
+      ]
+    },
+    "usage": [
+      "Dictionaries, sets, and caches in every language",
+      "Counting, grouping, and deduplicating records",
+      "Database hash indexes and hash joins"
+    ],
+    "mistakes": [
+      "Using a mutable object as a key and then mutating it.",
+      "Assuming iteration order carries meaning.",
+      "Writing a hash function that sends most keys to few buckets."
+    ],
+    "interview": [
+      {
+        "q": "How does a hash table handle collisions?",
+        "a": "Chaining keeps a list per bucket; open addressing probes other slots (linear probing, quadratic probing, double hashing). Both keep lookups near O(1) while the load factor stays low.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why is the average lookup O(1) but the worst case O(n)?",
+        "a": "With a good hash and a low load factor each bucket holds a few entries, so lookups take constant time. If many keys land in one bucket, lookup degrades to scanning that bucket, which can be all n entries.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Hash table or balanced tree?",
+        "a": "A hash table gives O(1) average exact lookups and no order. A balanced tree gives O(log n) lookups but keeps keys sorted, supporting range queries and ordered iteration.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "sorting",
+    "section": "dsa",
+    "title": "Sorting",
+    "summary": "Arrange items in order. Comparison sorts cannot beat O(n log n); merge sort and quicksort get there by dividing the problem.",
+    "level": "intermediate",
+    "prereqs": [
+      "arrays",
+      "recursion",
+      "big-o"
+    ],
+    "related": [
+      "heaps",
+      "hash-tables",
+      "dynamic-programming"
+    ],
+    "next": "binary-search",
+    "tags": [
+      "dsa",
+      "algorithms"
+    ],
+    "what": "Sorting rearranges a sequence into an order defined by a comparison. Simple sorts (bubble, insertion, selection) take O(n²). Merge sort splits the list, sorts each half, and merges in O(n log n); quicksort partitions around a pivot and averages O(n log n); heap sort uses a heap. Any comparison-based sort needs Ω(n log n) comparisons in the worst case. Stable sorts keep equal items in their original order.",
+    "why": "Sorted data unlocks binary search, merging, grouping, deduplication, and range queries — and databases sort constantly for ORDER BY, joins, and index builds. Knowing the trade-offs (stability, memory, worst case) tells you which sort a library uses and why.",
+    "mental": "Sorting a deck of cards by splitting the deck in half, sorting each pile separately (by splitting again), and then zipping the two sorted piles together, always taking the smaller of the two top cards. That zip is merge sort's merge.",
+    "points": [
+      "Insertion sort is O(n²) worst case but O(n) on nearly sorted data, so real sorts use it for tiny ranges.",
+      "Merge sort: O(n log n) in every case, stable, needs O(n) extra space.",
+      "Quicksort: O(n log n) on average, O(n²) worst case with bad pivots, in place, not stable.",
+      "Heap sort: O(n log n) worst case, O(1) extra space, not stable.",
+      "Counting and radix sort avoid comparisons and run in O(n + k) when keys are small integers.",
+      "Python's sort() and Java's object sort use Timsort: a stable merge and insertion hybrid that exploits existing runs."
+    ],
+    "steps": [
+      "Split into halves",
+      "Sort each half recursively",
+      "Compare the front of each half",
+      "Take the smaller item",
+      "Append the leftovers"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Merge sort",
+      "code": "def merge_sort(xs):\n    if len(xs) <= 1:\n        return xs\n    mid = len(xs) // 2\n    left, right = merge_sort(xs[:mid]), merge_sort(xs[mid:])\n    out, i, j = [], 0, 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:          # <= keeps equal items in order (stable)\n            out.append(left[i]); i += 1\n        else:\n            out.append(right[j]); j += 1\n    return out + left[i:] + right[j:]\n\nprint(merge_sort([5, 2, 9, 1, 5, 6]))    # [1, 2, 5, 5, 6, 9]"
+    },
+    "complexity": {
+      "time": "O(n log n) for the good general-purpose sorts; Ω(n log n) lower bound for comparison sorts",
+      "space": "O(1) to O(n) depending on the algorithm",
+      "tradeoffs": [
+        "Merge sort is predictable and stable but uses extra memory",
+        "Quicksort is fast in practice and in place but has a bad worst case and is not stable",
+        "Non-comparison sorts beat n log n only when keys have a limited range"
+      ]
+    },
+    "usage": [
+      "ORDER BY, merge joins, and index builds in databases",
+      "Preparing data for binary search and deduplication",
+      "External sorting for files larger than memory"
+    ],
+    "mistakes": [
+      "Writing your own sort when the standard library's is faster and correct.",
+      "Ignoring stability when sorting by several keys in passes.",
+      "Choosing a pivot naively and hitting quicksort's O(n²) case on sorted input."
+    ],
+    "interview": [
+      {
+        "q": "Why can't a comparison sort beat O(n log n)?",
+        "a": "n items have n! possible orderings, and each comparison halves the possibilities at best, so at least log₂(n!) ≈ n log n comparisons are needed in the worst case.",
+        "level": "advanced"
+      },
+      {
+        "q": "What does it mean for a sort to be stable?",
+        "a": "Items with equal keys keep their original relative order. It lets you sort by one key and then another and preserve the first ordering among ties.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Merge sort versus quicksort?",
+        "a": "Merge sort guarantees O(n log n) and is stable, but uses O(n) extra space. Quicksort is usually faster in practice and sorts in place, but its worst case is O(n²) and it is not stable.",
+        "level": "intermediate"
+      }
+    ],
+    "extra": [
+      {
+        "type": "table",
+        "headers": [
+          "Algorithm",
+          "Best",
+          "Average",
+          "Worst",
+          "Extra space",
+          "Stable"
+        ],
+        "rows": [
+          [
+            "Insertion",
+            "O(n)",
+            "O(n²)",
+            "O(n²)",
+            "O(1)",
+            "Yes"
+          ],
+          [
+            "Merge",
+            "O(n log n)",
+            "O(n log n)",
+            "O(n log n)",
+            "O(n)",
+            "Yes"
+          ],
+          [
+            "Quick",
+            "O(n log n)",
+            "O(n log n)",
+            "O(n²)",
+            "O(log n)",
+            "No"
+          ],
+          [
+            "Heap",
+            "O(n log n)",
+            "O(n log n)",
+            "O(n log n)",
+            "O(1)",
+            "No"
+          ],
+          [
+            "Counting",
+            "O(n + k)",
+            "O(n + k)",
+            "O(n + k)",
+            "O(k)",
+            "Yes"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "binary-search",
+    "section": "dsa",
+    "title": "Binary Search",
+    "summary": "Halve a sorted search space each step. O(log n) lookups — and a template for searching on any monotonic condition.",
+    "level": "intermediate",
+    "prereqs": [
+      "sorting",
+      "arrays"
+    ],
+    "related": [
+      "indexes",
+      "b-trees"
+    ],
+    "next": "bst",
+    "tags": [
+      "dsa",
+      "search"
+    ],
+    "what": "Binary search finds a target in a sorted array by comparing it with the middle element and discarding the half that cannot contain it, repeating until the target is found or the range is empty. It needs random access and sorted data. The same idea — halve the range using a yes/no test — also finds the smallest value that satisfies a monotonic condition ('binary search on the answer').",
+    "why": "Searching a billion sorted items takes about 30 steps. Nearly every index, from B-trees to sorted files, applies this halving idea, and it is famously easy to get subtly wrong, so it is a staple of interviews.",
+    "mental": "Guessing a number between 1 and 100 with 'higher' or 'lower' feedback. Guess 50; if it is higher, the answer is in 51–100. Each guess throws out half the remaining numbers, so seven guesses are enough.",
+    "points": [
+      "Precondition: the data is sorted (or the predicate is monotonic: false, false, …, true, true).",
+      "Keep an invariant: if the target exists, it lies within [lo, hi]. Every step must shrink the range.",
+      "Use mid = lo + (hi - lo) // 2 to avoid overflow in fixed-width integers.",
+      "Off-by-one is the bug: decide whether hi is inclusive or exclusive and stay consistent.",
+      "Use bisect_left and bisect_right (Python) or Arrays.binarySearch (Java) instead of hand-rolling.",
+      "Binary search on the answer: find the minimum capacity, speed, or time for which a feasibility check passes."
+    ],
+    "steps": [
+      "Set lo and hi to the ends",
+      "Look at the middle element",
+      "Target smaller: keep the left half",
+      "Target larger: keep the right half",
+      "Stop when found or the range is empty"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Binary search with a clear invariant",
+      "code": "def binary_search(xs, target):\n    lo, hi = 0, len(xs) - 1\n    while lo <= hi:\n        mid = lo + (hi - lo) // 2      # avoids overflow in fixed-width languages\n        if xs[mid] == target:\n            return mid\n        if xs[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1\n\nprint(binary_search([1, 3, 5, 7, 9], 7))   # 3"
+    },
+    "complexity": {
+      "time": "O(log n)",
+      "space": "O(1) iterative, O(log n) recursive",
+      "tradeoffs": [
+        "Enormous speed-up over linear search, but the data must be kept sorted",
+        "Requires random access; on a linked list it degrades to O(n)"
+      ]
+    },
+    "usage": [
+      "Lookups in sorted arrays, files, and index pages",
+      "Finding insertion points (bisect) and ranges",
+      "Optimization: minimum feasible value for a monotonic check"
+    ],
+    "mistakes": [
+      "Applying it to unsorted data.",
+      "Infinite loops from lo = mid instead of mid + 1.",
+      "Integer overflow in (lo + hi) / 2 in fixed-width languages."
+    ],
+    "interview": [
+      {
+        "q": "What is the time complexity of binary search and why?",
+        "a": "O(log n): each step discards half of the remaining range, so after k steps n / 2ᵏ items remain, and the range is empty after about log₂ n steps.",
+        "level": "beginner"
+      },
+      {
+        "q": "How do you binary search for the first position where a condition becomes true?",
+        "a": "Keep lo and hi around the boundary; if the predicate at mid is true, move hi to mid (the answer may be mid), otherwise move lo to mid + 1. When lo == hi, that index is the first true.",
+        "level": "advanced"
+      },
+      {
+        "q": "Why is (lo + hi) // 2 a bug in some languages?",
+        "a": "With fixed-width integers lo + hi can overflow when both are large. lo + (hi - lo) // 2 stays in range.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "bst",
+    "section": "dsa",
+    "title": "Binary Search Trees",
+    "summary": "A tree where left descendants are smaller and right descendants are larger. Ordered data with O(log n) operations — when balanced.",
+    "level": "intermediate",
+    "prereqs": [
+      "recursion",
+      "linked-lists",
+      "binary-search"
+    ],
+    "related": [
+      "b-trees",
+      "hash-tables",
+      "tries"
+    ],
+    "next": "heaps",
+    "tags": [
+      "dsa",
+      "tree",
+      "search"
+    ],
+    "what": "A binary search tree (BST) stores keys in nodes, each with a left and a right child. For every node, all keys in its left subtree are smaller and all in its right subtree are larger. Search, insert, and delete follow one path from the root, so they cost O(height). An in-order traversal visits keys in sorted order. Self-balancing variants (AVL, red-black) keep the height at O(log n).",
+    "why": "A BST keeps data sorted while allowing fast inserts and lookups, which arrays (slow inserts) and hash tables (no order) cannot both do. Ordered maps and sets in standard libraries are balanced trees, and databases use the multiway cousin, the B-tree.",
+    "mental": "A game of 20 questions where each answer sends you left or right. At every node you compare and discard a whole side of the tree. If you always answer 'bigger', though, the tree degenerates into one long chain — a linked list.",
+    "points": [
+      "Invariant: left subtree < node < right subtree, at every node.",
+      "Search, insert, and delete are O(h), where h is the height.",
+      "Balanced: h ≈ log₂ n. Degenerate (inserting sorted keys): h = n and everything is O(n).",
+      "In-order traversal (left, node, right) yields sorted order.",
+      "Deleting a node with two children means replacing it with its in-order successor or predecessor.",
+      "Self-balancing trees (AVL, red-black) rotate to keep the height logarithmic; B-trees widen nodes to match disk pages."
+    ],
+    "steps": [
+      "Start at the root",
+      "Compare the key with the node",
+      "Go left if smaller, right if larger",
+      "Insert where the path ends",
+      "In-order visit gives sorted keys"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Insert and in-order traversal",
+      "code": "class Node:\n    def __init__(self, key):\n        self.key, self.left, self.right = key, None, None\n\ndef insert(root, key):\n    if root is None:\n        return Node(key)\n    if key < root.key:\n        root.left = insert(root.left, key)\n    elif key > root.key:\n        root.right = insert(root.right, key)\n    return root\n\ndef inorder(root):\n    return inorder(root.left) + [root.key] + inorder(root.right) if root else []\n\nroot = None\nfor k in [8, 3, 10, 1, 6]:\n    root = insert(root, k)\nprint(inorder(root))   # [1, 3, 6, 8, 10]"
+    },
+    "complexity": {
+      "time": "Search/insert/delete O(log n) balanced, O(n) worst case",
+      "space": "O(n)",
+      "tradeoffs": [
+        "Keeps keys ordered: range queries, min, max, predecessor, and successor are cheap",
+        "An unbalanced tree degrades to a list; balancing adds implementation complexity",
+        "More pointer chasing than an array, so slower in practice for small data"
+      ]
+    },
+    "usage": [
+      "Ordered maps and sets (TreeMap, std::map)",
+      "Database indexes (B-trees and B+ trees are the disk-friendly version)",
+      "Schedulers and interval structures using balanced trees"
+    ],
+    "mistakes": [
+      "Assuming a plain BST is always O(log n).",
+      "Forgetting to handle duplicate keys deliberately.",
+      "Implementing delete with two children incorrectly."
+    ],
+    "interview": [
+      {
+        "q": "What is the worst case of a BST and how do you avoid it?",
+        "a": "Inserting keys in sorted order makes a chain of height n, so operations are O(n). Use a self-balancing tree (AVL, red-black) or randomize insertion order.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How do you validate that a tree is a BST?",
+        "a": "Recursively pass down the allowed range: each node's key must be between the lower and upper bounds inherited from its ancestors, not just larger than its left child and smaller than its right child. Alternatively check that in-order output is strictly increasing.",
+        "level": "advanced"
+      },
+      {
+        "q": "Why do databases use B-trees rather than binary trees?",
+        "a": "A B-tree node holds many keys and matches a disk page, so one read narrows the search by a large factor and the tree is very shallow. A binary tree would need many more page reads.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "heaps",
+    "section": "dsa",
+    "title": "Heaps and Priority Queues",
+    "summary": "A tree stored in an array where every parent is smaller (min-heap) than its children. Constant-time min and logarithmic push/pop.",
+    "level": "intermediate",
+    "prereqs": [
+      "arrays",
+      "bst"
+    ],
+    "related": [
+      "dijkstra",
+      "sorting",
+      "queue",
+      "priority-scheduling"
+    ],
+    "next": "tries",
+    "tags": [
+      "dsa",
+      "tree",
+      "priority-queue"
+    ],
+    "what": "A binary heap is a complete binary tree stored in an array, where each parent is less than or equal to its children (min-heap) or greater than or equal (max-heap). The root is always the extreme element. For index i, the children are at 2i+1 and 2i+2 and the parent at (i-1)//2. Push adds at the end and sifts up; pop removes the root, moves the last element to the top, and sifts down. Both are O(log n).",
+    "why": "Whenever you repeatedly need 'the next most urgent thing' — the shortest job, the closest node, the top-k values, the next timer — a heap does it in O(log n) without keeping everything sorted. It implements priority queues, Dijkstra's algorithm, and heap sort.",
+    "mental": "A tournament bracket kept only at the top. You always know the champion instantly. When the champion leaves, you promote a replacement and let it sink to where it belongs; you never bother ranking the rest fully.",
+    "points": [
+      "Shape property: a complete tree, so it packs into an array with no pointers.",
+      "Heap property: parent ≤ children (min-heap). Siblings are not ordered relative to each other.",
+      "peek is O(1); push and pop are O(log n) because they follow one root-to-leaf path.",
+      "Building a heap from n elements with heapify takes O(n), not O(n log n).",
+      "Python's heapq is a min-heap on a list; store negatives or tuples for max-heaps and priorities.",
+      "Top-k of a stream: keep a heap of size k and compare each new item with its root."
+    ],
+    "steps": [
+      "Push at the end of the array",
+      "Sift up while smaller than the parent",
+      "Pop takes the root",
+      "Move the last item to the root",
+      "Sift down while larger than a child"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "A priority queue with heapq",
+      "code": "import heapq\n\ntasks = []\nheapq.heappush(tasks, (2, \"write report\"))\nheapq.heappush(tasks, (1, \"fix outage\"))\nheapq.heappush(tasks, (3, \"lunch\"))\nprint(heapq.heappop(tasks))    # (1, 'fix outage')  smallest priority first\nprint(tasks[0])                # (2, 'write report') peek at the next"
+    },
+    "complexity": {
+      "time": "Peek O(1); push and pop O(log n); heapify O(n)",
+      "space": "O(n)",
+      "tradeoffs": [
+        "Fast access to the extreme element without full sorting",
+        "No efficient search for arbitrary items or ordered iteration",
+        "Priority updates need a decrease-key operation or lazy deletion"
+      ]
+    },
+    "usage": [
+      "Priority queues in schedulers and event simulations",
+      "Dijkstra's and Prim's algorithms",
+      "Top-k queries and running medians"
+    ],
+    "mistakes": [
+      "Expecting the heap's array to be sorted.",
+      "Using a max-heap where heapq only provides a min-heap.",
+      "Scanning the whole heap to find or remove an arbitrary item."
+    ],
+    "interview": [
+      {
+        "q": "How do you find the k largest elements in a stream?",
+        "a": "Keep a min-heap of size k. For each new item, if it is larger than the heap's root, replace the root with it. The heap always holds the k largest seen so far, at O(log k) per item.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why is heapify O(n)?",
+        "a": "Most nodes are near the bottom and sift only a few levels. Summing the work by level gives a geometric series bounded by O(n), even though a single sift can take O(log n).",
+        "level": "advanced"
+      },
+      {
+        "q": "Heap versus sorted array as a priority queue?",
+        "a": "A sorted array gives O(1) min but O(n) insertion. A heap gives O(log n) for both push and pop, which wins when you interleave inserts and removals.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "tries",
+    "section": "dsa",
+    "title": "Tries",
+    "summary": "A tree keyed by characters or bits that shares prefixes. Prefix search and longest-prefix match in time proportional to the key length.",
+    "level": "intermediate",
+    "prereqs": [
+      "bst",
+      "hash-tables"
+    ],
+    "related": [
+      "cidr",
+      "routing",
+      "dns"
+    ],
+    "next": "graphs",
+    "tags": [
+      "dsa",
+      "tree",
+      "strings"
+    ],
+    "what": "A trie (prefix tree) stores strings by character. Each node represents a prefix, edges are labeled with the next character, and a flag marks nodes where a whole word ends. Lookup, insert, and prefix queries cost O(L), where L is the length of the key, independent of how many keys are stored.",
+    "why": "Autocomplete, spell-checking, and dictionary lookups need prefix queries that hash tables cannot do. IP routers use a binary trie (or a compressed form) to find the longest matching prefix for a destination address.",
+    "mental": "A phone menu tree: press 1 for sales, then 2 for billing. Each key you type follows an edge, and every prefix you have typed so far is a node. Words that share a beginning share their path.",
+    "points": [
+      "Each node holds a map from character to child and an end-of-word flag.",
+      "Insert and search walk one edge per character: O(L).",
+      "Prefix search: walk the prefix, then collect all words below that node.",
+      "Memory can be large: many nodes with sparse children. Compressed tries (radix trees) merge single-child chains.",
+      "Bitwise tries key on bits of an IP address to implement longest-prefix match in routing tables.",
+      "Alternatives for exact match are hash tables; for ordered keys, balanced trees."
+    ],
+    "steps": [
+      "Start at the root",
+      "Follow the edge for the next character",
+      "Create it if missing",
+      "Mark the last node as a word end",
+      "A prefix query stops at that node"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Insert words, ask about prefixes",
+      "code": "class Trie:\n    def __init__(self):\n        self.children, self.end = {}, False\n\n    def insert(self, word):\n        node = self\n        for ch in word:\n            node = node.children.setdefault(ch, Trie())\n        node.end = True\n\n    def starts_with(self, prefix):\n        node = self\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True\n\nt = Trie()\nfor w in [\"car\", \"card\", \"care\"]:\n    t.insert(w)\nprint(t.starts_with(\"car\"), t.starts_with(\"cat\"))   # True False"
+    },
+    "complexity": {
+      "time": "Insert, search, and prefix check O(L) for key length L",
+      "space": "O(total characters) in the worst case; less with shared prefixes",
+      "tradeoffs": [
+        "Fast prefix operations that hash tables cannot do",
+        "Higher memory use than a hash set; compression helps"
+      ]
+    },
+    "usage": [
+      "Autocomplete and spell-check suggestions",
+      "IP routing: longest-prefix match in forwarding tables",
+      "Dictionary and word-game solvers"
+    ],
+    "mistakes": [
+      "Using a trie for plain exact lookups where a hash table is smaller and simpler.",
+      "Forgetting the end-of-word flag, so 'car' looks present when only 'card' was inserted.",
+      "Allocating a 26-element array per node for a huge alphabet."
+    ],
+    "interview": [
+      {
+        "q": "How does a trie support autocomplete?",
+        "a": "Walk the typed prefix to its node, then traverse the subtree below it, collecting words (optionally ranked by frequency). The cost depends on the prefix length plus the size of the results, not on the dictionary size.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Trie versus hash set for storing words?",
+        "a": "A hash set gives O(1) average exact membership with less memory. A trie supports prefix queries and ordered traversal in O(L), which a hash set cannot do efficiently.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How are tries used in IP routing?",
+        "a": "A binary trie is indexed by the bits of a destination address. Following the bits and remembering the deepest node that holds a route gives the longest matching prefix, which is the rule routers use.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "graphs",
+    "section": "dsa",
+    "title": "Graphs",
+    "summary": "Vertices connected by edges. The general model for networks, maps, dependencies, and relationships.",
+    "level": "intermediate",
+    "prereqs": [
+      "linked-lists",
+      "hash-tables"
+    ],
+    "related": [
+      "dfs",
+      "dijkstra",
+      "network-topology",
+      "routing"
+    ],
+    "next": "bfs",
+    "tags": [
+      "dsa",
+      "graph"
+    ],
+    "what": "A graph is a set of vertices (nodes) and edges connecting pairs of them. Edges can be directed or undirected and can carry weights. Common representations are an adjacency list (each vertex holds a list of neighbors) and an adjacency matrix (a V × V grid). Special cases include trees (connected, no cycles), DAGs (directed, no cycles), and bipartite graphs.",
+    "why": "Graphs model anything with relationships: roads, computer networks, web links, social connections, task dependencies, and state machines. Once a problem is drawn as a graph, standard algorithms — traversal, shortest paths, spanning trees, topological sort — apply directly.",
+    "mental": "A subway map. Stations are vertices and tracks are edges. The map ignores geography and keeps only what matters: what connects to what, and sometimes how long or expensive each link is.",
+    "points": [
+      "Directed edges have a direction (A → B); undirected edges do not. Weighted edges carry a cost or distance.",
+      "Adjacency list: O(V + E) space, fast iteration over neighbors — best for sparse graphs.",
+      "Adjacency matrix: O(V²) space, O(1) edge test — best for dense graphs or small V.",
+      "A path is a sequence of edges; a cycle returns to its start. A DAG has none, so it can be topologically ordered.",
+      "Connected components, degrees, and in/out edges are the first questions to ask about any graph.",
+      "Network topologies, routing tables, and dependency graphs in build systems are all graphs."
+    ],
+    "steps": [
+      "Identify the vertices",
+      "Identify the edges and their direction",
+      "Attach weights if costs matter",
+      "Choose a representation",
+      "Run a traversal or path algorithm"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "An adjacency list",
+      "code": "graph = {\n    \"A\": [\"B\", \"C\"],\n    \"B\": [\"D\"],\n    \"C\": [\"D\"],\n    \"D\": [],\n}\nedges = sum(len(nbrs) for nbrs in graph.values())\nprint(edges)          # 4 directed edges\nprint(graph[\"A\"])     # neighbors of A: ['B', 'C']"
+    },
+    "complexity": {
+      "time": "Traversals O(V + E); edge test O(1) (matrix) or O(degree) (list)",
+      "space": "O(V + E) for a list; O(V²) for a matrix",
+      "tradeoffs": [
+        "Lists suit sparse graphs, which most real ones are",
+        "Matrices give constant-time edge checks and simple algorithms for dense graphs"
+      ]
+    },
+    "usage": [
+      "Routing and network topology",
+      "Social networks, recommendation, and search",
+      "Build systems, package managers, and task schedulers (DAGs)"
+    ],
+    "mistakes": [
+      "Using a matrix for a huge sparse graph.",
+      "Forgetting to mark visited vertices and looping forever on cycles.",
+      "Mixing up directed and undirected edges when adding neighbors."
+    ],
+    "interview": [
+      {
+        "q": "Adjacency list or adjacency matrix?",
+        "a": "Use a list for sparse graphs (E much smaller than V²): it saves space and iterates neighbors quickly. Use a matrix for dense graphs or when you need O(1) edge queries and V is small.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is a DAG and why does it matter?",
+        "a": "A directed acyclic graph has no directed cycles, so its vertices can be topologically sorted. It models dependencies such as build steps, course prerequisites, and task pipelines.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How do you detect a cycle in a directed graph?",
+        "a": "Run a depth-first search, tracking vertices on the current recursion path. Reaching a vertex already on the path means a cycle. Alternatively, Kahn's algorithm fails to process all vertices if a cycle exists.",
+        "level": "advanced"
+      }
+    ],
+    "extra": [
+      {
+        "type": "table",
+        "headers": [
+          "Representation",
+          "Space",
+          "Edge test",
+          "List neighbors"
+        ],
+        "rows": [
+          [
+            "Adjacency list",
+            "O(V + E)",
+            "O(degree)",
+            "O(degree)"
+          ],
+          [
+            "Adjacency matrix",
+            "O(V²)",
+            "O(1)",
+            "O(V)"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "bfs",
+    "section": "dsa",
+    "title": "Breadth-First Search",
+    "summary": "Explore a graph level by level using a queue. Finds shortest paths in unweighted graphs.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "queue"
+    ],
+    "related": [
+      "dijkstra",
+      "network-topology",
+      "routing"
+    ],
+    "next": "dfs",
+    "tags": [
+      "dsa",
+      "graph",
+      "traversal"
+    ],
+    "what": "Breadth-first search (BFS) visits a start vertex, then all its neighbors, then their unvisited neighbors, and so on, expanding in rings of increasing distance. A queue holds the frontier, and a visited set prevents revisiting. Because vertices are discovered in order of distance, BFS finds the shortest path (fewest edges) in an unweighted graph.",
+    "why": "Shortest hops, minimum moves, degrees of separation, flood fill, and level-order tree traversal are all BFS. It is the simplest correct answer to 'what is the fewest steps from A to B?'.",
+    "mental": "A ripple in a pond. Drop a stone at the start and the wave reaches everything one step away, then everything two steps away. The first time the ripple touches a place is the shortest way to get there.",
+    "points": [
+      "Queue of the frontier; enqueue neighbors when first seen; dequeue to expand.",
+      "Mark visited when you enqueue (not when you dequeue) so a vertex is queued at most once.",
+      "Distance from the start: dist[next] = dist[node] + 1 gives the fewest edges.",
+      "Time O(V + E); memory O(V) for the queue and visited set (the widest level).",
+      "Works for grids too: cells are vertices, four or eight neighbors are edges.",
+      "Not correct for weighted shortest paths; use Dijkstra there."
+    ],
+    "steps": [
+      "Enqueue the start and mark it",
+      "Dequeue a vertex",
+      "Visit its unvisited neighbors",
+      "Enqueue and record their distance",
+      "Repeat until the queue is empty"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Distances from a start vertex",
+      "code": "from collections import deque\n\ndef bfs(graph, start):\n    dist, q = {start: 0}, deque([start])\n    while q:\n        node = q.popleft()\n        for nxt in graph[node]:\n            if nxt not in dist:\n                dist[nxt] = dist[node] + 1\n                q.append(nxt)\n    return dist\n\ng = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [\"D\"], \"D\": []}\nprint(bfs(g, \"A\"))   # {'A': 0, 'B': 1, 'C': 1, 'D': 2}"
+    },
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V)",
+      "tradeoffs": [
+        "Guarantees the fewest edges to every reachable vertex",
+        "The queue can hold a whole level at once, which is large for wide graphs",
+        "Ignores edge weights"
+      ]
+    },
+    "usage": [
+      "Shortest path in unweighted graphs and grids",
+      "Web crawlers and social-network distance",
+      "Level-order tree traversal and flood fill"
+    ],
+    "mistakes": [
+      "Marking visited on dequeue, so the same vertex is queued many times.",
+      "Using BFS distances as if edges had weights.",
+      "Forgetting disconnected components when you need to reach every vertex."
+    ],
+    "interview": [
+      {
+        "q": "Why does BFS find shortest paths in an unweighted graph?",
+        "a": "It visits vertices in nondecreasing order of distance from the start, so the first time a vertex is reached is by a path with the fewest edges.",
+        "level": "intermediate"
+      },
+      {
+        "q": "BFS or DFS to find a path?",
+        "a": "Either finds a path if one exists. BFS finds one with the fewest edges but uses memory proportional to the widest level; DFS uses memory proportional to depth and is simpler for exploring all possibilities or detecting cycles.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is the complexity of BFS?",
+        "a": "O(V + E) time, since each vertex is enqueued once and each edge is examined once, and O(V) space for the queue and visited set.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "dfs",
+    "section": "dsa",
+    "title": "Depth-First Search",
+    "summary": "Follow one path as far as it goes, then backtrack. The basis for cycle detection, topological sort, and exhaustive search.",
+    "level": "intermediate",
+    "prereqs": [
+      "graphs",
+      "recursion",
+      "stack-ds"
+    ],
+    "related": [
+      "bfs",
+      "stack-and-heap"
+    ],
+    "next": "dijkstra",
+    "tags": [
+      "dsa",
+      "graph",
+      "traversal"
+    ],
+    "what": "Depth-first search (DFS) explores a graph by going as deep as possible along each branch before backtracking. It is naturally recursive (the call stack remembers the way back) or can use an explicit stack. A visited set prevents infinite loops on cycles. Recording the order in which vertices finish yields a topological ordering of a DAG.",
+    "why": "DFS answers structural questions — is there a cycle, which vertices are connected, what is a valid build order, can this maze be solved — in linear time. It is also the engine of backtracking search over puzzles and combinations.",
+    "mental": "Exploring a cave with a ball of string. Go down a tunnel as far as it goes, and at a dead end wind the string back to the last fork and try the next tunnel. The string is the stack of choices you can still return to.",
+    "points": [
+      "Recursive form: mark visited, recurse into each unvisited neighbor.",
+      "Iterative form: an explicit stack avoids recursion limits on deep graphs.",
+      "Time O(V + E); space O(V) for the visited set plus O(depth) for the stack.",
+      "Detect a cycle in a directed graph by finding an edge to a vertex still on the current path.",
+      "Topological sort: order vertices by decreasing finish time (or use Kahn's algorithm).",
+      "Backtracking is DFS over the tree of choices, with a step that undoes each choice."
+    ],
+    "steps": [
+      "Mark the vertex visited",
+      "Pick an unvisited neighbor",
+      "Recurse deeper",
+      "At a dead end, return",
+      "Try the next neighbor"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Recursive depth-first traversal",
+      "code": "def dfs(graph, node, seen=None):\n    seen = set() if seen is None else seen\n    seen.add(node)\n    for nxt in graph[node]:\n        if nxt not in seen:\n            dfs(graph, nxt, seen)\n    return seen\n\ng = {\"A\": [\"B\", \"C\"], \"B\": [\"D\"], \"C\": [], \"D\": []}\nprint(sorted(dfs(g, \"A\")))   # ['A', 'B', 'C', 'D']"
+    },
+    "complexity": {
+      "time": "O(V + E)",
+      "space": "O(V) for the visited set; O(depth) for the stack",
+      "tradeoffs": [
+        "Low memory on wide graphs and a natural fit for recursion",
+        "Does not find shortest paths",
+        "Deep recursion can overflow the stack"
+      ]
+    },
+    "usage": [
+      "Cycle detection and topological sorting of dependencies",
+      "Connected components and maze solving",
+      "Backtracking: Sudoku, N-Queens, and permutations"
+    ],
+    "mistakes": [
+      "Forgetting a visited set and looping forever on a cycle.",
+      "Using DFS for shortest paths.",
+      "Recursing on a huge path graph and hitting the recursion limit."
+    ],
+    "interview": [
+      {
+        "q": "How do you detect a cycle in a directed graph with DFS?",
+        "a": "Track vertices currently on the recursion path. If you reach a neighbor that is on that path, there is a back edge, and therefore a cycle. Vertices finished earlier do not count.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How does DFS give a topological order?",
+        "a": "Run DFS and append each vertex to a list after all its descendants are finished. Reversing that list orders vertices so every edge points forward.",
+        "level": "advanced"
+      },
+      {
+        "q": "What is backtracking?",
+        "a": "A DFS over the space of partial solutions: extend the current choice, recurse, and undo the choice when it leads to a dead end. Pruning invalid branches early makes it practical.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "dijkstra",
+    "section": "dsa",
+    "title": "Dijkstra's Algorithm",
+    "summary": "Shortest paths from one vertex in a graph with non-negative weights, by repeatedly settling the closest unsettled vertex.",
+    "level": "advanced",
+    "prereqs": [
+      "graphs",
+      "heaps",
+      "bfs"
+    ],
+    "related": [
+      "ospf",
+      "routing",
+      "routing-protocols"
+    ],
+    "next": "dynamic-programming",
+    "tags": [
+      "dsa",
+      "graph",
+      "shortest-path"
+    ],
+    "what": "Dijkstra's algorithm computes the shortest distance from a source to every other vertex when all edge weights are non-negative. It keeps a tentative distance for each vertex and a priority queue ordered by distance. It repeatedly takes the closest unsettled vertex, whose distance is now final, and relaxes its outgoing edges: if going through it improves a neighbor's distance, update it.",
+    "why": "Weighted shortest paths power maps, network routing, and scheduling. OSPF routers run Dijkstra's algorithm over the link-state database to build their forwarding tables, so it is where graph algorithms meet the networking section.",
+    "mental": "Pouring water into a network of pipes from one point, where pipe length is travel time. The water reaches the nearest junction first, then the next nearest. The moment water arrives at a junction, that time is the shortest possible, because anything faster would already have arrived.",
+    "points": [
+      "Greedy: always settle the unsettled vertex with the smallest known distance.",
+      "Relaxation: if dist[u] + w(u, v) < dist[v], update dist[v] and push it into the queue.",
+      "Correct only with non-negative weights: a negative edge can make a settled vertex improvable later.",
+      "With a binary heap, time is O((V + E) log V). Skip stale queue entries whose distance is already outdated.",
+      "Store predecessors to reconstruct the actual path, not just its length.",
+      "For negative weights use Bellman–Ford; for unweighted graphs plain BFS is enough."
+    ],
+    "steps": [
+      "Set the source distance to 0",
+      "Push it into a min-heap",
+      "Pop the closest vertex",
+      "Relax each outgoing edge",
+      "Repeat until the heap is empty"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Shortest distances with a heap",
+      "code": "import heapq\n\ndef dijkstra(graph, src):\n    dist = {src: 0}\n    pq = [(0, src)]\n    while pq:\n        d, u = heapq.heappop(pq)\n        if d > dist.get(u, float(\"inf\")):\n            continue                        # stale queue entry\n        for v, w in graph[u]:\n            nd = d + w\n            if nd < dist.get(v, float(\"inf\")):\n                dist[v] = nd\n                heapq.heappush(pq, (nd, v))\n    return dist\n\ng = {\"A\": [(\"B\", 4), (\"C\", 1)], \"C\": [(\"B\", 2)], \"B\": []}\nprint(dijkstra(g, \"A\"))   # {'A': 0, 'B': 3, 'C': 1}"
+    },
+    "complexity": {
+      "time": "O((V + E) log V) with a binary heap",
+      "space": "O(V + E)",
+      "tradeoffs": [
+        "Efficient for non-negative weights from a single source",
+        "Fails with negative edges",
+        "Computes distances to all vertices, even if you only need one"
+      ]
+    },
+    "usage": [
+      "OSPF and IS-IS link-state routing",
+      "Maps and navigation",
+      "Latency-based service routing and game AI pathfinding (often with A*)"
+    ],
+    "mistakes": [
+      "Using it on a graph with negative edge weights.",
+      "Forgetting to skip stale heap entries, so work is repeated.",
+      "Using a plain list as the frontier and getting O(V²) time without meaning to."
+    ],
+    "interview": [
+      {
+        "q": "Why does Dijkstra's algorithm fail with negative edges?",
+        "a": "It assumes that once a vertex is settled its distance is final, because any other route would be at least as long. A later negative edge could make a shorter route to a settled vertex, which the algorithm never revisits.",
+        "level": "advanced"
+      },
+      {
+        "q": "What is the complexity with a binary heap?",
+        "a": "O((V + E) log V): each edge may cause a heap push, each push or pop costs O(log V), and there are at most E pushes.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How is Dijkstra used in networking?",
+        "a": "Link-state protocols such as OSPF flood the topology to every router, and each router runs Dijkstra on its own copy to compute the shortest-path tree and the next hop for every destination.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "dynamic-programming",
+    "section": "dsa",
+    "title": "Dynamic Programming",
+    "summary": "Solve a problem by combining solutions to overlapping subproblems, computed once each. Recursion plus a table.",
+    "level": "advanced",
+    "prereqs": [
+      "recursion",
+      "arrays",
+      "big-o"
+    ],
+    "related": [
+      "sorting",
+      "dfs",
+      "bfs"
+    ],
+    "tags": [
+      "dsa",
+      "algorithms",
+      "optimization"
+    ],
+    "what": "Dynamic programming (DP) solves problems that have optimal substructure (the best answer is built from best answers to smaller pieces) and overlapping subproblems (the same pieces recur). Top-down DP writes the recursion and memoizes results; bottom-up DP fills a table from the smallest subproblems upward. Either way each subproblem is solved once, turning exponential recursion into polynomial time.",
+    "why": "DP is the tool for optimization and counting problems where greedy choices fail: minimum coins, longest common subsequence, knapsack, edit distance, and many scheduling problems. Recognizing the state and the recurrence is the skill interviews test.",
+    "mental": "Doing a big sum on paper and writing down every intermediate result so you never recompute it. When the same partial sum is needed again, you read it off the page instead of redoing the arithmetic.",
+    "points": [
+      "State: what minimal information describes a subproblem (an index, a remaining amount, a pair of positions)?",
+      "Recurrence: how does the answer for a state come from answers to smaller states?",
+      "Base cases: the states whose answer is known directly.",
+      "Top-down (memoization) is easier to write; bottom-up (tabulation) avoids recursion and can save memory by keeping only the previous row.",
+      "Time is the number of states times the work per state; space is usually the table size.",
+      "Greedy works when a locally best choice is always safe; DP is needed when you must compare alternatives."
+    ],
+    "steps": [
+      "Define the state",
+      "Write the recurrence",
+      "Set the base cases",
+      "Fill in order of dependencies",
+      "Read the answer from the final state"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Fewest coins, bottom-up",
+      "code": "def coin_change(coins, amount):\n    INF = amount + 1\n    best = [0] + [INF] * amount          # best[a] = fewest coins to make a\n    for a in range(1, amount + 1):\n        for c in coins:\n            if c <= a:\n                best[a] = min(best[a], best[a - c] + 1)\n    return best[amount] if best[amount] != INF else -1\n\nprint(coin_change([1, 5, 6], 10))   # 2  (5 + 5)\nprint(coin_change([2], 3))          # -1  (impossible)"
+    },
+    "complexity": {
+      "time": "Number of states × work per state (here O(amount × coins))",
+      "space": "O(number of states); often reducible to one row",
+      "tradeoffs": [
+        "Turns exponential search into polynomial time by remembering results",
+        "Needs memory for the table, which can be large",
+        "Finding the right state is the hard part"
+      ]
+    },
+    "usage": [
+      "Optimization: knapsack, coin change, scheduling",
+      "Sequence alignment and edit distance (diff tools, spell-check, bioinformatics)",
+      "Parsing and shortest paths on DAGs"
+    ],
+    "mistakes": [
+      "Choosing a state that leaves out information the recurrence needs.",
+      "Applying DP when subproblems do not overlap, gaining nothing.",
+      "Filling the table in an order that reads cells not yet computed."
+    ],
+    "interview": [
+      {
+        "q": "How do you recognize a dynamic programming problem?",
+        "a": "Look for optimal substructure and overlapping subproblems: a recursive solution that recomputes the same inputs, asking for a minimum, maximum, count, or feasibility over choices.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Memoization versus tabulation?",
+        "a": "Memoization is recursion plus a cache: simple, and computes only needed states. Tabulation fills a table iteratively from the base cases: no recursion overhead and easier to optimize space.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why does greedy fail for coin change with coins {1, 5, 6} and amount 10?",
+        "a": "Greedy takes 6 first and then needs four 1s (5 coins), while 5 + 5 uses only 2. DP considers every coin at every amount and finds the true minimum.",
+        "level": "advanced"
+      }
+    ]
+  }
+]

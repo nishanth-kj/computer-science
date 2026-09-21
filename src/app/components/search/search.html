@@ -24,7 +24,7 @@
         @if (!q()) {
           <p class="px-3 py-1 text-[11px] text-muted">Sections</p>
           @for (s of featuredSections; track s.id) {
-            <button type="button" class="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go('/' + s.id)">{{ s.title }}</button>
+            <button type="button" class="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go(topicHref(s.id))">{{ s.title }}</button>
           }
           <p class="px-3 py-1 text-[11px] text-muted">Paths</p>
           @for (p of paths; track p.id) {

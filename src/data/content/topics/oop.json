@@ -1,0 +1,625 @@
+[
+  {
+    "slug": "classes-objects",
+    "section": "oop",
+    "title": "Classes and Objects",
+    "summary": "A class is a blueprint that bundles data with the operations on it; an object is one instance with its own state.",
+    "level": "beginner",
+    "prereqs": [
+      "functions",
+      "data-types"
+    ],
+    "related": [
+      "python",
+      "java",
+      "pointers"
+    ],
+    "next": "encapsulation",
+    "tags": [
+      "oop",
+      "objects"
+    ],
+    "what": "A class defines a type: the fields (state) each instance holds and the methods (behavior) that work on that state. An object is an instance created from the class by a constructor. Methods receive the object they were called on (self in Python, this in Java and JavaScript), which is how one definition works for many instances.",
+    "why": "Objects let you model a problem in its own vocabulary — Account, Order, Packet — and keep each noun's data and rules together. It is how most large programs in Java, C#, Python, and TypeScript are organized.",
+    "mental": "A cookie cutter and cookies. The class is the cutter: it fixes the shape. Each object is a cookie: same shape, but its own dough, its own bite marks. Changing one cookie does not change the others.",
+    "points": [
+      "Fields hold state; methods define behavior; the constructor sets up a valid initial state.",
+      "Each object has its own copy of instance fields. Class-level (static) fields are shared by all instances.",
+      "Objects are usually references to heap memory, so assigning one variable to another shares the same object.",
+      "Value objects (Money, Point) are compared by content; entities (Account, User) have identity that outlives changes to their fields.",
+      "Prefer small classes with one clear job. A class named Manager or Helper is often a sign it has several."
+    ],
+    "steps": [
+      "Define the class",
+      "Call the constructor",
+      "Object is created with its own fields",
+      "Call methods on it",
+      "Object is freed when unreachable"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "State plus behavior in one place",
+      "code": "class Account:\n    def __init__(self, owner, balance=0):\n        self.owner = owner\n        self.balance = balance\n\n    def deposit(self, amount):\n        if amount <= 0:\n            raise ValueError(\"amount must be positive\")\n        self.balance += amount\n\nacct = Account(\"Ada\")\nacct.deposit(50)\nprint(acct.owner, acct.balance)   # Ada 50"
+    },
+    "usage": [
+      "Domain models: users, orders, invoices, and packets",
+      "GUI widgets and game entities",
+      "Any framework that expects you to subclass or implement a type"
+    ],
+    "mistakes": [
+      "Creating an object in an invalid state and relying on callers to fix it up.",
+      "Building 'god classes' that know about everything.",
+      "Treating classes as bags of public fields with no behavior."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between a class and an object?",
+        "a": "A class is the definition — the fields and methods. An object is a specific instance created from it, with its own field values.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does a constructor do?",
+        "a": "It runs when an object is created and establishes a valid initial state: setting fields, validating arguments, and acquiring resources.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is the difference between an instance method and a static method?",
+        "a": "An instance method operates on a particular object and can read its fields. A static method belongs to the class itself and has no instance to work with.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "encapsulation",
+    "section": "oop",
+    "title": "Encapsulation",
+    "summary": "Hide an object's state behind a small interface so it can protect its own invariants.",
+    "level": "beginner",
+    "prereqs": [
+      "classes-objects"
+    ],
+    "related": [
+      "solid-principles",
+      "java",
+      "inheritance"
+    ],
+    "next": "abstraction",
+    "tags": [
+      "oop",
+      "invariants"
+    ],
+    "what": "Encapsulation bundles data with the methods that operate on it and restricts direct access to that data. Fields are private or protected, and callers go through public methods that enforce rules. The goal is to protect invariants — facts that must always be true, like 'balance is never negative' — by giving them one place to be checked.",
+    "why": "If any code can change any field, every line in the program is responsible for the invariant, and a bug can be anywhere. When only the class can change its state, the search for a bug starts and ends there, and you can change internals without breaking callers.",
+    "mental": "A bank teller window. You do not walk into the vault and take cash; you slide a request through the window, and the teller checks it, updates the ledger, and hands back money. The window is the public interface. The vault is private state.",
+    "points": [
+      "Make fields private and expose behavior, not raw data: withdraw(amount) rather than setBalance(x).",
+      "An invariant is a rule about the object's state that every public method must preserve.",
+      "Validate in the constructor and in mutators so an object can never be observed in an invalid state.",
+      "Getters and setters on every field are not encapsulation. They expose the representation under a different name.",
+      "Returning mutable internals (a list) lets callers change state behind your back; return a copy or a read-only view.",
+      "Access modifiers: private, protected, public (Java, C++, C#); underscore convention in Python; # fields in JavaScript."
+    ],
+    "steps": [
+      "Hide the fields",
+      "Expose a small set of methods",
+      "Check the rules on each call",
+      "Keep the invariant true",
+      "Change internals freely later"
+    ],
+    "code": {
+      "lang": "java",
+      "title": "The class guards its own invariant",
+      "code": "public class Account {\n    private long cents;                    // hidden; invariant: cents >= 0\n\n    public void deposit(long amount) {\n        if (amount <= 0) throw new IllegalArgumentException(\"amount must be positive\");\n        cents += amount;\n    }\n\n    public void withdraw(long amount) {\n        if (amount <= 0 || amount > cents) throw new IllegalArgumentException(\"invalid amount\");\n        cents -= amount;\n    }\n\n    public long balance() { return cents; }\n}"
+    },
+    "usage": [
+      "Any type with rules about its state: money, ranges, schedules, state machines",
+      "Library APIs that need to change internals without breaking users",
+      "Thread-safe types that protect their state with a lock"
+    ],
+    "mistakes": [
+      "Exposing a getter that returns the internal mutable list.",
+      "Generating a getter and setter for every field and calling it encapsulation.",
+      "Letting constructors create objects that break the invariant."
+    ],
+    "interview": [
+      {
+        "q": "What is encapsulation and why does it matter?",
+        "a": "Bundling state with the methods that act on it and hiding the state behind a small interface. It lets the class enforce its invariants and lets you change the implementation without breaking callers.",
+        "level": "beginner"
+      },
+      {
+        "q": "Encapsulation versus abstraction?",
+        "a": "Encapsulation hides how state is stored and changed. Abstraction hides complexity by exposing only what callers need to know. Encapsulation is a technique that supports abstraction.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why can returning a list from a getter break encapsulation?",
+        "a": "The caller receives a reference to the internal list and can modify it without going through your methods. Return a copy, an unmodifiable view, or an immutable type.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "abstraction",
+    "section": "oop",
+    "title": "Abstraction and Interfaces",
+    "summary": "Depend on what something does, not how it does it. Interfaces name the behavior and hide the implementation.",
+    "level": "intermediate",
+    "prereqs": [
+      "encapsulation"
+    ],
+    "related": [
+      "polymorphism",
+      "solid-principles",
+      "type-systems"
+    ],
+    "next": "inheritance",
+    "tags": [
+      "oop",
+      "interfaces"
+    ],
+    "what": "Abstraction separates what a component does from how it does it. An interface (or abstract class, protocol, or trait) declares a set of operations without implementing them. Callers depend on the interface; any class that fulfills it can be plugged in. The interface is the contract, and it is the part that must stay stable.",
+    "why": "Real systems change: a database becomes a different database, a file becomes a network call. When callers depend on an interface, you swap the implementation without touching them, and you can substitute a fake in tests.",
+    "mental": "A wall socket. Every appliance depends on the socket's shape, not on the power plant behind it. You can change the power plant, or plug in a generator, and nothing plugged in needs to know.",
+    "points": [
+      "An interface is a contract: the operations, their inputs, outputs, and rules — not the code.",
+      "Program to an interface: parameters and fields should have the abstract type, the constructor picks the concrete one.",
+      "Abstract classes can share code among subclasses; interfaces (and protocols) only define the contract and allow many implementations.",
+      "Keep interfaces small and focused on what callers need. Wide interfaces leak implementation and are hard to satisfy.",
+      "Abstractions have a cost: indirection. Introduce them where change or testing actually needs a seam, not everywhere."
+    ],
+    "steps": [
+      "Name the behavior callers need",
+      "Declare it as an interface",
+      "Implement it in classes",
+      "Inject the implementation",
+      "Swap it without touching callers"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Depend on the contract, plug in any implementation",
+      "code": "from abc import ABC, abstractmethod\n\nclass Storage(ABC):\n    @abstractmethod\n    def save(self, key, data): ...\n    @abstractmethod\n    def load(self, key): ...\n\nclass MemoryStorage(Storage):\n    def __init__(self):\n        self._d = {}\n    def save(self, key, data):\n        self._d[key] = data\n    def load(self, key):\n        return self._d[key]\n\ndef backup(store: Storage, key, data):    # knows only the interface\n    store.save(key, data)\n\nstore = MemoryStorage()\nbackup(store, \"note\", \"hello\")\nprint(store.load(\"note\"))                 # hello"
+    },
+    "usage": [
+      "Repository, service, and gateway boundaries around databases, queues, and APIs",
+      "Plug-in architectures and drivers",
+      "Test doubles: swapping a real network call for an in-memory fake"
+    ],
+    "mistakes": [
+      "Creating an interface for every class, with exactly one implementation and no reason to change.",
+      "Interfaces that mirror one implementation's quirks.",
+      "Leaking implementation details, such as SQL rows, through the abstraction."
+    ],
+    "interview": [
+      {
+        "q": "Abstract class versus interface?",
+        "a": "An interface only declares behavior, and a class can implement many. An abstract class can also carry state and shared code but a class usually inherits from only one. Use an interface for a contract, an abstract class to share implementation among related classes.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What does 'program to an interface, not an implementation' mean?",
+        "a": "Declare variables and parameters with the abstract type, so the code works with any implementation and the concrete class is chosen in one place.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is a leaky abstraction?",
+        "a": "One whose implementation details escape through the interface — error types, performance behavior, or data formats — so callers must know how it works underneath to use it correctly.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "inheritance",
+    "section": "oop",
+    "title": "Inheritance",
+    "summary": "A subclass reuses and extends a superclass. It models 'is-a' relationships — and creates the tightest coupling in OOP.",
+    "level": "intermediate",
+    "prereqs": [
+      "classes-objects"
+    ],
+    "related": [
+      "composition-vs-inheritance",
+      "solid-principles"
+    ],
+    "next": "polymorphism",
+    "tags": [
+      "oop",
+      "inheritance"
+    ],
+    "what": "Inheritance lets a class (the subclass) acquire the fields and methods of another (the superclass), and add or override behavior. It models an 'is-a' relationship: a Dog is an Animal. Method lookup walks up the chain until a definition is found, and super lets a subclass call the parent's version.",
+    "why": "It removes duplication among closely related types and enables polymorphism: code written for Animal works for every subclass. It is also the strongest coupling in OOP, so knowing its limits is as important as knowing how to use it.",
+    "mental": "A family recipe passed down with modifications. The child kitchen starts with the parent's recipe, changes the spice, and leaves everything else alone. If the parent changes the recipe, every child's dish changes too.",
+    "points": [
+      "'is-a' test: use inheritance only if every instance of the subclass really is an instance of the superclass, in all contexts.",
+      "Overriding replaces behavior; calling super preserves the parent's part.",
+      "Subclasses depend on superclass internals, so a change to the parent can break every child (the fragile base class problem).",
+      "Single inheritance (Java) is simpler; multiple inheritance (C++, Python) needs rules for resolving conflicts, like Python's MRO.",
+      "Deep hierarchies are hard to read. Keep them shallow, and prefer composition when unsure."
+    ],
+    "steps": [
+      "Define the base class",
+      "Subclass and extend",
+      "Override where behavior differs",
+      "Call through a base-typed reference",
+      "Lookup finds the most specific method"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Subclasses override one method",
+      "code": "class Animal:\n    def __init__(self, name):\n        self.name = name\n\n    def speak(self):\n        return \"...\"\n\nclass Dog(Animal):\n    def speak(self):\n        return \"Woof\"\n\nclass Cat(Animal):\n    def speak(self):\n        return \"Meow\"\n\nfor a in (Dog(\"Rex\"), Cat(\"Tom\"), Animal(\"Thing\")):\n    print(a.name, a.speak())     # Rex Woof / Tom Meow / Thing ..."
+    },
+    "usage": [
+      "Framework extension points (subclass a base controller, view, or test case)",
+      "Exception hierarchies",
+      "Closely related types that share most of their behavior"
+    ],
+    "mistakes": [
+      "Inheriting to reuse code when the relationship is not 'is-a'.",
+      "Overriding a method in a way that breaks the base class's contract.",
+      "Building hierarchies five levels deep."
+    ],
+    "interview": [
+      {
+        "q": "What is the 'is-a' test?",
+        "a": "Ask whether every instance of the subclass can stand in for the superclass everywhere. If not (a Square that cannot honor Rectangle's independent width and height), inheritance is the wrong tool.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is the fragile base class problem?",
+        "a": "Subclasses depend on the parent's implementation, so an apparently safe change in the parent can break the subclasses. It is a reason to prefer composition or to design classes explicitly for inheritance.",
+        "level": "advanced"
+      },
+      {
+        "q": "How does Python resolve methods with multiple inheritance?",
+        "a": "It uses the method resolution order (MRO), computed by C3 linearization, so each class appears once and a class always precedes its parents. ClassName.__mro__ shows it.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "polymorphism",
+    "section": "oop",
+    "title": "Polymorphism",
+    "summary": "One call, many behaviors: the actual method that runs depends on the object's type at run time.",
+    "level": "intermediate",
+    "prereqs": [
+      "inheritance",
+      "abstraction"
+    ],
+    "related": [
+      "cpp",
+      "typescript",
+      "java",
+      "solid-principles"
+    ],
+    "next": "composition-vs-inheritance",
+    "tags": [
+      "oop",
+      "dispatch"
+    ],
+    "what": "Polymorphism lets code call the same operation on different types and get type-specific behavior. Subtype polymorphism dispatches at run time on the object's actual class through a vtable or method lookup. Parametric polymorphism (generics) writes one definition for many types. Ad hoc polymorphism (overloading) chooses among definitions by argument types.",
+    "why": "It is how you replace long if/elif chains on type with a single call, and how you add a new type without editing the code that uses it. It is the payoff of interfaces and inheritance.",
+    "mental": "A universal remote's 'play' button. You press one button; the DVD player spools a disc, the streaming box opens an app, the radio tunes a station. The remote does not know which device it is talking to — each device knows what 'play' means for it.",
+    "points": [
+      "Dynamic dispatch: the method called is chosen by the run-time type, usually via a per-class vtable.",
+      "Static dispatch: chosen at compile time by declared type. Non-virtual methods and overloads work this way.",
+      "Substitutability: any subtype must work wherever the base type is expected without breaking callers (the Liskov substitution principle).",
+      "Replace 'if type is X ... elif type is Y' branches with a method on each type.",
+      "Generics give type-safe reuse without dispatch: List<T> works for every T."
+    ],
+    "steps": [
+      "Caller holds a base-typed reference",
+      "Calls the method by name",
+      "Runtime finds the object's class",
+      "Runs that class's version",
+      "Caller stays unchanged"
+    ],
+    "code": {
+      "lang": "typescript",
+      "title": "One call, different behavior per class",
+      "code": "interface Shape { area(): number }\n\nclass Circle implements Shape {\n  constructor(private r: number) {}\n  area() { return Math.PI * this.r ** 2; }\n}\n\nclass Square implements Shape {\n  constructor(private s: number) {}\n  area() { return this.s * this.s; }\n}\n\nconst total = (shapes: Shape[]) => shapes.reduce((sum, s) => sum + s.area(), 0);\nconsole.log(total([new Circle(1), new Square(2)]).toFixed(2));   // 7.14"
+    },
+    "usage": [
+      "Plug-in systems and strategy objects",
+      "GUI frameworks calling draw() on every widget",
+      "Collections and algorithms that work over any Comparable or Iterable"
+    ],
+    "mistakes": [
+      "Using type checks (instanceof) and switches instead of a method on each type.",
+      "Overriding a method so it violates what callers of the base type expect.",
+      "Forgetting that some languages need an explicit virtual keyword for dynamic dispatch (C++)."
+    ],
+    "interview": [
+      {
+        "q": "Overloading versus overriding?",
+        "a": "Overloading defines several methods with the same name and different parameters, chosen at compile time. Overriding replaces a superclass method in a subclass, chosen at run time by the object's type.",
+        "level": "beginner"
+      },
+      {
+        "q": "How is dynamic dispatch implemented?",
+        "a": "Each class has a table of method pointers (a vtable), and each object holds a pointer to its class's table. A virtual call looks up the method in that table and jumps to it.",
+        "level": "advanced"
+      },
+      {
+        "q": "What is the Liskov substitution principle?",
+        "a": "If S is a subtype of T, then objects of type T can be replaced with objects of type S without breaking the program's correctness. Overriding must honor the base type's contract.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "composition-vs-inheritance",
+    "section": "oop",
+    "title": "Composition vs Inheritance",
+    "summary": "Build behavior by combining objects (has-a) rather than extending classes (is-a). It is looser, more flexible, and easier to change.",
+    "level": "intermediate",
+    "prereqs": [
+      "inheritance",
+      "polymorphism"
+    ],
+    "related": [
+      "abstraction",
+      "design-patterns"
+    ],
+    "next": "solid-principles",
+    "tags": [
+      "oop",
+      "design"
+    ],
+    "what": "Composition builds a class from other objects it holds and delegates to; it expresses 'has-a'. Inheritance builds a class by extending another; it expresses 'is-a'. The design advice 'favor composition over inheritance' comes from experience: composed objects are swapped at run time and coupled only through their interfaces, while subclasses are locked to their parents.",
+    "why": "Hierarchies harden early and are hard to change; every new variation (electric and gas engines, flying and swimming robots) multiplies subclasses. Composition lets you combine independent parts instead, and change one part without touching the rest.",
+    "mental": "Lego versus a sculpture carved from one block. Inheritance is carving: once you cut a shape, you are stuck with it. Composition is bricks: swap the wheels, keep the chassis, add a different engine.",
+    "points": [
+      "Inherit to model a true is-a relationship with a stable contract; compose to reuse behavior.",
+      "Delegate: the outer object forwards calls to the inner one it holds.",
+      "Inject the collaborator through the constructor so it can be replaced, including with a test fake.",
+      "Composition avoids the diamond problem and fragile base classes because there is no shared internals to depend on.",
+      "The Strategy, Decorator, and Adapter patterns are all composition in different arrangements."
+    ],
+    "steps": [
+      "Identify the varying behavior",
+      "Extract it behind an interface",
+      "Hold it as a field",
+      "Delegate calls to it",
+      "Swap the part to change behavior"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "A Car has an engine and does not extend one",
+      "code": "class Engine:\n    def start(self):\n        return \"vroom\"\n\nclass ElectricMotor:\n    def start(self):\n        return \"hum\"\n\nclass Car:\n    def __init__(self, engine):          # has-a, injected\n        self.engine = engine\n\n    def start(self):\n        return self.engine.start()       # delegate\n\nprint(Car(Engine()).start(), Car(ElectricMotor()).start())   # vroom hum"
+    },
+    "usage": [
+      "Dependency injection in services and frameworks",
+      "Entity-component systems in games",
+      "Wrappers and decorators around streams, handlers, and middleware"
+    ],
+    "mistakes": [
+      "Subclassing a collection just to reuse a couple of methods.",
+      "Deep hierarchies where each level adds one small variation.",
+      "Composing with concrete classes so nothing can be swapped anyway."
+    ],
+    "interview": [
+      {
+        "q": "Why is 'favor composition over inheritance' good advice?",
+        "a": "Inheritance couples a subclass to its parent's implementation and fixes the relationship at compile time. Composition couples objects only through interfaces and lets you change behavior at run time, with fewer ripple effects.",
+        "level": "intermediate"
+      },
+      {
+        "q": "When is inheritance the right choice?",
+        "a": "When there is a genuine is-a relationship, the superclass was designed for extension, and substitutability holds — for example, exception hierarchies or framework base classes.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is delegation?",
+        "a": "An object handles a request by forwarding it to another object it holds, instead of implementing the behavior itself or inheriting it.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "solid-principles",
+    "section": "oop",
+    "title": "SOLID Principles",
+    "summary": "Five heuristics for object-oriented design that keep code easy to change: single responsibility, open/closed, Liskov, interface segregation, dependency inversion.",
+    "level": "advanced",
+    "prereqs": [
+      "polymorphism",
+      "composition-vs-inheritance"
+    ],
+    "related": [
+      "abstraction",
+      "encapsulation"
+    ],
+    "next": "design-patterns",
+    "tags": [
+      "oop",
+      "design",
+      "principles"
+    ],
+    "what": "SOLID is a set of five design principles popularized by Robert C. Martin. S: a class should have one reason to change. O: open for extension, closed for modification. L: subtypes must be substitutable for their base types. I: prefer several small interfaces to one wide one. D: depend on abstractions, not on concrete details.",
+    "why": "They are a vocabulary for talking about why a change was painful. Each principle names a kind of coupling — and each can be over-applied, so they are heuristics to weigh, not laws to follow blindly.",
+    "mental": "The five rules a good landlord follows: each room has one purpose (S), you add rooms without rebuilding the house (O), any tenant who fits the lease can swap in (L), the lease lists only what you use (I), and the building depends on the utility contract, not on one provider (D).",
+    "points": [
+      "Single Responsibility: group things that change for the same reason and separate what changes for different reasons.",
+      "Open/Closed: add new behavior by adding new code (a new subclass or strategy), not by editing tested code.",
+      "Liskov Substitution: a subtype must honor the contract of its base type, including preconditions, postconditions, and invariants.",
+      "Interface Segregation: no client should depend on methods it does not use. Many small interfaces beat one big one.",
+      "Dependency Inversion: high-level policy depends on an abstraction, and low-level details implement it. Wiring is done at the edge (dependency injection).",
+      "Apply them where change actually happens. Speculative abstraction is its own cost."
+    ],
+    "steps": [
+      "Notice a change that was painful",
+      "Name the coupling behind it",
+      "Pick the principle that addresses it",
+      "Refactor toward an abstraction",
+      "Stop when the pain is gone"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Open/closed: add a discount without editing checkout",
+      "code": "from abc import ABC, abstractmethod\n\nclass Discount(ABC):\n    @abstractmethod\n    def apply(self, price): ...\n\nclass NoDiscount(Discount):\n    def apply(self, price):\n        return price\n\nclass PercentOff(Discount):\n    def __init__(self, pct):\n        self.pct = pct\n    def apply(self, price):\n        return price * (1 - self.pct / 100)\n\ndef checkout(price, discount: Discount):   # closed for change, open for new Discounts\n    return discount.apply(price)\n\nprint(checkout(200, PercentOff(25)))       # 150.0"
+    },
+    "usage": [
+      "Code reviews: naming the coupling a change exposed",
+      "Designing modules and service boundaries",
+      "Deciding when to split a growing class"
+    ],
+    "mistakes": [
+      "Splitting every class into many tiny ones until no one can follow the flow.",
+      "Adding interfaces and factories 'in case' something changes.",
+      "Treating the principles as a checklist instead of a diagnosis of a real problem."
+    ],
+    "interview": [
+      {
+        "q": "Explain the Single Responsibility Principle.",
+        "a": "A class should have one reason to change — one actor or concern that drives modifications. If a report class changes for formatting and for data access, split them.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is the Dependency Inversion Principle?",
+        "a": "High-level modules should not depend on low-level modules; both should depend on abstractions. It lets you swap a database or service by implementing an interface, and it enables testing with fakes.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Give an example of violating Liskov substitution.",
+        "a": "A Square subclass of Rectangle that forces width and height to be equal. Code that sets width and height separately and then checks the area breaks when it receives a Square.",
+        "level": "advanced"
+      }
+    ],
+    "extra": [
+      {
+        "type": "table",
+        "headers": [
+          "Letter",
+          "Principle",
+          "A quick smell test"
+        ],
+        "rows": [
+          [
+            "S",
+            "Single Responsibility",
+            "Does this class change for more than one reason?"
+          ],
+          [
+            "O",
+            "Open/Closed",
+            "Do I edit old code every time I add a case?"
+          ],
+          [
+            "L",
+            "Liskov Substitution",
+            "Does any subclass throw or ignore what the base promises?"
+          ],
+          [
+            "I",
+            "Interface Segregation",
+            "Do implementers leave methods empty or throw?"
+          ],
+          [
+            "D",
+            "Dependency Inversion",
+            "Does business logic construct database or network classes directly?"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "design-patterns",
+    "section": "oop",
+    "title": "Design Patterns",
+    "summary": "Named, reusable solutions to recurring design problems: creational, structural, and behavioral.",
+    "level": "advanced",
+    "prereqs": [
+      "solid-principles"
+    ],
+    "related": [
+      "composition-vs-inheritance",
+      "polymorphism",
+      "abstraction"
+    ],
+    "next": "big-o",
+    "tags": [
+      "oop",
+      "design",
+      "patterns"
+    ],
+    "what": "A design pattern is a named solution to a design problem that shows up repeatedly, described with its trade-offs. The classic catalog (the 'Gang of Four') groups 23 patterns into creational (how objects are made: Factory, Builder, Singleton), structural (how they are assembled: Adapter, Decorator, Facade), and behavioral (how they interact: Observer, Strategy, Command, Iterator).",
+    "why": "Patterns give teams a shared vocabulary — saying 'this is an observer' conveys the structure in one word — and they capture solutions that survived many projects. They are useful only when the problem is real; forcing a pattern onto code adds indirection without benefit.",
+    "mental": "A cookbook of techniques, not recipes. 'Emulsify' is a technique you apply to mayonnaise, to a sauce, or to a dressing. A pattern is that: an idea you adapt to your ingredients, not code you paste.",
+    "points": [
+      "Strategy: swap an algorithm behind an interface (sorting order, pricing rule).",
+      "Observer: subscribers register interest, and the publisher notifies them on change (events, UI updates).",
+      "Factory: hide which concrete class is created behind a function or method.",
+      "Decorator: wrap an object to add behavior while keeping the same interface (logging, caching, compression).",
+      "Adapter: convert one interface into another so incompatible pieces can work together.",
+      "Singleton is the most overused: it is global state in disguise and makes testing hard. Prefer injecting a single shared instance."
+    ],
+    "steps": [
+      "Spot a recurring design problem",
+      "Match it to a named pattern",
+      "Adapt the structure to your types",
+      "Check the trade-offs",
+      "Skip the pattern if a function will do"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Observer: publishers do not know their subscribers",
+      "code": "class EventBus:\n    def __init__(self):\n        self._subs = {}\n\n    def subscribe(self, topic, fn):\n        self._subs.setdefault(topic, []).append(fn)\n\n    def publish(self, topic, payload):\n        for fn in self._subs.get(topic, []):\n            fn(payload)\n\nbus = EventBus()\nbus.subscribe(\"order\", lambda o: print(\"email\", o))\nbus.subscribe(\"order\", lambda o: print(\"stock\", o))\nbus.publish(\"order\", 7)      # email 7, then stock 7"
+    },
+    "usage": [
+      "Event systems, UI frameworks, and message buses (Observer)",
+      "Middleware chains and I/O wrappers (Decorator)",
+      "Plug-in points and configurable algorithms (Strategy, Factory)"
+    ],
+    "mistakes": [
+      "Reaching for a pattern before there is a problem it solves.",
+      "Using Singleton for convenience and inheriting hidden global state.",
+      "Implementing the textbook structure literally when a function or a lambda would do."
+    ],
+    "interview": [
+      {
+        "q": "Strategy versus State pattern?",
+        "a": "Both delegate to an interchangeable object. Strategy lets the caller choose an algorithm from outside. State lets an object change its own behavior as its internal state changes, with the state objects usually managing the transitions.",
+        "level": "advanced"
+      },
+      {
+        "q": "Why is Singleton controversial?",
+        "a": "It is global mutable state with a nicer name: it hides dependencies, makes tests interfere with each other, and complicates concurrency. Injecting one shared instance gets the benefit without those costs.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What problem does the Observer pattern solve?",
+        "a": "It decouples a source of events from the parties interested in them: subscribers register with the subject and are notified on change, without the subject knowing who they are.",
+        "level": "beginner"
+      }
+    ],
+    "extra": [
+      {
+        "type": "table",
+        "headers": [
+          "Category",
+          "Question it answers",
+          "Examples"
+        ],
+        "rows": [
+          [
+            "Creational",
+            "How is the object made?",
+            "Factory, Builder, Singleton"
+          ],
+          [
+            "Structural",
+            "How do the parts fit together?",
+            "Adapter, Decorator, Facade"
+          ],
+          [
+            "Behavioral",
+            "How do they talk to each other?",
+            "Observer, Strategy, Command"
+          ]
+        ]
+      }
+    ]
+  }
+]

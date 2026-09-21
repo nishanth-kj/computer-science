@@ -19,7 +19,7 @@ import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
   template: `
     <article class="w-full pb-24">
       <p class="mb-3 text-xs tracking-wide text-muted uppercase">
-        <a [routerLink]="'/' + topic().section" class="hover:text-fg">{{ sectionTitle() }}</a>
+        <a [routerLink]="topicHref(topic().section)" class="hover:text-fg">{{ sectionTitle() }}</a>
       </p>
       <div class="flex flex-wrap items-center gap-2">
         <h1 class="font-display text-4xl leading-tight tracking-tight text-balance">{{ topic().title }}</h1>

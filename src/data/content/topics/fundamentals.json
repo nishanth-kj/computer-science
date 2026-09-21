@@ -1,0 +1,825 @@
+[
+  {
+    "slug": "what-is-programming",
+    "section": "fundamentals",
+    "title": "What is Programming?",
+    "summary": "Writing precise instructions a machine can execute, and choosing the data those instructions work on.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "compiled-vs-interpreted",
+      "processes"
+    ],
+    "next": "variables",
+    "tags": [
+      "fundamentals",
+      "basics"
+    ],
+    "what": "Programming is describing a computation in a language precise enough for a machine to carry out. A program is data (values held in memory) plus instructions (steps that read, compare, and change that data). A compiler or interpreter turns your text into machine instructions, and the CPU executes them one after another.",
+    "why": "Every field in this curriculum — operating systems, databases, networks — is a program someone wrote. The habit that transfers is not syntax but decomposition: state the problem exactly, break it into steps a machine can do, and check each step against a small example.",
+    "mental": "A recipe for a cook who follows instructions literally and never guesses. Skip 'preheat the oven' and nothing warns you; the cake is simply wrong. Programming is writing the recipe so a literal-minded cook cannot go wrong.",
+    "points": [
+      "A program has three ingredients: values (data), operations on them, and control flow that decides which operation runs next.",
+      "Source code is only text. It becomes behavior after a compiler or interpreter translates it and the CPU executes it.",
+      "The machine does exactly what the code says, not what you meant. Most bugs are the distance between the two.",
+      "Every program is a pipeline: input, processing, output. Pure computation sits in the middle; I/O touches the outside world at the edges.",
+      "Abstraction keeps programs understandable: name a step, hide its inside, reuse it."
+    ],
+    "steps": [
+      "Understand the problem",
+      "Work one example by hand",
+      "Write the steps in plain words",
+      "Translate them into code",
+      "Run it and compare with the example",
+      "Fix the gap, then try an edge case"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Data, steps, and a result",
+      "code": "def average(numbers):\n    total = 0\n    for n in numbers:\n        total = total + n\n    return total / len(numbers)\n\nprint(average([4, 8, 6]))   # 6.0"
+    },
+    "usage": [
+      "Automating repetitive work with scripts",
+      "Building applications, services, and developer tools",
+      "Every system in the OS, networks, and databases sections is itself a program"
+    ],
+    "mistakes": [
+      "Typing before you can solve one example by hand.",
+      "Copying code you cannot trace line by line.",
+      "Treating an error message as noise instead of the most precise clue you have. (Here, average([]) fails with a division by zero — the empty case was never considered.)"
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between a program and a process?",
+        "a": "A program is a file of instructions on disk. A process is a running instance: the program plus its memory, registers, and open files, managed by the OS.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does a compiler do that an interpreter does not?",
+        "a": "A compiler translates the whole program ahead of time into machine code or bytecode that runs later. An interpreter reads and executes source or bytecode at run time. Real implementations often blend the two.",
+        "level": "beginner"
+      },
+      {
+        "q": "How do you approach a problem you have never seen?",
+        "a": "Restate it, work a small example by hand, look for a known structure, write the simplest correct version, test the edge cases, and only then improve its cost.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "variables",
+    "section": "fundamentals",
+    "title": "Variables",
+    "summary": "A name bound to a value in memory. Assignment rebinds or overwrites; scope decides where the name is visible.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-programming"
+    ],
+    "related": [
+      "pointers",
+      "stack-and-heap"
+    ],
+    "next": "data-types",
+    "tags": [
+      "fundamentals",
+      "state"
+    ],
+    "what": "A variable is a name that refers to a value the program can read and change. In C the name labels a fixed slot of memory of a declared size. In Python the name is a reference bound to an object, and rebinding the name does not change the object. Scope decides where a name is visible; lifetime decides how long the value it refers to exists.",
+    "why": "Almost every 'wrong value' bug is a question about what a name refers to at that moment. Knowing whether assignment copies a value, shares a reference, or mutates in place is the difference between reading code and guessing at it.",
+    "mental": "A labeled box versus a sticky note. In C the label names a box of a certain size, and assigning puts a new value in the box. In Python the label is a sticky note you can move from one object to another, and two notes can point at the same object.",
+    "points": [
+      "Declaration introduces a name; initialization gives it a first value. Reading an uninitialized variable is undefined behavior in C and a NameError in Python.",
+      "Scope: locals live inside a function, globals live in a module. An inner scope can shadow an outer name without changing it.",
+      "Value semantics copy on assignment (numbers in most languages). Reference semantics share (lists and objects in Python, Java, and JavaScript).",
+      "Mutable objects change in place. Immutable ones (numbers, strings, tuples in Python) are replaced when you 'change' them.",
+      "A constant is a variable you promise not to rebind: const in JavaScript, final in Java, UPPER_CASE by convention in Python."
+    ],
+    "steps": [
+      "Pick a name that says what it holds",
+      "Bind it to a first value",
+      "Read it in expressions",
+      "Rebind or mutate it",
+      "Let it go out of scope"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Rebinding versus mutating",
+      "code": "a = [1, 2]\nb = a            # b is another name for the same list\nb.append(3)      # mutate through b\nprint(a)         # [1, 2, 3]  (a sees the change)\n\nb = [9]          # rebind b to a brand-new list\nprint(a)         # [1, 2, 3]  (a is unchanged)"
+    },
+    "usage": [
+      "Holding state between steps of a computation",
+      "Naming intermediate results so code reads like the problem",
+      "Configuration values that should be defined once and reused"
+    ],
+    "mistakes": [
+      "Assuming b = a copies a list; it copies the reference.",
+      "Reusing one name for unrelated values so readers lose track of what it holds.",
+      "Using a mutable default argument in Python (def f(x=[])): the same list is shared by every call."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between a shallow and a deep copy?",
+        "a": "A shallow copy makes a new container but shares the elements inside it. A deep copy recursively copies the elements too. Mutating a shared nested object through a shallow copy is visible in the original.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What does 'pass by value' mean when the value is a reference?",
+        "a": "The function receives a copy of the reference. It can mutate the object the reference points to, but rebinding its parameter does not change the caller's variable. Python and Java both work this way.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is variable shadowing?",
+        "a": "An inner scope declares a name that already exists in an outer scope. Inside the inner scope the new name wins and the outer one is untouched.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "data-types",
+    "section": "fundamentals",
+    "title": "Data Types",
+    "summary": "The kind of value: integers, floats, booleans, text, and collections. The type decides the operations, the memory, and the pitfalls.",
+    "level": "beginner",
+    "prereqs": [
+      "variables"
+    ],
+    "related": [
+      "type-systems",
+      "arrays",
+      "hash-tables"
+    ],
+    "next": "conditionals",
+    "tags": [
+      "fundamentals",
+      "types"
+    ],
+    "what": "A data type says what a value is and what you can do with it. Primitive types hold single values: integers, floating-point numbers, booleans, and characters. Composite types group values: strings, arrays, lists, dictionaries, structs. The type determines the bit layout in memory, the legal operations, and the ways the value can surprise you.",
+    "why": "Types are where most arithmetic and text bugs live: integer overflow, floating-point rounding, off-by-one on strings, or a null where a number should be. Knowing the representation explains behavior no tutorial mentions, such as why 0.1 + 0.2 is not 0.3.",
+    "mental": "Units on a number. Ten what — meters, seconds, characters? A type is the unit system the compiler or runtime uses to refuse nonsense, like adding a phone number to a temperature.",
+    "points": [
+      "Integers are exact but bounded in most languages (32 or 64 bits). Python integers grow as large as memory allows.",
+      "Floating point (IEEE 754) stores a sign, an exponent, and a fraction. Many decimals, 0.1 among them, have no exact binary form, so compare with a tolerance.",
+      "Booleans hold true or false. Many languages also treat 0, the empty string, and null as 'falsy', which is convenient and error-prone.",
+      "Strings are sequences of characters. With Unicode, length in characters, code points, and bytes can all differ.",
+      "Collections come in three shapes: ordered sequences (list, array), key-to-value maps (dict), and unique sets. Choose by the operation you do most.",
+      "Converting between types can lose information: float to int truncates, and string to int can fail."
+    ],
+    "steps": [
+      "Pick the type that fits the value",
+      "Store it in a fixed layout",
+      "Apply only legal operations",
+      "Convert deliberately when needed",
+      "Check ranges and edge values"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Representation surprises",
+      "code": "print(0.1 + 0.2 == 0.3)                 # False\nprint(abs((0.1 + 0.2) - 0.3) < 1e-9)    # True: compare with a tolerance\nprint(len(\"héllo\"), len(\"héllo\".encode(\"utf-8\")))   # 5 6  (chars vs bytes)\nprint(int(\"42\") + 1)                    # 43\nprint(int(3.9))                         # 3  (truncates, does not round)"
+    },
+    "usage": [
+      "Choosing the representation for money, time, identifiers, and text",
+      "Reading and validating input from files, forms, and networks",
+      "Serialization: JSON, database columns, and protocol fields all carry types"
+    ],
+    "mistakes": [
+      "Storing money in a float.",
+      "Assuming len(text) is the number of bytes on the wire.",
+      "Comparing floats with == instead of a tolerance."
+    ],
+    "interview": [
+      {
+        "q": "Why is 0.1 + 0.2 not exactly 0.3?",
+        "a": "Binary floating point cannot represent 0.1 or 0.2 exactly, so their sum lands a tiny distance from 0.3. Compare with a tolerance, or use integer cents or a decimal type for money.",
+        "level": "beginner"
+      },
+      {
+        "q": "What happens on integer overflow?",
+        "a": "In C, signed overflow is undefined behavior. In Java it wraps around silently. Python integers promote to arbitrary precision. Know your language's rule before trusting arithmetic near the limits.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why is a string's length not always its size in bytes?",
+        "a": "Unicode characters take one to four bytes in UTF-8, so a text with accents or emoji has more bytes than characters. APIs that count bytes and APIs that count characters disagree on such input.",
+        "level": "intermediate"
+      }
+    ],
+    "extra": [
+      {
+        "type": "table",
+        "headers": [
+          "Type",
+          "Example",
+          "Watch out for"
+        ],
+        "rows": [
+          [
+            "int",
+            "42",
+            "Overflow in fixed-width languages"
+          ],
+          [
+            "float",
+            "3.14",
+            "Rounding, NaN, comparing with =="
+          ],
+          [
+            "bool",
+            "True",
+            "Truthiness of 0, '' and null"
+          ],
+          [
+            "str",
+            "'héllo'",
+            "Bytes versus characters"
+          ],
+          [
+            "list / array",
+            "[1, 2, 3]",
+            "Index out of range"
+          ],
+          [
+            "dict / map",
+            "{'a': 1}",
+            "Missing key"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "conditionals",
+    "section": "fundamentals",
+    "title": "Conditionals",
+    "summary": "Branching: run one path or another based on a Boolean expression. The first decision a program can make.",
+    "level": "beginner",
+    "prereqs": [
+      "data-types"
+    ],
+    "related": [
+      "functions",
+      "error-handling"
+    ],
+    "next": "loops",
+    "tags": [
+      "fundamentals",
+      "control-flow"
+    ],
+    "what": "A conditional evaluates a Boolean expression and runs a block only if it is true: if, else if, else, and in some languages switch or match. Combined with the logical operators and, or, and not, it lets a program choose among paths. Most languages short-circuit: in A and B, B is skipped when A is already false.",
+    "why": "Branches are where programs differ from calculators — and where most bugs and most tests live. Each branch is a path you must reason about and test, and the number of paths grows quickly, so clear conditions are worth more than clever ones.",
+    "mental": "A fork in the road with signs checked in order. The first sign that matches sends you down that road; the rest are never read.",
+    "points": [
+      "Conditions are evaluated top to bottom. The first true branch wins and the rest are skipped.",
+      "Short-circuit evaluation: 'x is not None and x.ready' is safe because the second half only runs when the first is true.",
+      "Compare like with like: = assigns and == compares. In JavaScript prefer === to avoid type coercion.",
+      "Guard clauses — return early on the bad case — keep the main path flat and readable.",
+      "Every condition has a boundary. Test the value just below it, at it, and just above it."
+    ],
+    "steps": [
+      "Evaluate the condition",
+      "If true, run this block",
+      "Otherwise test the next condition",
+      "Fall through to else",
+      "Continue after the block"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Guard clause, then ordered branches",
+      "code": "def grade(score):\n    if score < 0 or score > 100:\n        raise ValueError(\"score out of range\")   # guard clause\n    if score >= 90:\n        return \"A\"\n    elif score >= 80:\n        return \"B\"\n    return \"C or below\"\n\nprint(grade(90), grade(89))   # A B"
+    },
+    "usage": [
+      "Validating input before using it",
+      "Choosing behavior by state: logged in or out, empty or full",
+      "Feature flags and configuration switches"
+    ],
+    "mistakes": [
+      "Using = where == was meant (a syntax error in Python, a silent bug in C).",
+      "Ordering branches so a general case hides a specific one, such as score >= 50 before score >= 90.",
+      "Testing the middle of a range and forgetting its boundaries."
+    ],
+    "interview": [
+      {
+        "q": "What is short-circuit evaluation and why does it matter?",
+        "a": "In A and B the right side is evaluated only if A is true; in A or B only if A is false. It lets you guard an expression, as in 'obj is not None and obj.ready', and it avoids needless work.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why prefer guard clauses to deep nesting?",
+        "a": "Handling the invalid case first and returning leaves the main logic at one indentation level. Readers see the happy path without tracking a stack of open conditions.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is the difference between == and === in JavaScript?",
+        "a": "== converts operand types before comparing, so '1' == 1 is true. === compares type and value, so '1' === 1 is false. Prefer ===.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "loops",
+    "section": "fundamentals",
+    "title": "Loops",
+    "summary": "Repeat work while a condition holds or for each item in a collection. The source of both power and infinite loops.",
+    "level": "beginner",
+    "prereqs": [
+      "conditionals"
+    ],
+    "related": [
+      "recursion",
+      "arrays",
+      "big-o"
+    ],
+    "next": "functions",
+    "tags": [
+      "fundamentals",
+      "control-flow"
+    ],
+    "what": "A loop repeats a block. A for loop walks a known sequence or a counted range; a while loop runs until a condition turns false. break exits early and continue skips to the next pass. A loop is correct when it has an invariant — something true before every pass — and a variable that moves toward the stopping condition.",
+    "why": "Loops turn a fixed program into one whose running time depends on the input, which is where cost analysis begins: one loop over n items is O(n), a loop inside a loop is O(n²). Off-by-one and non-terminating loops are among the most common defects.",
+    "mental": "Walking down a hallway of doors. A for loop says 'open every door once, in order.' A while loop says 'keep walking until the alarm stops.'",
+    "points": [
+      "for x in items: use it when you have a collection or a known count, so there is no manual index to get wrong.",
+      "while condition: use it when the number of passes depends on something computed inside the loop.",
+      "Invariant plus progress: state what stays true on every pass and what changes so the loop must end.",
+      "Off-by-one errors live at the boundaries: range(n) covers 0 to n-1, and slices exclude their end.",
+      "Nested loops multiply: a loop over n inside a loop over n is n² work.",
+      "Modifying a collection while iterating over it skips or repeats elements. Iterate over a copy or build a new list."
+    ],
+    "steps": [
+      "Set up the state",
+      "Test the condition",
+      "Run the body",
+      "Update toward the end",
+      "Repeat or exit"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "An invariant and steady progress",
+      "code": "def total(nums):\n    s = 0                    # invariant: s == sum of the numbers seen so far\n    for x in nums:\n        s += x\n    return s\n\ni = 10\nwhile i > 0:                 # progress: i shrinks by 3 on every pass\n    i -= 3\nprint(total([1, 2, 3]), i)   # 6 -2"
+    },
+    "complexity": {
+      "time": "One pass over n items is O(n); two nested passes are O(n²)",
+      "space": "O(1) extra for a simple accumulator",
+      "tradeoffs": [
+        "Simple loops are the cheapest way to touch every element once",
+        "Nested loops are the first thing to look at when a program is slow on large input"
+      ]
+    },
+    "usage": [
+      "Processing every record in a file or table",
+      "Retrying an operation until it succeeds or a limit is reached",
+      "Game loops, event loops, and server accept loops"
+    ],
+    "mistakes": [
+      "Using <= where < was meant and reading one element past the end.",
+      "A while loop whose condition variable is never updated.",
+      "Removing items from a list while looping over it."
+    ],
+    "interview": [
+      {
+        "q": "How do you show a loop is correct?",
+        "a": "State a loop invariant, show it holds before the first pass and is preserved by each pass, and show that the invariant plus the exit condition imply the result. Then show some quantity decreases so the loop terminates.",
+        "level": "advanced"
+      },
+      {
+        "q": "When would you choose while over for?",
+        "a": "When you do not know in advance how many passes you need — reading until end of input, retrying until success, or converging on a value. A for loop fits a known collection or count.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does a nested loop cost?",
+        "a": "The passes multiply. Two loops over n items do about n² comparisons, which is fine at n = 1,000 and painful at n = 1,000,000. Often a hash set or a sort removes the inner loop.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "functions",
+    "section": "fundamentals",
+    "title": "Functions",
+    "summary": "A named, reusable computation with inputs (parameters) and an output (return value). The unit of abstraction and of testing.",
+    "level": "beginner",
+    "prereqs": [
+      "loops"
+    ],
+    "related": [
+      "stack-and-heap",
+      "error-handling"
+    ],
+    "next": "recursion",
+    "tags": [
+      "fundamentals",
+      "abstraction"
+    ],
+    "what": "A function packages a computation behind a name. Parameters receive the inputs and a return value hands back the result. Each call gets its own local variables in a stack frame, created on call and discarded on return. A pure function depends only on its arguments and has no side effects; an impure one reads or changes state outside itself.",
+    "why": "Functions let you reason about a program one small piece at a time, reuse logic instead of pasting it, and test a piece without running everything. They are also the mechanism that recursion, callbacks, and methods are built on.",
+    "mental": "A vending machine. You put in arguments, it does its private work, and something comes out. You should not need to open the panel to use it, and it should not reach out and rearrange the room.",
+    "points": [
+      "The signature — name, parameters, and return type — is the contract callers rely on.",
+      "Each call pushes a stack frame holding parameters, locals, and the return address. Returning pops it.",
+      "Prefer pure functions: the same input gives the same output with no hidden state. They are easy to test and safe to run in parallel.",
+      "Side effects (printing, writing files, changing globals) belong at the edges. Keep the core pure.",
+      "Default and keyword arguments make calls readable, but a mutable default such as a list is shared between calls in Python.",
+      "In many languages functions are values: you can pass them to other functions as callbacks, sort keys, or handlers."
+    ],
+    "steps": [
+      "Caller passes arguments",
+      "A new frame is pushed",
+      "The body runs on locals",
+      "A value is returned",
+      "The frame is popped"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Parameters, defaults, and functions as values",
+      "code": "def clamp(value, low=0, high=100):\n    \"\"\"Return value limited to the range [low, high].\"\"\"\n    return max(low, min(value, high))\n\nprint(clamp(150))                              # 100\nprint(clamp(-5, low=-10))                      # -5\nprint(sorted([\"bb\", \"a\", \"ccc\"], key=len))     # ['a', 'bb', 'ccc']"
+    },
+    "usage": [
+      "Splitting a large task into named steps",
+      "Callbacks and event handlers",
+      "The unit that unit tests call directly"
+    ],
+    "mistakes": [
+      "Writing a function that does several unrelated things and cannot be named honestly.",
+      "Hiding side effects, such as mutating an argument, behind an innocent-looking name.",
+      "Using a mutable default argument."
+    ],
+    "interview": [
+      {
+        "q": "What is a pure function and why do people prefer them?",
+        "a": "A pure function returns the same output for the same input and changes nothing outside itself. That makes it easy to test, cache, reason about, and run concurrently.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What happens on the call stack when a function is called?",
+        "a": "A frame with the arguments, local variables, and return address is pushed. When the function returns the frame is popped and execution resumes at the return address.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is a higher-order function?",
+        "a": "One that takes a function as an argument or returns one — map, filter, sorted with a key, decorators. It lets you pass behavior the way you pass data.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "recursion",
+    "section": "fundamentals",
+    "title": "Recursion",
+    "summary": "A function that solves a problem by calling itself on a smaller piece. It needs a base case and progress toward it.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions"
+    ],
+    "related": [
+      "dfs",
+      "dynamic-programming",
+      "bst"
+    ],
+    "next": "stack-and-heap",
+    "tags": [
+      "fundamentals",
+      "recursion"
+    ],
+    "what": "Recursion solves a problem by reducing it to a smaller instance of itself. Every recursive function has a base case that answers directly and a recursive case that calls itself on a smaller input. Each pending call keeps a frame on the call stack, so recursion depth is limited by stack size.",
+    "why": "Trees, graphs, parsing, divide and conquer, and backtracking are naturally recursive. Once you can see the smaller problem inside the larger one, code that needs a page of loops and manual stacks fits in a few lines.",
+    "mental": "Russian nesting dolls. To count the dolls, open one, count 1, then ask the same question of the doll inside. The smallest doll — the one with nothing in it — is the base case.",
+    "points": [
+      "Two parts: a base case that stops, and a recursive case that moves strictly toward it.",
+      "The call stack holds one frame per unfinished call. Python's default limit is about 1,000 frames; deep recursion raises RecursionError.",
+      "Overlapping subproblems make naive recursion explode (Fibonacci is O(2ⁿ)). Memoization caches results and makes it O(n).",
+      "Any recursion can be rewritten with a loop and an explicit stack. Choose recursion when it matches the shape of the data.",
+      "Tail recursion can reuse a frame in languages that optimize it; Python and Java do not."
+    ],
+    "steps": [
+      "Ask: is it small enough to answer now?",
+      "If so, return the base value",
+      "Otherwise shrink the problem",
+      "Call yourself on the smaller piece",
+      "Combine the answer and return"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Base case, smaller calls, memoization",
+      "code": "from functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fib(n):\n    if n < 2:                          # base cases\n        return n\n    return fib(n - 1) + fib(n - 2)     # smaller subproblems\n\nprint(fib(50))   # 12586269025"
+    },
+    "complexity": {
+      "time": "Naive Fibonacci O(2ⁿ); with memoization O(n)",
+      "space": "O(depth) for the call stack",
+      "tradeoffs": [
+        "Short, direct code for recursive data such as trees",
+        "Stack depth is a hard limit; a loop with an explicit stack has none",
+        "Memoization trades memory for a large drop in time"
+      ]
+    },
+    "usage": [
+      "Walking trees and directories",
+      "Divide and conquer: merge sort, quicksort, binary search",
+      "Backtracking: solvers, parsers, combinatorial search"
+    ],
+    "mistakes": [
+      "Forgetting the base case, or writing one the input can never reach.",
+      "Recomputing the same subproblem exponentially many times.",
+      "Recursing a million deep on a list where a loop would do."
+    ],
+    "interview": [
+      {
+        "q": "What are the two parts of every recursive function?",
+        "a": "A base case that returns without recursing, and a recursive case that calls the function on a strictly smaller input so it must eventually reach the base case.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can recursion overflow the stack, and how do you avoid it?",
+        "a": "Each pending call holds a stack frame, and the stack is finite. Convert to a loop with an explicit stack, reduce the depth (divide and conquer halves it each time), or use an iterative algorithm.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How does memoization change Fibonacci's cost?",
+        "a": "The naive version recomputes the same values and takes O(2ⁿ) time. Caching each fib(k) after the first computation means each is computed once, so time is O(n).",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "stack-and-heap",
+    "section": "fundamentals",
+    "title": "Stack and Heap",
+    "summary": "Where a running program keeps its data: the fast, automatic call stack and the flexible, longer-lived heap.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions",
+      "recursion"
+    ],
+    "related": [
+      "garbage-collection",
+      "virtual-memory",
+      "processes"
+    ],
+    "next": "pointers",
+    "tags": [
+      "fundamentals",
+      "memory"
+    ],
+    "viz": "memory-map",
+    "lab": "memory-map",
+    "what": "A process keeps data in several regions. The call stack holds one frame per active function call — parameters, locals, and a return address — allocated and freed automatically as calls begin and end. The heap holds objects whose size or lifetime is not known at compile time; someone must decide when to free them: you, a garbage collector, or a smart pointer. Code and static data live in their own regions.",
+    "why": "'Segmentation fault', 'stack overflow', 'memory leak', and 'use after free' are all questions about these regions. The split also explains performance: stack access is cache-friendly and allocation is nearly free, while heap allocation costs more and can fragment.",
+    "mental": "The stack is a pile of cafeteria plates: you only touch the top, and it is always tidy. The heap is a warehouse: you can store anything as long as you like, but you need a ledger to know what is where and when to clear it out.",
+    "points": [
+      "Stack: LIFO, fixed maximum size, freed automatically on return. Locals and call frames live here.",
+      "Heap: allocated on request (malloc, new, object creation), freed manually, by a garbage collector, or by ownership rules.",
+      "A pointer or reference on the stack can point to an object on the heap. The reference dies with the frame; the object does not.",
+      "Returning a pointer to a local variable is a bug: the frame is gone, so the address is dangling.",
+      "In managed languages (Java, Python, JavaScript) objects live on the heap and the runtime reclaims them; the stack still holds frames and references."
+    ],
+    "steps": [
+      "Call pushes a frame",
+      "Locals live in the frame",
+      "Allocation reserves heap memory",
+      "Return pops the frame",
+      "Heap object lives until freed"
+    ],
+    "code": {
+      "lang": "c",
+      "title": "One value in a frame, one on the heap",
+      "code": "#include <stdio.h>\n#include <stdlib.h>\n\nint main(void) {\n    int on_stack = 7;                        /* lives in main's frame */\n    int *on_heap = malloc(sizeof *on_heap);\n    *on_heap = 42;                           /* lives until we free it */\n    printf(\"%d %d\\n\", on_stack, *on_heap);\n    free(on_heap);                           /* forget this and it leaks */\n    return 0;\n}"
+    },
+    "usage": [
+      "Diagnosing crashes: stack overflow versus heap corruption",
+      "Choosing between value types and heap-allocated objects",
+      "Understanding memory profiler output and leak reports"
+    ],
+    "mistakes": [
+      "Returning the address of a local variable.",
+      "Assuming garbage collection means memory cannot leak; holding references keeps objects alive.",
+      "Allocating large arrays as locals and overflowing the stack."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between the stack and the heap?",
+        "a": "The stack stores call frames and locals with automatic, LIFO lifetime and very cheap allocation. The heap stores objects with flexible size and lifetime that must be freed explicitly or by a collector, at higher cost.",
+        "level": "beginner"
+      },
+      {
+        "q": "What causes a stack overflow?",
+        "a": "Too many nested calls (usually unbounded recursion) or very large local arrays exhaust the fixed-size stack, and the runtime terminates the program.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is a dangling pointer?",
+        "a": "A pointer to memory that has been freed or whose stack frame has returned. Dereferencing it is undefined behavior: it may read garbage, crash, or appear to work.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "pointers",
+    "section": "fundamentals",
+    "title": "Pointers and References",
+    "summary": "A value that is a memory address. Pointers let code share, modify, and link data without copying it.",
+    "level": "intermediate",
+    "prereqs": [
+      "variables",
+      "stack-and-heap"
+    ],
+    "related": [
+      "arrays",
+      "linked-lists",
+      "c-language",
+      "virtual-memory"
+    ],
+    "next": "error-handling",
+    "tags": [
+      "fundamentals",
+      "memory"
+    ],
+    "what": "A pointer is a variable whose value is a memory address. The address-of operator (&) produces one and the dereference operator (*) follows it. Pointers let a function modify a caller's data, build linked structures, and refer to large objects without copying them. Languages without raw pointers still have references, which are pointers the runtime keeps safe.",
+    "why": "Pointers explain arrays, strings, linked lists, trees, shared mutable state, and most memory bugs. Even in Python or Java, 'is this a copy or the same object?' is a pointer question.",
+    "mental": "A street address on an envelope. The address is not the house: you can copy the address a thousand times and still have one house. Follow the address (dereference) to reach the house; hand out a wrong or stale address and the mail goes nowhere.",
+    "points": [
+      "&x gives the address of x; *p reads or writes the value at address p.",
+      "Passing a pointer lets the callee change the caller's variable; passing by value gives it a copy.",
+      "An array name usually decays to a pointer to its first element, and p + 1 advances by one element, not one byte.",
+      "NULL means 'points nowhere'. Dereferencing it crashes; check before you follow.",
+      "Common defects: null dereference, dangling pointer, out-of-bounds arithmetic, and double free.",
+      "References in Java, Python, and JavaScript are pointers with guard rails: no arithmetic, and the collector prevents dangling."
+    ],
+    "steps": [
+      "Take an address with &",
+      "Store it in a pointer",
+      "Pass the pointer around",
+      "Dereference with *",
+      "Stop using it after the target dies"
+    ],
+    "code": {
+      "lang": "c",
+      "title": "Swapping through pointers",
+      "code": "#include <stdio.h>\n\nvoid swap(int *a, int *b) {\n    int t = *a;\n    *a = *b;\n    *b = t;\n}\n\nint main(void) {\n    int x = 1, y = 2;\n    swap(&x, &y);\n    printf(\"%d %d\\n\", x, y);   /* 2 1 */\n    return 0;\n}"
+    },
+    "usage": [
+      "Linked lists, trees, and graphs",
+      "Passing large structs without copying them",
+      "Systems code: buffers, memory-mapped I/O, and system call arguments"
+    ],
+    "mistakes": [
+      "Dereferencing a pointer that is NULL or uninitialized.",
+      "Keeping a pointer to freed memory or to a returned frame.",
+      "Confusing the pointer with the thing it points to when comparing or copying."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between a pointer and a reference?",
+        "a": "A pointer is an address you can reassign, do arithmetic on, and set to null. A reference is an alias the language binds to an existing object and usually cannot be null or rebound. Managed languages' references add safety on top of the same idea.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is a null pointer dereference?",
+        "a": "Reading or writing through a pointer that holds no valid address. In most systems it terminates the program; in memory-safe languages it raises an exception such as NullPointerException.",
+        "level": "beginner"
+      },
+      {
+        "q": "How does pointer arithmetic work?",
+        "a": "Adding n to a pointer to type T advances it by n × sizeof(T) bytes. That is why p + 1 steps to the next element of an array regardless of element size.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "error-handling",
+    "section": "fundamentals",
+    "title": "Error Handling",
+    "summary": "Deciding what a program does when something goes wrong: raise, return, retry, or stop — and always clean up.",
+    "level": "intermediate",
+    "prereqs": [
+      "functions",
+      "conditionals"
+    ],
+    "related": [
+      "system-calls",
+      "http"
+    ],
+    "next": "testing-debugging",
+    "tags": [
+      "fundamentals",
+      "reliability"
+    ],
+    "what": "Programs meet bad input, missing files, and dead networks. Error handling decides what happens then. There are two broad styles: exceptions, which unwind the call stack to the nearest handler (Python, Java, JavaScript), and error values, which functions return and callers must check (C, Go, Rust's Result). Both need the same discipline: fail loudly, release resources, and never swallow an error you cannot handle.",
+    "why": "Real programs spend as much code on failure as on success. Handling errors well is what separates a script from a service: users get a clear message, data stays consistent, and the on-call engineer can see what happened.",
+    "mental": "A building's fire drill. You do not plan for the fire to happen, but you decide in advance where the alarms are, who gets told, and which doors open — so a failure follows a script instead of a panic.",
+    "points": [
+      "Validate at the boundary: check input where it enters the system and give a specific message.",
+      "Catch only what you can handle. A bare except that logs nothing hides bugs.",
+      "Release resources on every path: use with in Python, try-with-resources in Java, defer in Go.",
+      "Add context when re-raising: what were you doing, with which input?",
+      "Distinguish expected failures (file not found, invalid input) from bugs (a broken invariant). Recover from the first, crash on the second.",
+      "Retries need limits and back-off, and only make sense for idempotent operations."
+    ],
+    "steps": [
+      "Detect the problem",
+      "Raise or return an error",
+      "Unwind to a handler",
+      "Clean up resources",
+      "Recover, retry, or report"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "Validate, raise with context, always close",
+      "code": "def read_port(text):\n    try:\n        port = int(text)\n    except ValueError:\n        raise ValueError(f\"port must be a number, got {text!r}\") from None\n    if not 1 <= port <= 65535:\n        raise ValueError(f\"port out of range: {port}\")\n    return port\n\nwith open(\"config.txt\") as f:          # closed even if an error occurs\n    print(read_port(f.readline().strip()))"
+    },
+    "usage": [
+      "Input validation in APIs and forms",
+      "Handling I/O and network failures",
+      "Transactions that must roll back when a step fails"
+    ],
+    "mistakes": [
+      "Swallowing an exception with an empty except block.",
+      "Catching the broadest exception type and continuing as if nothing happened.",
+      "Leaking a file, socket, or lock on the error path."
+    ],
+    "interview": [
+      {
+        "q": "Exceptions versus error return codes: what are the trade-offs?",
+        "a": "Exceptions keep the success path clean and cannot be silently ignored, but hide control flow and can be costly. Return values make every failure visible at the call site but clutter code and are easy to forget to check.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What does finally (or with) guarantee?",
+        "a": "That cleanup code runs whether the block finishes normally, returns early, or raises. It is how you guarantee files, locks, and connections are released.",
+        "level": "beginner"
+      },
+      {
+        "q": "When is it safe to retry a failed operation?",
+        "a": "When the operation is idempotent — repeating it has the same effect as doing it once — and the failure is transient. Use a limit and exponential back-off, or you turn an outage into a stampede.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "testing-debugging",
+    "section": "fundamentals",
+    "title": "Testing and Debugging",
+    "summary": "Checking behavior against expectations, and finding why it differs. Reproduce, hypothesize, observe, fix, lock in with a test.",
+    "level": "intermediate",
+    "prereqs": [
+      "error-handling"
+    ],
+    "related": [
+      "functions",
+      "system-calls"
+    ],
+    "next": "compiled-vs-interpreted",
+    "tags": [
+      "fundamentals",
+      "quality"
+    ],
+    "what": "Testing checks that code does what you expect; debugging finds out why it does not. A unit test exercises one function with chosen inputs; an integration test exercises pieces together. Debugging is the scientific method applied to code: reproduce the failure, form a hypothesis, observe (print statements, logs, a debugger), and confirm the fix with a test that would have failed before.",
+    "why": "Code you cannot test cannot be changed safely. Tests turn 'I think it works' into a repeatable check, and a disciplined debugging routine turns hours of guessing into minutes of narrowing down.",
+    "mental": "A doctor working a case. Symptoms (the failing behavior), a differential (hypotheses), tests that rule causes out, then a treatment and a follow-up to confirm the cure.",
+    "points": [
+      "A good test is small, fast, deterministic, and fails for one reason. Name it after the behavior it checks.",
+      "Test the boundaries and the awkward cases: empty input, one element, maximum size, negative numbers, invalid data.",
+      "Reproduce first. A bug you cannot trigger on demand cannot be verified as fixed.",
+      "Bisect: halve the search space with a print, an assert, or git bisect until the fault is between two lines or two commits.",
+      "Read the stack trace from the bottom of your own code upward. The first frame in your code is usually where to look.",
+      "After the fix, add a regression test so the same bug cannot return quietly."
+    ],
+    "steps": [
+      "Reproduce the failure",
+      "Form a hypothesis",
+      "Observe with a print or debugger",
+      "Narrow to a line",
+      "Fix and add a regression test"
+    ],
+    "code": {
+      "lang": "python",
+      "title": "A test that pins down the edge cases",
+      "code": "def is_leap(year):\n    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)\n\ndef test_is_leap():\n    assert is_leap(2024)\n    assert not is_leap(1900)      # divisible by 100 but not by 400\n    assert is_leap(2000)          # divisible by 400\n    assert not is_leap(2023)\n\ntest_is_leap()\nprint(\"ok\")"
+    },
+    "usage": [
+      "Continuous integration that blocks broken changes",
+      "Refactoring with a safety net",
+      "Investigating production incidents from logs and traces"
+    ],
+    "mistakes": [
+      "Changing code at random until the symptom disappears, without understanding the cause.",
+      "Tests that depend on the clock, the network, or the order they run in.",
+      "Fixing the bug but not adding a test, so it comes back."
+    ],
+    "interview": [
+      {
+        "q": "What makes a good unit test?",
+        "a": "It is fast, deterministic, isolated from other tests, checks one behavior, and fails with a message that tells you what broke.",
+        "level": "beginner"
+      },
+      {
+        "q": "How do you debug a bug you can only reproduce sometimes?",
+        "a": "Capture more information (logs, seeds, inputs) at the failure, look for shared state, timing, or randomness, try to make it deterministic (fix seeds, control the scheduler), and shrink the input until the failure is small and reliable.",
+        "level": "advanced"
+      },
+      {
+        "q": "What is a regression test?",
+        "a": "A test added after fixing a bug that reproduces the original failure. It fails on the old code and passes on the fix, so the bug cannot silently return.",
+        "level": "beginner"
+      }
+    ]
+  }
+]

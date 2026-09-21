@@ -1,5 +1,5 @@
 import { RedirectFunction, Routes } from "@angular/router";
-import { topicHref } from "@/lib/content";
+import { PHASES, PROGRAMMING_SECTION_IDS, SECTION_BY_ID, getSectionTopics, topicHref } from "@/lib/content";
 import { MainLayout } from "@/app/layout/main";
 import { AboutPage } from "@/app/pages/about/about";
 import { ContactPage } from "@/app/pages/contact/contact";
@@ -11,10 +11,27 @@ import { Paths } from "@/app/pages/paths/paths";
 import { DbmsPage } from "@/app/pages/dbms/dbms";
 import { NetworksPage } from "@/app/pages/networks/networks";
 import { OsPage } from "@/app/pages/os/os";
+import { PhasePage } from "@/app/pages/phase/phase";
 import { PrivacyPage } from "@/app/pages/privacy/privacy";
+import { ProgrammingPage } from "@/app/pages/programming/programming";
+import { ProgrammingSectionPage } from "@/app/pages/programming/section/section";
 import { TermsPage } from "@/app/pages/terms/terms";
 
 const toTopicPage: RedirectFunction = ({ params }) => topicHref(params["slug"] ?? "");
+
+// Programming topics share one lazy page; routes come from the catalog so only real slugs resolve.
+const programmingRoutes: Routes = PROGRAMMING_SECTION_IDS.map((id) => ({
+  path: id,
+  children: [
+    { path: "", component: ProgrammingSectionPage, data: { id }, title: `${SECTION_BY_ID[id].title} · CS` },
+    ...getSectionTopics(id).map((t) => ({
+      path: t.slug,
+      loadComponent: () => import("@/app/pages/programming/topic/topic").then((m) => m.ProgrammingTopicPage),
+      data: { slug: t.slug },
+      title: `${t.title} · CS`,
+    })),
+  ],
+}));
 
 export const routes: Routes = [
   {
@@ -198,6 +215,19 @@ export const routes: Routes = [
           { path: "wal", loadComponent: () => import("@/app/pages/dbms/wal/wal").then((m) => m.DbmsWalPage), title: "Write-Ahead Log · CS" },
         ],
       },
+      {
+        path: "programming",
+        children: [
+          { path: "", component: ProgrammingPage, title: "Programming · CS" },
+          ...programmingRoutes,
+        ],
+      },
+      ...PHASES.map((p) => ({
+        path: p.id,
+        component: PhasePage,
+        data: { id: p.id },
+        title: `${p.title} · ${p.subtitle} · CS`,
+      })),
       { path: "topics", redirectTo: "library", pathMatch: "prefix" },
       { path: "labs", redirectTo: "library", pathMatch: "prefix" },
       { path: "graph", redirectTo: "library" },

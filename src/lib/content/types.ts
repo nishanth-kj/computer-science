@@ -120,3 +120,12 @@ export type LearningPath = {
   audience: string;
   slugs: string[];
 };
+
+export type Phase = {
+  id: string;
+  n: number;
+  title: string;
+  subtitle: string;
+  blurb: string;
+  groups: string[];
+};

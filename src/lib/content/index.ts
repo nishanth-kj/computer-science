@@ -1,21 +1,25 @@
 import { NAV, NAV_BY_SLUG, type NavTopic } from "./nav";
 import { NAV_REST } from "./nav-rest";
 import { PATHS, PATH_BY_ID } from "./paths";
-import { SECTIONS, SECTION_BY_ID, SECTION_GROUPS } from "./sections";
+import { PHASES, PHASE_BY_ID } from "./phases";
+import { SECTIONS, SECTION_BY_ID, SECTION_GROUPS, type SectionGroup } from "./sections";
 import { FLAGSHIP as CORE } from "./topics/flagship";
+import { FLAGSHIP as FUNDAMENTALS } from "./topics/fundamentals";
 import { FLAGSHIP as LANGS } from "./topics/languages";
+import { FLAGSHIP as OOP } from "./topics/oop";
+import { FLAGSHIP as DSA } from "./topics/dsa";
 import { FLAGSHIP as OSI } from "./topics/osi-layers";
 import { FLAGSHIP as CASES } from "./topics/cases";
 import { FLAGSHIP as MORE } from "./topics/more";
 import type { SectionId, Topic } from "./types";
 import { enrich } from "./enrich";
 
-export { PATHS, PATH_BY_ID, SECTIONS, SECTION_BY_ID, SECTION_GROUPS };
+export { PATHS, PATH_BY_ID, PHASES, PHASE_BY_ID, SECTIONS, SECTION_BY_ID, SECTION_GROUPS };
 export type { Topic, SectionId };
 
 export const ALL_NAV: NavTopic[] = [...NAV, ...NAV_REST];
 
-export const FLAGSHIP: Topic[] = [...CORE, ...LANGS, ...OSI, ...CASES, ...MORE];
+export const FLAGSHIP: Topic[] = [...CORE, ...FUNDAMENTALS, ...LANGS, ...OOP, ...DSA, ...OSI, ...CASES, ...MORE];
 
 export const FLAGSHIP_SLUGS = FLAGSHIP.map((t) => t.slug);
 
@@ -137,9 +141,10 @@ export function getTopic(slug: string): Topic | undefined {
   return topic;
 }
 
-const PROGRAMMING_SECTIONS = new Set<string>(
-  SECTION_GROUPS.find((g) => g.id === "programming")?.sections ?? [],
-);
+export const PROGRAMMING_SECTION_IDS: SectionId[] =
+  SECTION_GROUPS.find((g) => g.id === "programming")?.sections ?? [];
+
+const PROGRAMMING_SECTIONS = new Set<string>(PROGRAMMING_SECTION_IDS);
 
 export function topicHref(slug: string): string {
   if (!slug) return "/";
@@ -150,6 +155,11 @@ export function topicHref(slug: string): string {
   if (!topic) return "/";
   if (PROGRAMMING_SECTIONS.has(topic.section)) return `/programming/${topic.section}/${topic.slug}`;
   return `/${topic.section}/${topic.slug}`;
+}
+
+// A group with several sections has its own hub page; a single-section group links straight to that section.
+export function groupHref(group: SectionGroup): string {
+  return group.sections.length > 1 ? `/${group.id}` : topicHref(group.sections[0]);
 }
 
 export function topicsInSection(section: SectionId): Topic[] {
@@ -183,7 +193,7 @@ export function searchTopics(query: string, limit = 24): NavTopic[] {
 
 export const STATS = {
   pages: ALL_NAV.length,
-  sections: SECTIONS.length,
+  sections: SECTION_GROUPS.length,
   paths: PATHS.length,
 };
 
