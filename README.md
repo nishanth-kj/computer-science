@@ -21,6 +21,20 @@ Static files land in `dist/` (`index.html` + `404.html` for hosts that fall back
 
 Serve that folder with any static host (GitHub Pages, Netlify, nginx, `npx serve dist`).
 
+## Deploy (GitHub Pages)
+
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs on every push and pull request: it installs, runs the tests, and builds. On pushes to `main` (or a manual run from the Actions tab) it then publishes `dist/` to GitHub Pages.
+
+One-time setup: in the repository go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**.
+
+The deploy job reads the site's URL from the Pages settings, so the same workflow works for a project site (`https://<owner>.github.io/<repo>/`) and for a custom domain. It builds with the matching `--base-href` and passes the site URL to the sitemap and prerender scripts as `SITE_ORIGIN`. To test a sub-path build locally:
+
+```bash
+SITE_ORIGIN=https://<owner>.github.io/<repo> node scripts/generate-sitemap.mjs
+npx ng build --base-href /<repo>/
+node scripts/prerender.mjs && cp dist/index.html dist/404.html
+```
+
 ## Test
 
 ```bash

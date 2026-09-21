@@ -50,8 +50,9 @@ export class SeoService {
     this.setJsonLd(this.graph(pageTitle, canonical, image, seo));
   }
 
+  // Resolve against <base href> so a site served from a sub-path (GitHub Pages) keeps its prefix.
   private abs(path: string) {
-    return new URL(path, this.document.baseURI).href;
+    return new URL(path.replace(/^\//, ""), this.document.baseURI).href;
   }
 
   private setMeta(name: string, content: string) {

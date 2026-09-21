@@ -2,8 +2,8 @@
   "name": "CS — Learn computer science in depth",
   "short_name": "CS",
   "description": "The path to learn full computer science in depth — programming, systems, networks, databases, AI, theory, and ordered learning paths.",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "id": "/",
   "lang": "en",
   "dir": "ltr",
@@ -13,13 +13,13 @@
   "categories": ["education", "reference"],
   "icons": [
     {
-      "src": "/logo.svg",
+      "src": "logo.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/favicon.svg",
+      "src": "favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
