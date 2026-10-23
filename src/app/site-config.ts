@@ -51,3 +51,13 @@ function validPublisherId(value: unknown): value is string {
 function validSlotId(value: unknown): value is string {
   return typeof value === "string" && /^\d+$/.test(value);
 }
+
+function validHttpsUrl(value: unknown): value is string {
+  if (typeof value !== "string" || value.trim() !== value || !value) return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && Boolean(url.hostname);
+  } catch {
+    return false;
+  }
+}
