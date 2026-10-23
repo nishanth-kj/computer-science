@@ -5,7 +5,6 @@ type SiteConfig = {
   adsensePublisherId: string;
   adsenseSlots: {
     inArticle: string;
-    libraryBanner: string;
   };
   supportUrl: string;
   digitalProductsUrl: string;
@@ -28,7 +27,6 @@ export const SITE_CONFIG: SiteConfig = {
   adsensePublisherId: validPublisherId(raw?.adsensePublisherId) ? raw!.adsensePublisherId! : "",
   adsenseSlots: {
     inArticle: validSlotId(raw?.adsenseSlots?.inArticle) ? raw!.adsenseSlots!.inArticle! : "",
-    libraryBanner: validSlotId(raw?.adsenseSlots?.libraryBanner) ? raw!.adsenseSlots!.libraryBanner! : "",
   },
   supportUrl: validHttpsUrl(raw?.supportUrl) ? raw!.supportUrl! : "",
   digitalProductsUrl: validHttpsUrl(raw?.digitalProductsUrl) ? raw!.digitalProductsUrl! : "",
