@@ -27,7 +27,46 @@ import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
       </div>
       <p class="mt-4 text-lg leading-relaxed text-muted">{{ topic().summary }}</p>
 
-      <section class="scroll-mt-24">
+      @if (topic().contentMode === "summary") {
+        <section class="scroll-mt-24">
+          <h2 id="prerequisites" class="mt-10 mb-3 font-display text-2xl tracking-tight">Prerequisites</h2>
+          @if (topic().prereqs.length) {
+            <ul class="list-disc space-y-1 pl-5 text-[15px]">
+              @for (s of topic().prereqs; track $index) {
+                @if (exists(s)) {
+                  <li><a [routerLink]="topicHref(s)" class="text-link underline-offset-2 hover:underline">{{ titleOf(s) }}</a></li>
+                }
+              }
+            </ul>
+          } @else {
+            <p class="text-[15px] leading-relaxed text-fg/90">No prerequisites are listed. Start with the definition above and follow the related topics.</p>
+          }
+        </section>
+        @if (topic().related.length) {
+          <section class="scroll-mt-24">
+            <h2 id="related" class="mt-10 mb-3 font-display text-2xl tracking-tight">Related concepts</h2>
+            <div class="flex flex-wrap gap-2">
+              @for (s of topic().related; track $index) {
+                @if (exists(s)) {
+                  <a [routerLink]="topicHref(s)" class="rounded-full border border-border px-3 py-1 text-sm hover:bg-surface-2">{{ titleOf(s) }}</a>
+                }
+              }
+            </div>
+          </section>
+        }
+        @if (topic().next && exists(topic().next!)) {
+          <section class="scroll-mt-24">
+            <h2 id="next-topic" class="mt-10 mb-3 font-display text-2xl tracking-tight">Continue learning</h2>
+            <a [routerLink]="topicHref(topic().next!)" class="text-link hover:underline">{{ titleOf(topic().next!) }}</a>
+          </section>
+        }
+        <aside class="mt-8 rounded-lg border border-border bg-surface p-4">
+          <p class="text-sm font-semibold">Quick reference entry</p>
+          <p class="mt-1 text-sm leading-relaxed text-muted">This page currently provides a concise definition and study links. Not every topic has a full walkthrough, worked examples, and interview questions yet.</p>
+          <a routerLink="/library" class="mt-3 inline-block text-sm text-link hover:underline">Browse the complete topic library</a>
+        </aside>
+      } @else {
+        <section class="scroll-mt-24">
         <h2 id="what-is-it" class="mt-10 mb-3 font-display text-2xl tracking-tight">What is it?</h2>
         <p class="text-[15px] leading-relaxed text-fg/90">{{ topic().what }}</p>
       </section>
@@ -200,6 +239,7 @@ import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
           <h2 id="next-topic" class="mt-10 mb-3 font-display text-2xl tracking-tight">Next topic</h2>
           <a [routerLink]="topicHref(topic().next!)" class="text-link hover:underline">{{ titleOf(topic().next!) }}</a>
         </section>
+      }
       }
     </article>
   `,
