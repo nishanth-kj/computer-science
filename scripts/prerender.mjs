@@ -120,6 +120,17 @@ function renderTopicBody(navTopic, sectionTitleText) {
   ].join("");
   return `<article>${intro}${details}<p><a href="${escapeHtml(localHref("/library"))}">Browse the full computer science library</a></p></article>`;
 }
+function externalHttpsUrl(name) {
+  const value = process.env[name]?.trim();
+  if (!value) return "";
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && url.hostname ? url.toString() : "";
+  } catch {
+    return "";
+  }
+}
+
 function renderStaticPageBody(page) {
   if (page.path === "/") {
     const prioritySlugs = ["what-is-programming", "arrays", "big-o", "processes", "cpu-scheduling", "osi-model", "tcp", "sql", "transactions", "indexes"];
@@ -133,7 +144,10 @@ function renderStaticPageBody(page) {
     return `<main style="max-width: 52rem; margin: 0 auto; padding: 3rem 1.5rem;"><h1>${escapeHtml(page.h1)}</h1><p>${escapeHtml(page.desc)}</p><p><a href="${escapeHtml(localHref("/paths"))}">Choose a learning path</a> · <a href="${escapeHtml(localHref("/library"))}">Browse every topic</a></p><section><h2>Start with these computer science topics</h2>${topicList(featured, true)}</section><section><h2>Explore the curriculum</h2><ul>${sectionLinks}</ul></section><section><h2>Structured learning paths</h2><ul>${paths}</ul></section></main>`;
   }
   if (page.path === "/support") {
-    return `<main style="max-width: 48rem; margin: 0 auto; padding: 3rem 1.5rem;"><h1>Support the Computer Science Handbook</h1><p>This handbook is free to read. Support helps fund original explanations, worked examples, accessible diagrams, corrections, and maintenance.</p><h2>Reader support</h2><p>There is no active donation checkout configured on this site yet. To discuss supporting the project, educational collaboration, or a sponsorship, contact <a href="mailto:neurokodes@gmail.com">neurokodes@gmail.com</a>.</p><h2>Sponsorships and partnerships</h2><p>Relevant educational tools, developer platforms, and technical books may be considered when clearly labeled. Paid placements will not be presented as editorial recommendations.</p><h2>Other ways to help</h2><ul><li>Report factual errors and unclear explanations through <a href="https://github.com/nishanth-kj/computer-science/issues">GitHub issues</a>.</li><li>Share useful topic pages with students and developers.</li><li>Propose corrections or original worked examples through the <a href="https://github.com/nishanth-kj/computer-science">source repository</a>.</li></ul></main>`;
+    const supportUrl = externalHttpsUrl("SUPPORT_URL");
+    const productsUrl = externalHttpsUrl("DIGITAL_PRODUCTS_URL");
+    const newsletterUrl = externalHttpsUrl("NEWSLETTER_URL");
+    return `<main style="max-width: 48rem; margin: 0 auto; padding: 3rem 1.5rem;"><h1>Support the Computer Science Handbook</h1><p>This handbook is free to read. Support helps fund original explanations, worked examples, accessible diagrams, corrections, and maintenance.</p><h2>Reader support</h2>${supportUrl ? `<p><a href="${escapeHtml(supportUrl)}" rel="noopener noreferrer">Support the project</a></p>` : `<p>A support checkout is not configured yet. Once an active support page exists, configure SUPPORT_URL with its HTTPS URL.</p>`}<h2>Original study products</h2>${productsUrl ? `<p><a href="${escapeHtml(productsUrl)}" rel="noopener noreferrer">Browse downloadable study materials</a></p>` : `<p>Revision sheets, diagrams, and worked interview packs are potential products. No storefront is connected yet.</p>`}<h2>Newsletter</h2>${newsletterUrl ? `<p><a href="${escapeHtml(newsletterUrl)}" rel="noopener noreferrer">Join the learning newsletter</a></p>` : `<p>No newsletter provider is connected yet.</p>`}<h2>Sponsorships and partnerships</h2><p>Relevant educational tools, developer platforms, and technical books may be considered when clearly labeled. Paid placements will not be presented as editorial recommendations. Contact <a href="mailto:neurokodes@gmail.com">neurokodes@gmail.com</a>.</p><h2>Other ways to help</h2><ul><li>Report factual errors and unclear explanations through <a href="https://github.com/nishanth-kj/computer-science/issues">GitHub issues</a>.</li><li>Share useful topic pages with students and developers.</li><li>Propose corrections or original worked examples through the <a href="https://github.com/nishanth-kj/computer-science">source repository</a>.</li></ul></main>`;
   }
   if (page.path === "/affiliate-disclosure") {
     return `<main style="max-width: 48rem; margin: 0 auto; padding: 3rem 1.5rem;"><h1>Affiliate Disclosure</h1><p>As of the latest site update, this handbook does not intentionally publish affiliate links. If affiliate links are added in the future, they will be clearly identified near the recommendation and this page will be updated.</p><p>Recommendations should be relevant to computer science education and based on editorial usefulness, not solely on commission. Affiliate relationships will not change the price paid by the reader unless explicitly stated.</p><p>Questions about a partnership or recommendation can be sent to <a href="mailto:neurokodes@gmail.com">neurokodes@gmail.com</a>.</p></main>`;
@@ -355,7 +369,7 @@ for (const page of staticPages) {
     ? {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        name: "CS",
+        name: "Computer Science Handbook",
         description: page.desc,
         url: `${ORIGIN}/`,
       }
@@ -460,12 +474,12 @@ for (const t of navItems) {
     url: canonicalUrl,
     author: {
       "@type": "Organization",
-      name: "CS",
+      name: "Computer Science Handbook",
       url: ORIGIN,
     },
     publisher: {
       "@type": "Organization",
-      name: "CS",
+      name: "Computer Science Handbook",
       url: ORIGIN,
       logo: {
         "@type": "ImageObject",
