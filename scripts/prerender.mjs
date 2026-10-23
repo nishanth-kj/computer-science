@@ -284,9 +284,50 @@ function renderHtml(p, title, desc, bodyContent, schema, robots = "index, follow
     `<meta name="robots" content="${robots}" />`
   );
 
-  // Inject Schema.org JSON-LD
+  // Inject per-page structured data and a breadcrumb trail for crawlers.
   if (schema) {
-    const jsonLdTag = `<script type="application/ld+json" id="ld-json">${JSON.stringify(schema)}</script>`;
+    const primarySchema = { ...schema };
+    delete primarySchema["@context"];
+    const graph = [primarySchema];
+    if (p !== "/" && p !== "/404") {
+      const parts = p.split("/").filter(Boolean);
+      const itemListElement = [{
+        "@type": "ListItem",
+        position: 1,
+        name: "Computer Science Handbook",
+        item: `${ORIGIN}/`,
+      }];
+      let currentPath = "";
+      parts.forEach((part, index) => {
+        currentPath += `/${part}`;
+        const final = index === parts.length - 1;
+        const phase = phases.find((item) => item.id === part);
+        const learningPath = pathsList.find((item) => item.id === part);
+        const navTopic = navBySlug.get(part);
+        const group = sectionGroups.find((item) => item.id === part);
+        const name = final
+          ? title
+          : phase
+            ? `${phase.title}: ${phase.subtitle}`
+            : learningPath
+              ? learningPath.title
+              : navTopic
+                ? navTopic.title
+                : group
+                  ? group.title
+                  : sectionMeta[part]?.title ?? sectionTitle(part);
+        itemListElement.push({
+          "@type": "ListItem",
+          position: index + 2,
+          name,
+          item: `${ORIGIN}${currentPath}`,
+        });
+      });
+      graph.push({ "@type": "BreadcrumbList", itemListElement });
+    }
+    const structuredData = { "@context": "https://schema.org", "@graph": graph };
+    const safeJson = JSON.stringify(structuredData).replace(/</g, "\\u003c");
+    const jsonLdTag = `<script type="application/ld+json" id="ld-json">${safeJson}</script>`;
     html = html.replace("</head>", `  ${jsonLdTag}\n  </head>`);
   }
 
