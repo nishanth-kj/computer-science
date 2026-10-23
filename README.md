@@ -42,7 +42,7 @@ Analytics and advertising are disabled by default. No third-party script or empt
 
 - `GA_MEASUREMENT_ID` — a Google Analytics web stream ID such as `G-...`.
 - `ADSENSE_PUBLISHER_ID` — the approved AdSense client ID in `ca-pub-` format.
-- `ADSENSE_IN_ARTICLE_SLOT` and `ADSENSE_LIBRARY_SLOT` — numeric ad-unit IDs created in the approved account.
+- `ADSENSE_IN_ARTICLE_SLOT` — the numeric in-article ad-unit ID created in the approved account.
 - `SUPPORT_URL` — an active HTTPS donation/support page (for example, a creator platform you have actually enabled).
 - `DIGITAL_PRODUCTS_URL` — a live HTTPS storefront for original paid study materials.
 - `NEWSLETTER_URL` — a live HTTPS newsletter signup page from a provider you use.
@@ -55,7 +55,7 @@ For local testing, set the same environment variables before `npm run build`. Th
 
 This is a static educational site. Monetization should not compromise the free core curriculum or disguise paid recommendations as editorial advice.
 
-- **Display ads:** Google AdSense support is implemented but remains off until the account is approved and the Actions variables `ADSENSE_PUBLISHER_ID`, `ADSENSE_IN_ARTICLE_SLOT`, and `ADSENSE_LIBRARY_SLOT` are correctly configured. Never commit a fake publisher or slot ID. Configure a certified consent-management platform for regions where Google requires one.
+- **Display ads:** Google AdSense support is implemented but remains off until the account is approved and the Actions variables `ADSENSE_PUBLISHER_ID` and `ADSENSE_IN_ARTICLE_SLOT` are correctly configured. Never commit a fake publisher or slot ID. Configure a certified consent-management platform for regions where Google requires one.
 - **Affiliate recommendations:** add only relevant books, courses, developer tools, or hosting/services that have been personally reviewed. Identify affiliate links close to the recommendation and keep `/affiliate-disclosure` current. The project currently has no affiliate URLs or partner IDs configured.
 - **Digital products:** offer original revision sheets, interview-workbook PDFs, printable diagrams, or worked-problem packs through a reputable creator checkout. The checkout can be external; do not put payment secrets in frontend code.
 - **Sponsorships:** use `/support` to invite relevant education and developer-tool partnerships. Clearly label paid placements and do not sell control over educational conclusions.
