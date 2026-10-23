@@ -9,7 +9,7 @@
   <h2>Reader support</h2>
   @if (supportUrl) {
     <p>
-      <a [href]="supportUrl" target="_blank" rel="noopener noreferrer" class="font-mono underline">Support the project</a>
+      <a [href]="supportUrl" target="_blank" rel="noopener noreferrer" class="font-mono underline" (click)="trackClick('support_checkout_click')">Support the project</a>
     </p>
   } @else {
     <p>
@@ -21,7 +21,7 @@
   <h2>Original study products</h2>
   @if (digitalProductsUrl) {
     <p>
-      <a [href]="digitalProductsUrl" target="_blank" rel="noopener noreferrer" class="font-mono underline">Browse downloadable study materials</a>
+      <a [href]="digitalProductsUrl" target="_blank" rel="noopener noreferrer" class="font-mono underline" (click)="trackClick('digital_products_click')">Browse downloadable study materials</a>
     </p>
   } @else {
     <p>
@@ -32,7 +32,7 @@
 
   <h2>Newsletter</h2>
   @if (newsletterUrl) {
-    <p><a [href]="newsletterUrl" target="_blank" rel="noopener noreferrer" class="font-mono underline">Join the learning newsletter</a></p>
+    <p><a [href]="newsletterUrl" target="_blank" rel="noopener noreferrer" class="font-mono underline" (click)="trackClick('newsletter_signup_click')">Join the learning newsletter</a></p>
   } @else {
     <p>No newsletter provider is connected yet. Set <code>NEWSLETTER_URL</code> after a privacy-reviewed signup page is ready.</p>
   }
@@ -44,7 +44,7 @@
     Sponsorship does not buy control of explanations or rankings.
   </p>
   <p>
-    <a href="mailto:neurokodes@gmail.com?subject=Computer%20Science%20Handbook%20partnership" class="font-mono underline">
+    <a href="mailto:neurokodes@gmail.com?subject=Computer%20Science%20Handbook%20partnership" class="font-mono underline" (click)="trackClick('sponsorship_inquiry_click')">
       Email about a partnership
     </a>
   </p>
