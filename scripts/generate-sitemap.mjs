@@ -1,6 +1,8 @@
 import fs from "node:fs";
 
-const ORIGIN = (process.env.SITE_ORIGIN || "https://neuro-kodes.github.io/computer-science").replace(/\/$/, "");
+const cname = fs.existsSync("CNAME") ? fs.readFileSync("CNAME", "utf8").trim() : "";
+const fallbackOrigin = /^[a-z0-9.-]+$/i.test(cname) ? `https://${cname}` : "https://computer-science.site";
+const ORIGIN = (process.env.SITE_ORIGIN?.trim() || fallbackOrigin).replace(/\/+$/, "");
 
 const nav = JSON.parse(fs.readFileSync("src/data/content/nav.json", "utf8"));
 const navRest = JSON.parse(fs.readFileSync("src/data/content/nav-rest.json", "utf8"));
