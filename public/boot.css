@@ -1,0 +1,252 @@
+/* First-paint CSS. Linked from index.html so the page is themed before JS. */
+:root {
+  --bg: #f4f1ea;
+  --surface: #fffcf7;
+  --surface-2: #ece7dc;
+  --fg: #1c1f24;
+  --muted: #5c6570;
+  --subtle: #8a9199;
+  --border: color-mix(in oklab, var(--fg) 12%, transparent);
+  --border-strong: color-mix(in oklab, var(--fg) 22%, transparent);
+  --primary: #2c5270;
+  --primary-fg: #f4f1ea;
+  --link: #2c5270;
+  --code: #eae4d8;
+  --ring: #2c5270;
+  --ok: #2f6f4e;
+  --warn: #8a5a20;
+  --danger: #9b3a32;
+  --shadow-border: 0 0 0 1px rgba(28, 31, 36, 0.08), 0 1px 2px -1px rgba(28, 31, 36, 0.06),
+    0 2px 4px 0 rgba(28, 31, 36, 0.04);
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+html.dark {
+  --bg: #0c0e11;
+  --surface: #14181d;
+  --surface-2: #1c2229;
+  --fg: #e8eaee;
+  --muted: #8b939e;
+  --subtle: #6b7380;
+  --border: color-mix(in oklab, var(--fg) 12%, transparent);
+  --border-strong: color-mix(in oklab, var(--fg) 22%, transparent);
+  --primary: #c5d4e0;
+  --primary-fg: #0c0e11;
+  --link: #b7c9d6;
+  --code: #10141a;
+  --ring: #c5d4e0;
+  --ok: #7dba98;
+  --warn: #d4b07a;
+  --danger: #d98980;
+  --shadow-border: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+
+body {
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#cs-boot {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  height: 3.5rem;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+}
+
+body:has(cs-header) #cs-boot {
+  display: none;
+}
+
+/* SEO prerender is a direct child of app-root until Angular replaces it. */
+app-root > main,
+app-root > article {
+  height: 100%;
+  overflow: auto;
+  padding-top: 3.5rem;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+
+app-root > main h1,
+app-root > article h1 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--fg);
+}
+
+app-root > main h2,
+app-root > article h2 {
+  margin: 1.75rem 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--fg);
+}
+
+app-root > main p,
+app-root > article p {
+  margin: 0.75rem 0 0;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+app-root > main a,
+app-root > article a {
+  color: var(--link);
+}
+
+app-root > main ul,
+app-root > article ul,
+app-root > main ol,
+app-root > article ol {
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+  color: var(--muted);
+}
+
+.navbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  height: 3.5rem;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.app-shell {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-shell__body {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  padding-top: 3.5rem;
+}
+
+.lp {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  padding: 0 1rem 4.5rem;
+  overflow: clip;
+}
+
+.kicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--subtle);
+}
+
+.hero {
+  display: grid;
+  gap: 2.5rem;
+  min-height: calc(100dvh - 3.5rem);
+  padding: 3.25rem 0 4rem;
+  align-items: center;
+}
+
+.hero__copy h1 {
+  margin: 0.8rem 0 0;
+  max-width: 14ch;
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 7.2vw, 6.75rem);
+  font-weight: 600;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+}
+
+.lede {
+  margin: 1.5rem 0 0;
+  max-width: 36rem;
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 2rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 3rem;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.btn--solid {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.btn--line {
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--fg);
+}
+
+.hero__panel {
+  padding: 1.25rem 1.35rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  background: color-mix(in oklab, var(--surface) 82%, transparent);
+}
+
+.prose {
+  max-width: 52rem;
+  padding: 2.5rem 1rem 4rem;
+}
+
+.prose h1 {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  letter-spacing: -0.03em;
+}
+
+.prose p {
+  margin: 1rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.prose a {
+  color: var(--link);
+}

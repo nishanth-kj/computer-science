@@ -33,7 +33,15 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css"]
+            "styles": [
+              "src/styles.css",
+              "src/app/layout/main.css",
+              "src/app/components/navbar/navbar.css",
+              "src/app/pages/home/home.css",
+              "src/app/components/topic-frame/topic-frame.css",
+              "src/app/components/footer/footer.css",
+              "src/app/components/sidebar/sidebar.css"
+            ]
           },
           "configurations": {
             "production": {

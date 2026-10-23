@@ -2,9 +2,38 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Computer Science Handbook — Learn CS in Depth</title>
-    <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("cs-atlas-theme");
+          var d = true;
+          if (t) {
+            var p = JSON.parse(t);
+            if (p && p.state && p.state.theme === "light") d = false;
+          }
+          document.documentElement.classList.toggle("dark", d);
+        } catch (e) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: #0c0e11;
+        color: #e8eaee;
+      }
+      html:not(.dark) {
+        background: #f4f1ea;
+        color: #1c1f24;
+      }
+    </style>
+    <link rel="stylesheet" href="boot.css" />
+    <title>Computer Science Handbook — Learn CS in Depth</title>
     <meta
       name="description"
       content="Free computer science guides with examples and diagrams for programming, algorithms, operating systems, networks, and databases."
@@ -39,7 +68,6 @@
       content="A free handbook for computer science — programming, operating systems, networks, and databases."
     />
     <meta name="twitter:image" content="/og.jpg" />
-    <script src="site-config.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -54,23 +82,10 @@
         rel="stylesheet"
       />
     </noscript>
-    <script>
-      (function () {
-        try {
-          var t = localStorage.getItem("cs-atlas-theme");
-          var d = true;
-          if (t) {
-            var p = JSON.parse(t);
-            if (p && p.state && p.state.theme === "light") d = false;
-          }
-          document.documentElement.classList.toggle("dark", d);
-        } catch (e) {
-          document.documentElement.classList.add("dark");
-        }
-      })();
-    </script>
+    <script src="site-config.js" defer></script>
   </head>
   <body class="min-h-dvh bg-bg font-sans text-fg antialiased">
+    <div id="cs-boot" aria-hidden="true"></div>
     <app-root></app-root>
   </body>
 </html>
