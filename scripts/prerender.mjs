@@ -54,10 +54,10 @@ for (const file of fs.readdirSync("src/data/content/topics").filter((name) => na
     if (topic && typeof topic.slug === "string") topicDetails.set(topic.slug, topic);
   }
 }
-const baseHref = template.match(/<base\\s+href="([^"]+)"/)?.[1] ?? "/";
+const baseHref = template.match(/<base\s+href="([^"]+)"/)?.[1] ?? "/";
 const basePrefix = baseHref.endsWith("/") ? baseHref : `${baseHref}/`;
 function localHref(route) {
-  return `${basePrefix}${String(route).replace(/^\\/+/, "")}`;
+  return `${basePrefix}${String(route).replace(/^\/+/, "")}`;
 }
 function topicLink(topic) {
   return `<a href="${escapeHtml(localHref(topicUrl(topic.slug, topic.section)))}">${escapeHtml(topic.title)}</a>`;
