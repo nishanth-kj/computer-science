@@ -36,6 +36,6 @@ Add code only if it makes the concept more concrete and ensure it is correct for
 
 ## Coverage quality gate
 
-The editorial audit counts topics with a definition, rationale, mental model, three or more learning points, and two or more interview questions. The production build currently requires at least 50% of catalog topics to meet that structure. The warning list remains an editorial backlog: passing the threshold does not mean every remaining summary page is ready for advertising. Prioritize foundational topics and pages receiving real search demand.
+The editorial audit counts topics with a definition, rationale, mental model, three or more learning points, and two or more interview questions. The production build currently requires at least 70% of catalog topics to meet that structure. The current authored lesson expansion is a baseline; the warning list remains an editorial backlog: passing the threshold does not mean every remaining summary page is ready for advertising. Prioritize foundational topics and pages receiving real search demand.
 
 The target is high-quality coverage, not merely passing a percentage threshold.
