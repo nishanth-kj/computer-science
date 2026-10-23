@@ -9,6 +9,7 @@ import { FLAGSHIP as DSA } from "./topics/dsa";
 import { FLAGSHIP as OSI } from "./topics/osi-layers";
 import { FLAGSHIP as CASES } from "./topics/cases";
 import { FLAGSHIP as MORE } from "./topics/more";
+import coreLessonsData from "@/data/content/topics/core-lessons.json";
 import type { SectionId, Topic } from "./types";
 import { enrich } from "./enrich";
 
@@ -17,7 +18,9 @@ export type { Topic, SectionId };
 
 export const ALL_NAV: NavTopic[] = [...NAV, ...NAV_REST];
 
-export const FLAGSHIP: Topic[] = [...CORE, ...FUNDAMENTALS, ...LANGS, ...OOP, ...DSA, ...OSI, ...CASES, ...MORE];
+const CORE_LESSONS = coreLessonsData as Topic[];
+
+export const FLAGSHIP: Topic[] = [...CORE, ...FUNDAMENTALS, ...LANGS, ...OOP, ...DSA, ...OSI, ...CASES, ...MORE, ...CORE_LESSONS];
 
 export const FLAGSHIP_SLUGS = FLAGSHIP.map((t) => t.slug);
 
