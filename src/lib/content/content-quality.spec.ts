@@ -4,7 +4,7 @@ describe("Editorial content quality", () => {
   const coreLessons = FLAGSHIP.filter((topic) => topic.tags.includes("core-concept"));
 
   it("adds a substantial set of authored core lessons", () => {
-    expect(coreLessons.length).toBeGreaterThanOrEqual(35);
+    expect(coreLessons.length).toBeGreaterThanOrEqual(70);
   });
 
   it("gives every authored core lesson a full editorial structure", () => {
