@@ -47,6 +47,8 @@ Analytics and advertising are disabled by default. No third-party script or empt
 - `DIGITAL_PRODUCTS_URL` — a live HTTPS storefront for original paid study materials.
 - `NEWSLETTER_URL` — a live HTTPS newsletter signup page from a provider you use.
 
+When `GA_MEASUREMENT_ID` is configured and a visitor accepts optional analytics, the support page records outbound click events for the support checkout, product store, newsletter, and sponsorship contact. The events are not sent before analytics is permitted; mark appropriate events as key events in GA4 after real clicks appear.
+
 Leave any integration's values unset to keep it disabled. These identifiers are public browser configuration, not secrets. After AdSense approval, replace the comments in `public/ads.txt` with the exact authorized-seller record supplied by Google; never publish a placeholder publisher ID. AdSense approval, consent-platform requirements, and regional policy configuration remain external account tasks.
 
 For local testing, set the same environment variables before `npm run build`. The build writes validated public values to `dist/site-config.js`; source defaults stay empty.
