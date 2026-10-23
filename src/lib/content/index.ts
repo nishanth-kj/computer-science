@@ -11,6 +11,7 @@ import { FLAGSHIP as CASES } from "./topics/cases";
 import { FLAGSHIP as MORE } from "./topics/more";
 import coreLessonsData from "@/data/content/topics/core-lessons.json";
 import systemsLessonsData from "@/data/content/topics/systems-lessons.json";
+import finalLessonsData from "@/data/content/topics/final-lessons.json";
 import type { SectionId, Topic } from "./types";
 import { enrich } from "./enrich";
 
@@ -21,8 +22,9 @@ export const ALL_NAV: NavTopic[] = [...NAV, ...NAV_REST];
 
 const CORE_LESSONS = coreLessonsData as Topic[];
 const SYSTEMS_LESSONS = systemsLessonsData as Topic[];
+const FINAL_LESSONS = finalLessonsData as Topic[];
 
-export const FLAGSHIP: Topic[] = [...CORE, ...FUNDAMENTALS, ...LANGS, ...OOP, ...DSA, ...OSI, ...CASES, ...MORE, ...CORE_LESSONS, ...SYSTEMS_LESSONS];
+export const FLAGSHIP: Topic[] = [...CORE, ...FUNDAMENTALS, ...LANGS, ...OOP, ...DSA, ...OSI, ...CASES, ...MORE, ...CORE_LESSONS, ...SYSTEMS_LESSONS, ...FINAL_LESSONS];
 
 export const FLAGSHIP_SLUGS = FLAGSHIP.map((t) => t.slug);
 
