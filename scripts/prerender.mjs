@@ -465,27 +465,30 @@ for (const t of navItems) {
 
   const body = renderTopicBody(t, sTitle);
 
+  const detail = topicDetails.get(t.slug);
   const schema = {
     "@context": "https://schema.org",
-    "@type": "TechArticle",
-    headline: t.title,
+    "@type": detail ? "TechArticle" : "WebPage",
+    name: t.title,
+    ...(detail ? { headline: t.title, educationalLevel: t.level } : {}),
     description: t.summary,
-    educationalLevel: t.level,
     url: canonicalUrl,
-    author: {
-      "@type": "Organization",
-      name: "Computer Science Handbook",
-      url: ORIGIN,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "Computer Science Handbook",
-      url: ORIGIN,
-      logo: {
-        "@type": "ImageObject",
-        url: `${ORIGIN}/logo.svg`,
+    ...(detail ? {
+      author: {
+        "@type": "Organization",
+        name: "Computer Science Handbook",
+        url: ORIGIN,
       },
-    },
+      publisher: {
+        "@type": "Organization",
+        name: "Computer Science Handbook",
+        url: ORIGIN,
+        logo: {
+          "@type": "ImageObject",
+          url: `${ORIGIN}/logo.svg`,
+        },
+      },
+    } : {}),
     mainEntityOfPage: canonicalUrl,
   };
 
