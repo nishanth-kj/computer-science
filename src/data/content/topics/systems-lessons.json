@@ -1,0 +1,2022 @@
+[
+  {
+    "slug": "critical-sections",
+    "section": "os",
+    "title": "Critical Sections",
+    "summary": "Code that must run as if atomic with respect to other threads touching the same data.",
+    "level": "intermediate",
+    "prereqs": [
+      "race-conditions"
+    ],
+    "related": [
+      "mutex",
+      "semaphore"
+    ],
+    "next": "mutex",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A critical section is a region of code that accesses shared state and must preserve an invariant against concurrent operations. The section itself is defined by the state it protects, not by its size or a special syntax keyword.",
+    "why": "Many race bugs occur because a multi-step change is interrupted halfway through. Identifying the critical section makes the invariant explicit and helps select a lock, atomic operation, or other coordination mechanism.",
+    "mental": "Imagine two workers editing one ledger. The critical section is not every line in the program; it is the minimum operation on shared state that must appear indivisible to other workers.",
+    "points": [
+      "Mutual exclusion prevents two participants from executing the protected region simultaneously.",
+      "Correctness depends on protecting every access that can violate the same invariant, including reads when required.",
+      "Progress means a thread that can safely enter should not be postponed forever by the protocol.",
+      "Bounded waiting limits how many times others can enter before a waiting thread gets its turn; not every mutex guarantees strict fairness.",
+      "Reducing critical-section duration limits contention, but moving operations outside the lock must not break the invariant."
+    ],
+    "steps": [
+      "Identify the shared state and write down the invariant it must satisfy.",
+      "Find the complete read-modify-write sequence that can violate it.",
+      "Protect that sequence with a suitable lock or atomic operation.",
+      "Stress-test concurrent access and use a race detector where available."
+    ],
+    "usage": [
+      "Protecting shared counters, queues, maps, and account balances.",
+      "Reviewing concurrent code for unprotected reads or state changes.",
+      "Explaining mutual exclusion, progress, and bounded-waiting requirements."
+    ],
+    "mistakes": [
+      "Locking only the final write while leaving the dependent read outside the lock.",
+      "Making a critical section so large that unrelated work waits unnecessarily.",
+      "Assuming that one successful stress test proves race freedom."
+    ],
+    "interview": [
+      {
+        "q": "What defines a critical section?",
+        "a": "It is the code region that accesses shared state and must preserve an invariant against concurrent interleavings.",
+        "level": "beginner"
+      },
+      {
+        "q": "Does a mutex alone guarantee bounded waiting?",
+        "a": "Not necessarily. A mutex provides mutual exclusion, but fairness and starvation behavior depend on the specific primitive and protocol.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "semaphore",
+    "section": "os",
+    "title": "Semaphore",
+    "summary": "A counter with wait/signal. Mutexes are semaphores of 1; producer-consumer uses more.",
+    "level": "intermediate",
+    "prereqs": [
+      "mutex"
+    ],
+    "related": [
+      "monitors",
+      "deadlocks"
+    ],
+    "next": "monitors",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A semaphore is a synchronization primitive with an integer state and atomic wait/decrement and signal/increment operations. A counting semaphore represents a number of available units; a binary semaphore has two logical states but does not necessarily have the same ownership rules as a mutex.",
+    "why": "Semaphores coordinate both access to a limited number of resources and ordering between threads. Their flexibility also makes them easy to misuse: a missing signal can block progress, and an extra signal can break the intended count.",
+    "mental": "Treat the semaphore value as permits. A successful wait consumes a permit; signal returns one. A thread sleeps when no permit is available rather than repeatedly checking in a tight loop.",
+    "points": [
+      "A counting semaphore initialized to N can represent N interchangeable resources.",
+      "A binary semaphore can coordinate a one-at-a-time condition, but ownership semantics differ from an owner-tracking mutex.",
+      "Producer-consumer designs often use an empty-slot count and a filled-slot count around a bounded buffer.",
+      "Wait and signal operations must be atomic with respect to the semaphore state.",
+      "Semaphore signals do not automatically protect every data structure access; the surrounding protocol must establish the required ordering."
+    ],
+    "steps": [
+      "Initialize emptySlots to buffer capacity and fullSlots to zero.",
+      "A producer waits on emptySlots, inserts an item under the buffer's protection, then signals fullSlots.",
+      "A consumer waits on fullSlots, removes an item, then signals emptySlots.",
+      "Check every control path to ensure each consumed permit is eventually handled as intended."
+    ],
+    "usage": [
+      "Implementing bounded producer-consumer queues.",
+      "Limiting concurrent access to a fixed-size connection pool.",
+      "Coordinating state transitions between threads and processes."
+    ],
+    "mistakes": [
+      "Signaling before the protected state is ready when the protocol requires the reverse order.",
+      "Using a counting semaphore where a mutex's ownership semantics are needed.",
+      "Failing to release a permit on an error path, causing eventual starvation."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between binary and counting semaphores?",
+        "a": "A binary semaphore has two logical states; a counting semaphore tracks multiple available permits or resource instances.",
+        "level": "beginner"
+      },
+      {
+        "q": "How do semaphores help a bounded buffer?",
+        "a": "One count tracks empty slots and another tracks filled slots, blocking producers or consumers when their required condition is not available.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "monitors",
+    "section": "os",
+    "title": "Monitors",
+    "summary": "A language-level construct: a mutex plus condition variables bundled with the data.",
+    "level": "intermediate",
+    "prereqs": [
+      "mutex"
+    ],
+    "related": [
+      "semaphore"
+    ],
+    "next": "deadlocks",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A monitor is a concurrency abstraction that encapsulates shared state, operations on that state, and synchronization. In common designs, only one thread executes a monitor procedure at a time, and condition variables let threads wait until a state predicate may become true.",
+    "why": "Encapsulation keeps the locking discipline close to the data invariant. This reduces the chance that a caller forgets to acquire a lock or changes state through an unsafe access path.",
+    "mental": "Think of the monitor as a guarded room containing both the resource and its rules. Callers request operations rather than manipulating the shared state directly; condition variables provide a queue for threads waiting for a particular condition.",
+    "points": [
+      "Monitor procedures protect the shared invariant according to the monitor's mutual-exclusion rules.",
+      "Condition variables represent waiting for a predicate, not a durable count of events.",
+      "A wait generally releases the monitor lock while sleeping and reacquires it before returning.",
+      "Because another thread may change the state before a woken thread proceeds, predicate checks belong in a loop.",
+      "Monitor semantics vary by language and runtime, so confirm whether signaling hands off immediately or merely makes a waiter runnable."
+    ],
+    "steps": [
+      "A bounded queue stores a mutex-protected queue and a notEmpty condition variable.",
+      "A consumer acquires the monitor and loops while the queue is empty, waiting on notEmpty.",
+      "A producer adds an item while holding the monitor and signals notEmpty.",
+      "The consumer wakes, reacquires the monitor, rechecks the predicate, and removes the item."
+    ],
+    "usage": [
+      "Designing thread-safe classes with a clear state boundary.",
+      "Implementing queues, caches, and resource managers.",
+      "Choosing between monitor-style abstractions and lower-level semaphore protocols."
+    ],
+    "mistakes": [
+      "Exposing mutable monitor state outside the synchronization boundary.",
+      "Using a single if before a condition wait rather than rechecking the predicate.",
+      "Assuming every language implements condition-variable signaling with identical scheduling semantics."
+    ],
+    "interview": [
+      {
+        "q": "How does a monitor differ from a bare mutex?",
+        "a": "A monitor packages shared state and operations with synchronization, while a mutex is a lower-level primitive that callers must apply consistently.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why should code recheck a condition after a monitor wait?",
+        "a": "The state may have changed before the thread reacquires the lock, or the wait may return spuriously; the predicate must still be true.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "segmentation",
+    "section": "os",
+    "title": "Segmentation",
+    "summary": "Variable-sized logical regions (code, heap, stack) with base and limit.",
+    "level": "intermediate",
+    "prereqs": [
+      "memory-management"
+    ],
+    "related": [
+      "paging"
+    ],
+    "next": "virtual-memory",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Segmentation divides a process's logical address space into variable-sized regions such as code, data, stack, or independently managed modules. A logical address identifies a segment and an offset; hardware checks the offset against the segment limit and adds the base to form a physical address.",
+    "why": "Segments match a program's logical structure and can support distinct access permissions or sharing. Their variable sizes make allocation flexible, but freeing and growing segments can leave external fragmentation in physical memory.",
+    "mental": "Each segment is a bounded region with a base address and a length. Translation is valid only if the offset lies within the limit; a valid logical name cannot access an arbitrary physical address.",
+    "points": [
+      "A segmented address is commonly represented as (segment selector, offset).",
+      "The segment descriptor supplies a base, limit, and permission attributes.",
+      "An offset outside the limit triggers a protection fault rather than silently accessing neighboring memory.",
+      "Variable-sized allocations can leave external fragmentation even if total free memory is sufficient.",
+      "Paging uses fixed-size pages/frames and avoids external fragmentation in physical allocation at the cost of page-table overhead."
+    ],
+    "steps": [
+      "The process generates a logical address referring to its data segment.",
+      "The MMU checks the offset against the segment's limit and checks access permissions.",
+      "It adds the segment base to the offset to obtain the physical location.",
+      "If bounds or permissions fail, the processor raises a protection exception."
+    ],
+    "usage": [
+      "Comparing segmentation and paging in OS coursework.",
+      "Understanding memory protection across code, data, and stack regions.",
+      "Explaining external fragmentation and compaction."
+    ],
+    "mistakes": [
+      "Calling segmentation and paging the same translation model.",
+      "Ignoring the bounds check and describing only base-plus-offset addition.",
+      "Assuming total free memory guarantees a large contiguous segment can be allocated."
+    ],
+    "interview": [
+      {
+        "q": "Why can segmentation suffer external fragmentation?",
+        "a": "Segments have variable sizes, so free physical space can be split into holes that do not fit a requested large segment.",
+        "level": "beginner"
+      },
+      {
+        "q": "What are two benefits of segmentation?",
+        "a": "It matches logical program regions and can apply different sharing or protection attributes to each segment.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "page-tables",
+    "section": "os",
+    "title": "Page Tables",
+    "summary": "The map from virtual page to frame (or disk). Multi-level to keep them sparse.",
+    "level": "intermediate",
+    "prereqs": [
+      "paging",
+      "virtual-memory"
+    ],
+    "related": [
+      "tlb"
+    ],
+    "next": "tlb",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A page table maps virtual pages to physical frames and stores status and protection information such as present, writable, user-accessible, and execute permissions. The MMU consults these entries during address translation, often through a cached translation lookaside buffer.",
+    "why": "Page tables create per-process virtual address spaces and enforce isolation. Their storage and lookup cost would be large for sparse address spaces if every possible virtual page required a flat entry, so multi-level or other hierarchical structures are common.",
+    "mental": "Split a virtual address into a virtual page number and page offset. The page table translates the page number; the offset selects a byte within the resulting frame.",
+    "points": [
+      "The page offset stays the same when a virtual page maps to a physical frame of the same page size.",
+      "Page-table entries can describe absent pages as well as present physical mappings.",
+      "Multi-level page tables allocate lower-level tables only for used address ranges, reducing overhead for sparse mappings.",
+      "Permissions are checked during translation and can raise a fault even when a physical frame exists.",
+      "Changing mappings may require TLB invalidation on one or more CPU cores to avoid stale translations."
+    ],
+    "steps": [
+      "A process references virtual address V.",
+      "The MMU separates V into page number and offset.",
+      "The TLB is checked; on a miss, hardware or the kernel walks the page-table hierarchy.",
+      "The mapping and permissions are checked, and the frame address is combined with the offset."
+    ],
+    "usage": [
+      "Explaining virtual-to-physical address translation.",
+      "Reasoning about multi-level page-table memory overhead.",
+      "Diagnosing protection faults and TLB invalidation issues."
+    ],
+    "mistakes": [
+      "Changing a page mapping without accounting for cached translations.",
+      "Assuming a page-table entry contains the entire virtual address.",
+      "Confusing a page fault (missing or invalid mapping) with a TLB miss (translation not cached)."
+    ],
+    "interview": [
+      {
+        "q": "What is stored in a page-table entry?",
+        "a": "Typically a physical frame number plus mapping status, access permissions, and architecture-specific flags.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is the difference between a TLB miss and a page fault?",
+        "a": "A TLB miss means the translation is not cached and may be found in the page table. A page fault means the access cannot complete under the current mapping and requires OS handling.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "tlb",
+    "section": "os",
+    "title": "TLB",
+    "summary": "A cache of page-table entries so every load does not walk the page table.",
+    "level": "intermediate",
+    "prereqs": [
+      "page-tables"
+    ],
+    "related": [
+      "paging"
+    ],
+    "next": "page-replacement",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A translation lookaside buffer (TLB) is a small, fast cache of recent virtual-to-physical address translations. The CPU checks the TLB during memory access; on a miss, it performs a page-table walk or invokes architecture-specific handling before caching the translation.",
+    "why": "Without a TLB, memory references may require several extra memory accesses to walk multi-level page tables. TLB hit rate therefore strongly influences effective memory latency for workloads with a large or irregular working set.",
+    "mental": "Think of the TLB as a cache of address translation answers. It does not cache the data being read; it caches the map telling the CPU where the data page lives and whether that access is permitted.",
+    "points": [
+      "TLB entries may be tagged with address-space identifiers so mappings from multiple processes can coexist safely.",
+      "Context switches may require TLB invalidations on systems without suitable address-space tags.",
+      "Changing page permissions or mappings requires invalidating stale entries, sometimes across multiple CPU cores.",
+      "Huge pages can increase TLB reach by mapping more memory per entry, but have allocation and fragmentation trade-offs.",
+      "A high TLB miss rate can arise from poor locality, a large active page footprint, or excessive context switching."
+    ],
+    "steps": [
+      "The CPU issues a virtual address and checks the TLB.",
+      "On a hit, the cached frame and permission information support translation immediately.",
+      "On a miss, the page table is walked and the mapping is validated.",
+      "The valid translation is inserted into the TLB; the original memory access then continues."
+    ],
+    "usage": [
+      "Explaining effective memory-access time.",
+      "Profiling pointer-heavy or memory-intensive workloads.",
+      "Understanding TLB shootdowns and address-space isolation."
+    ],
+    "mistakes": [
+      "Calling a TLB miss a page fault every time.",
+      "Ignoring permission bits cached with the translation.",
+      "Updating mappings without invalidating stale TLB entries."
+    ],
+    "interview": [
+      {
+        "q": "What does a TLB cache?",
+        "a": "Recent virtual-page translations and associated attributes, rather than application data bytes.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can a page-table update require a TLB shootdown?",
+        "a": "Other CPU cores may hold cached translations for that address space; invalidating them prevents stale mappings or permissions from being used.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "page-replacement",
+    "section": "os",
+    "title": "Page Replacement",
+    "summary": "Which resident page to evict on a fault. The policy is the whole game.",
+    "level": "intermediate",
+    "prereqs": [
+      "virtual-memory"
+    ],
+    "related": [
+      "lru",
+      "fifo-replacement"
+    ],
+    "next": "lru",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Page replacement chooses which resident virtual-memory page to evict when a process needs a frame and no suitable free frame is available. The policy aims to retain pages likely to be reused, but the future reference sequence is unknown in general.",
+    "why": "Poor victim choices increase page faults and storage I/O, potentially causing thrashing. Replacement algorithms approximate locality so a limited amount of RAM can serve a larger virtual-memory working set.",
+    "mental": "Memory is a limited cache of pages. On a miss, the OS needs space for the requested page and must decide which resident page is least valuable to keep.",
+    "points": [
+      "The optimal policy evicts the page whose next use is farthest in the future, but it requires future knowledge and is mainly a comparison benchmark.",
+      "FIFO evicts the oldest resident page and can exhibit Belady's anomaly.",
+      "LRU evicts the page least recently used and has the stack property, but exact tracking can be expensive.",
+      "Clock/second-chance algorithms approximate recency using reference bits.",
+      "The fault cost depends on whether the victim is clean or dirty and on storage and memory pressure."
+    ],
+    "steps": [
+      "A process references a page that is not resident.",
+      "The OS chooses a free frame or applies a replacement policy to select a victim.",
+      "If the victim is dirty, its contents may need to be written back; the requested page is loaded.",
+      "The page table and TLB state are updated before the process resumes."
+    ],
+    "usage": [
+      "Solving page-fault-count questions with reference strings.",
+      "Explaining locality, working sets, and thrashing.",
+      "Comparing exact LRU with lower-overhead approximations."
+    ],
+    "mistakes": [
+      "Counting a TLB miss as a page fault without checking residency.",
+      "Assuming replacement always means disk I/O; a clean victim may be discarded, while shared and file-backed pages have special behavior.",
+      "Comparing algorithms on different reference strings or frame counts."
+    ],
+    "interview": [
+      {
+        "q": "Why is optimal page replacement not directly implementable?",
+        "a": "It requires knowing the next future reference to every page, which a real operating system cannot generally know.",
+        "level": "beginner"
+      },
+      {
+        "q": "What factors matter beyond choosing a victim?",
+        "a": "Whether the page is dirty or shared, writeback cost, memory pressure, locality, and the implementation overhead of tracking usage.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "lru",
+    "section": "os",
+    "title": "LRU",
+    "summary": "Replace the page unused for the longest time. Stack algorithms and clock approximations.",
+    "level": "intermediate",
+    "prereqs": [
+      "page-replacement"
+    ],
+    "related": [
+      "fifo-replacement"
+    ],
+    "next": "fifo-replacement",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Least Recently Used (LRU) replaces the resident page whose most recent access is farthest in the past. It relies on temporal locality: a page used recently is often more likely to be needed again soon.",
+    "why": "LRU can outperform FIFO on workloads with reuse patterns, but exact implementations require tracking recency on each access and can be expensive. Practical systems often approximate LRU with reference bits, generations, or clock-like mechanisms.",
+    "mental": "LRU asks which page has gone unused for the longest time—not which page entered memory earliest. Each reference refreshes a page's recency position.",
+    "points": [
+      "A page reference moves that page to the most-recently-used end of the logical order.",
+      "When a fault needs a victim, exact LRU chooses the least-recently-used resident page.",
+      "LRU is a stack algorithm: increasing the number of frames cannot increase its page-fault count for the same reference string.",
+      "Exact per-access bookkeeping can be costly, especially for many cores and large page counts.",
+      "Clock and generation-based policies approximate recency while reducing tracking overhead."
+    ],
+    "steps": [
+      "With three frames, reference A, B, C; all three become resident.",
+      "Reference A again; it is now the most recently used page.",
+      "Reference D; B is the least recently used and is the eviction candidate.",
+      "Record page faults consistently, counting only references to nonresident pages."
+    ],
+    "usage": [
+      "Solving memory-replacement reference strings.",
+      "Reasoning about cache locality and recency-based policies.",
+      "Understanding why production kernels use approximations rather than textbook exact LRU."
+    ],
+    "mistakes": [
+      "Evicting the oldest inserted page instead of the least recently used page.",
+      "Failing to refresh recency on a hit.",
+      "Assuming the word LRU guarantees optimal results for every workload."
+    ],
+    "interview": [
+      {
+        "q": "How does LRU differ from FIFO?",
+        "a": "LRU uses the time of the last access; FIFO uses the time of admission into the resident set.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is LRU's stack property?",
+        "a": "For a fixed reference string, the set of pages resident with k frames is contained in the resident set with k+1 frames, so adding frames cannot increase faults.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "fifo-replacement",
+    "section": "os",
+    "title": "FIFO Replacement",
+    "summary": "Evict the oldest page. Belady's anomaly is the interview sting.",
+    "level": "beginner",
+    "prereqs": [
+      "page-replacement"
+    ],
+    "related": [
+      "lru"
+    ],
+    "next": "thrashing",
+    "tags": [
+      "os",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "FIFO page replacement evicts the page that has been resident the longest, regardless of how recently it was referenced. It is simple to implement with a queue or age order.",
+    "why": "FIFO is useful for teaching the replacement problem and has low bookkeeping cost. Its weakness is that a frequently reused page can still be evicted just because it is old, and its fault count can increase when more frames are added.",
+    "mental": "FIFO tracks admission order, not usefulness. Picture pages standing in a line: a hit does not move a page to the back; the oldest resident is next to leave.",
+    "points": [
+      "A page is placed at the tail when first loaded.",
+      "A hit does not change its arrival order in pure FIFO.",
+      "On a page fault with a full memory, the head page is evicted and the new page is appended.",
+      "Belady's anomaly is a reference string for which increasing frame count increases FIFO page faults.",
+      "Stack algorithms such as LRU do not exhibit this anomaly for the same reference string."
+    ],
+    "steps": [
+      "Maintain a queue of resident page identities.",
+      "On a reference, check whether the page is in the queue.",
+      "On a miss with full memory, remove the oldest page, then add the requested page.",
+      "Repeat exactly the same reference sequence when comparing frame counts."
+    ],
+    "usage": [
+      "Solving basic page-replacement problems.",
+      "Understanding why recency and frequency can beat admission age.",
+      "Explaining Belady's anomaly."
+    ],
+    "mistakes": [
+      "Updating FIFO order on every hit.",
+      "Comparing reference strings with different initial conditions.",
+      "Assuming more frames must reduce faults under every replacement policy."
+    ],
+    "interview": [
+      {
+        "q": "Does a hit change the order in FIFO?",
+        "a": "No. In pure FIFO, the order is based on when pages entered memory, not their subsequent accesses.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is Belady's anomaly?",
+        "a": "For some reference strings, FIFO experiences more page faults after the number of available frames is increased.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "thrashing",
+    "section": "os",
+    "title": "Thrashing",
+    "summary": "When the working set does not fit, the system spends its time paging, not computing.",
+    "level": "intermediate",
+    "prereqs": [
+      "page-replacement",
+      "virtual-memory"
+    ],
+    "related": [
+      "working-set"
+    ],
+    "next": "file-systems",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Thrashing is a state of severe memory pressure in which processes repeatedly fault on pages that are not resident, causing excessive paging and little useful CPU progress. It often appears when the combined active working sets exceed available physical memory.",
+    "why": "Adding more runnable processes can lower system throughput if each loses locality and competes for too few frames. Recognizing thrashing shifts the response from adding CPU to controlling memory pressure and active concurrency.",
+    "mental": "A program's working set is the set of pages it is actively reusing during a time window. If RAM cannot hold enough of those pages, the system repeatedly evicts a page that will soon be needed again.",
+    "points": [
+      "High page-fault rates and storage activity alongside poor useful throughput are warning signs.",
+      "Working-set and page-fault-frequency approaches attempt to keep enough frames for active locality.",
+      "Reducing multiprogramming or memory demand can restore progress.",
+      "Not every page fault is thrashing; demand paging and cold-start faults are normal.",
+      "Application memory leaks, oversized caches, and unbounded concurrency can contribute to pressure."
+    ],
+    "steps": [
+      "Several processes each retain only part of their active working set.",
+      "They repeatedly fault on evicted pages and trigger I/O to bring them back.",
+      "The system spends more time paging and waiting than executing useful work.",
+      "Reduce active memory demand, limit concurrency, or fix a workload that retains too much memory."
+    ],
+    "usage": [
+      "Diagnosing a host with high swap/page activity and low throughput.",
+      "Reasoning about the balance between multiprogramming and available RAM.",
+      "Designing services with bounded memory usage."
+    ],
+    "mistakes": [
+      "Assuming more processes always increase throughput.",
+      "Treating a single page fault as proof of thrashing.",
+      "Only adding CPU when the bottleneck is memory residency and storage I/O."
+    ],
+    "interview": [
+      {
+        "q": "Why can increasing the number of processes reduce throughput?",
+        "a": "Their combined working sets may no longer fit in RAM, causing repeated page faults and excessive paging overhead.",
+        "level": "beginner"
+      },
+      {
+        "q": "How can the OS respond to thrashing?",
+        "a": "It can reduce multiprogramming or reclaim memory, and use working-set/page-fault signals to allocate enough frames to active workloads.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "disk-scheduling",
+    "section": "os",
+    "title": "Disk Scheduling",
+    "summary": "FCFS, SSTF, SCAN — algorithms from the HDD era that still show up in interviews.",
+    "level": "intermediate",
+    "prereqs": [
+      "file-systems"
+    ],
+    "related": [
+      "io"
+    ],
+    "next": "io",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Disk scheduling chooses an order for pending block-device requests. Classic hard-disk policies try to reduce mechanical seek movement, while SSDs have different latency characteristics and internal controllers that make simplistic seek-distance models less predictive.",
+    "why": "Request ordering can affect latency and throughput when many operations are queued. Scheduling policies trade average response time, fairness, throughput, and starvation risk.",
+    "mental": "On a spinning disk, moving the head to distant tracks is expensive, so request order matters. FCFS preserves arrival order; SSTF seeks toward the nearest request; SCAN sweeps in a direction and services requests along the way.",
+    "points": [
+      "FCFS is simple and fair by arrival order but can produce large head movement.",
+      "SSTF reduces local seek distance but can starve requests far from the current head position.",
+      "SCAN moves across the disk and services requests in order along a sweep, then reverses direction.",
+      "C-SCAN services in one direction and returns to the start, producing a more uniform wait pattern in some models.",
+      "Modern operating systems and devices use complex schedulers; textbook track-distance results are simplified models."
+    ],
+    "steps": [
+      "Write down the initial head position and the request queue.",
+      "For FCFS, service requests in arrival order and sum each movement distance.",
+      "For SSTF, repeatedly choose the closest pending track, stating tie-breaking assumptions.",
+      "For SCAN/C-SCAN, state direction and whether the model counts travel to the physical end before reversing or wrapping."
+    ],
+    "usage": [
+      "Solving operating-system exam problems about seek distance.",
+      "Understanding fairness versus average seek cost.",
+      "Diagnosing storage latency in queue-depth-heavy workloads."
+    ],
+    "mistakes": [
+      "Switching policy mid-solution without stating assumptions about direction or disk boundaries.",
+      "Assuming SSTF always minimizes every global or fairness objective.",
+      "Applying HDD seek-distance conclusions directly to SSD devices without qualification."
+    ],
+    "interview": [
+      {
+        "q": "Why can SSTF cause starvation?",
+        "a": "Requests far from the current head can continually lose to closer arrivals and wait for a long time.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why are classic disk-scheduling algorithms less predictive for SSDs?",
+        "a": "SSDs have no mechanical head seek; flash translation, parallelism, queue depth, and controller scheduling dominate many costs.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "io",
+    "section": "os",
+    "title": "I/O",
+    "summary": "How the kernel talks to devices: programmed I/O, interrupts, DMA, block vs character.",
+    "level": "intermediate",
+    "prereqs": [
+      "interrupts-os"
+    ],
+    "related": [
+      "disk-scheduling"
+    ],
+    "next": "interrupts-os",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Input/output is the transfer of data between software and devices. Operating systems provide device abstractions, drivers, buffering, scheduling, error handling, and completion notification; mechanisms include programmed I/O, interrupt-driven I/O, and direct memory access (DMA).",
+    "why": "CPU and device speeds differ greatly, and devices can fail or complete asynchronously. Good I/O paths avoid wasting CPU while waiting and preserve consistency across buffers, caches, and device state.",
+    "mental": "Treat the device as an independent actor. The CPU prepares a request and memory buffers, the device performs work, and completion is reported through polling, interrupts, or another event path.",
+    "points": [
+      "Programmed I/O makes the CPU repeatedly inspect or move device data, which can waste cycles for slow operations.",
+      "Interrupt-driven I/O lets the CPU do other work until a device signals an event.",
+      "DMA allows a device controller to transfer data between the device and main memory with less CPU copying, subject to platform mapping and protection rules.",
+      "Block devices transfer addressable blocks; character devices expose stream-like or device-specific semantics.",
+      "Buffered and asynchronous APIs change when data are copied, visible, or considered complete."
+    ],
+    "steps": [
+      "The kernel/driver prepares an I/O request and validates access.",
+      "The device controller performs the transfer, potentially using DMA.",
+      "The device signals completion or the driver observes it through polling.",
+      "The kernel wakes the waiting task or completes an asynchronous request and reports errors/status."
+    ],
+    "usage": [
+      "Comparing blocking, nonblocking, and asynchronous I/O.",
+      "Reading system traces of disk, network, and device waits.",
+      "Understanding buffering and completion semantics in application code."
+    ],
+    "mistakes": [
+      "Assuming an I/O completion means data is durable on stable storage.",
+      "Mixing up interrupt-driven I/O and DMA; one reports events, the other moves data.",
+      "Ignoring cancellation, partial transfers, and error codes."
+    ],
+    "interview": [
+      {
+        "q": "What is the role of DMA?",
+        "a": "It lets a device controller transfer data to or from main memory with less CPU intervention, under appropriate mapping and protection setup.",
+        "level": "beginner"
+      },
+      {
+        "q": "Does using interrupts mean the CPU performs no work for I/O?",
+        "a": "No. The CPU still prepares requests, handles completion, coordinates buffers, schedules tasks, and processes errors.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "interrupts-os",
+    "section": "os",
+    "title": "Interrupts (OS)",
+    "summary": "The kernel's view: interrupt context, bottom halves, and why you cannot sleep in a handler.",
+    "level": "intermediate",
+    "prereqs": [
+      "kernel"
+    ],
+    "related": [
+      "os-signals",
+      "io"
+    ],
+    "next": "os-signals",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "An interrupt is an event that causes the processor to transfer control to a configured handler. Hardware interrupts commonly report device events or timers; exceptions arise from the current instruction, and software traps support defined transitions such as system calls.",
+    "why": "Interrupts let the kernel respond to asynchronous events without continuously polling every device. Handling must be fast and carefully synchronized because it can interrupt code at inconvenient points.",
+    "mental": "Think of an interrupt as a doorbell to privileged code. The handler acknowledges or records the immediate event, then often schedules deferred work for operations that can take longer.",
+    "points": [
+      "Interrupt handlers execute under architecture- and kernel-specific context rules and may have restricted operations available.",
+      "Short handlers reduce latency for other interrupts and avoid holding the CPU in an urgent context.",
+      "Deferred work performs longer processing outside the immediate handler when the kernel design supports it.",
+      "Interrupt masking, priorities, and affinity influence response time and ordering.",
+      "Interrupt handlers are distinct from POSIX signals delivered to user processes, despite similar names."
+    ],
+    "steps": [
+      "A device raises an interrupt when an I/O operation completes.",
+      "The CPU saves appropriate execution state and enters the registered handler.",
+      "The handler acknowledges the interrupt, captures essential state, and schedules additional work if needed.",
+      "The kernel resumes interrupted execution or schedules another ready thread."
+    ],
+    "usage": [
+      "Explaining timers, device completion, and preemptive scheduling.",
+      "Debugging high interrupt rates and latency issues.",
+      "Distinguishing hardware interrupts from process signals and system calls."
+    ],
+    "mistakes": [
+      "Doing unbounded work in a handler and increasing interrupt latency.",
+      "Sleeping or acquiring a blocking lock in a context that cannot safely sleep.",
+      "Confusing a process signal such as SIGTERM with a hardware interrupt."
+    ],
+    "interview": [
+      {
+        "q": "Why should an interrupt handler usually be short?",
+        "a": "Long handling delays other events and increases system latency; complex work is often deferred to a safer execution context.",
+        "level": "beginner"
+      },
+      {
+        "q": "Are POSIX signals the same as hardware interrupts?",
+        "a": "No. A hardware interrupt is a processor/kernel event typically caused by hardware; a POSIX signal is a software notification delivered to a process or thread under OS rules.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "ipc",
+    "section": "os",
+    "title": "IPC",
+    "summary": "Pipes, sockets, shared memory, message queues — how processes exchange data.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "os-signals"
+    ],
+    "next": "linux-process-model",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Inter-process communication (IPC) comprises mechanisms for processes to exchange data or coordinate activity. Common mechanisms include pipes, Unix-domain and network sockets, shared memory, message queues, and signals; each offers different data semantics and synchronization costs.",
+    "why": "Separate processes provide useful fault and privilege boundaries but cannot assume they share memory. IPC defines a controlled bridge between them and often becomes a major latency, reliability, and security boundary.",
+    "mental": "Choose a communication shape first: byte stream, message, shared region, or one-bit notification. Then decide who owns the data, how peers synchronize, how failures are reported, and how backpressure is handled.",
+    "points": [
+      "Pipes provide byte streams often used between related processes; framing must be designed by the application when messages matter.",
+      "Sockets can be local or networked and define endpoint communication semantics.",
+      "Shared memory reduces data-copy overhead but requires explicit coordination to avoid races.",
+      "Message queues preserve message boundaries under their API contract and may provide persistence or bounded capacity.",
+      "Signals are primarily notifications, not a general-purpose bulk data channel."
+    ],
+    "steps": [
+      "A producer serializes a message and writes it to a pipe or socket.",
+      "The kernel buffers data according to the IPC mechanism's capacity and semantics.",
+      "The receiver reads available data and reconstructs message boundaries if the channel is a stream.",
+      "Both sides handle partial writes, closure, timeouts, and peer failure."
+    ],
+    "usage": [
+      "Decomposing services into separate processes.",
+      "Building shell pipelines and local client-server processes.",
+      "Choosing shared memory versus messages based on throughput, isolation, and complexity."
+    ],
+    "mistakes": [
+      "Assuming one read returns exactly one write's worth of data on a stream socket.",
+      "Using shared memory without synchronization or ownership rules.",
+      "Ignoring buffer limits and the need for backpressure."
+    ],
+    "interview": [
+      {
+        "q": "When might shared memory outperform a socket?",
+        "a": "For large amounts of local data, shared memory can avoid repeated copies, but it requires careful synchronization and lifecycle management.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why does a stream socket need framing?",
+        "a": "A stream preserves byte order but not application message boundaries; the receiver must know how many bytes make one message or use a delimiter/length prefix.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "lan",
+    "section": "networks",
+    "title": "LAN",
+    "summary": "A local area network: one broadcast domain or a few, under one administration.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "wan",
+      "ethernet"
+    ],
+    "next": "wan",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A Local Area Network connects devices within a limited site or administration, such as a home, lab, or office. Ethernet and Wi-Fi are common link technologies, while switching and VLANs shape how traffic is delivered within the local infrastructure.",
+    "why": "A LAN provides local resource access and a path toward routers, printers, servers, and internet gateways. Its design influences broadcast scope, segmentation, fault domains, and troubleshooting.",
+    "mental": "Think of a LAN as the local delivery area. Link-layer frames reach devices within a segment or VLAN; traffic for other IP networks typically goes through a router.",
+    "points": [
+      "A LAN can contain multiple switches and VLANs; physical closeness does not guarantee a single broadcast domain.",
+      "Switches forward frames according to MAC-address learning within a VLAN.",
+      "Wireless access points bridge Wi-Fi clients into a wired network but add radio coordination and authentication concerns.",
+      "Subnet masks and routes determine which IP destinations a host treats as local.",
+      "Segmentation and access controls matter because devices in the same network are not automatically trusted."
+    ],
+    "steps": [
+      "A host sends to another host in its IP subnet and resolves the peer's MAC address.",
+      "The local switch forwards the Ethernet frame to the peer port.",
+      "For a remote subnet, the host sends a frame to its default gateway instead.",
+      "The router forwards the IP packet toward the remote network."
+    ],
+    "usage": [
+      "Planning home, campus, or office network topology.",
+      "Distinguishing LAN switching from inter-network routing.",
+      "Diagnosing DHCP, ARP, VLAN, and gateway issues."
+    ],
+    "mistakes": [
+      "Assuming a LAN always means one flat broadcast domain.",
+      "Assuming devices on the same LAN are automatically authorized to communicate.",
+      "Confusing the IP subnet with the physical wiring layout."
+    ],
+    "interview": [
+      {
+        "q": "Does one LAN have to be one broadcast domain?",
+        "a": "No. VLANs can partition a switched LAN into multiple logical broadcast domains.",
+        "level": "beginner"
+      },
+      {
+        "q": "When is a default gateway used?",
+        "a": "When the destination is not reachable via the host's directly connected routes and the routing table selects the gateway as next hop.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "nat",
+    "section": "networks",
+    "title": "NAT",
+    "summary": "Rewriting addresses (and usually ports) so many hosts share a public IP.",
+    "level": "intermediate",
+    "prereqs": [
+      "ipv4",
+      "router"
+    ],
+    "related": [
+      "firewall"
+    ],
+    "next": "routing-protocols",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Network Address Translation (NAT) modifies network-layer addresses in packet headers; common home/enterprise port-address translation also rewrites transport ports so many private hosts can share a public IPv4 address. Stateful translation keeps mappings so return traffic can be associated with the right internal endpoint.",
+    "why": "NAT conserves public IPv4 address space and enables private networks to initiate outbound connections through a gateway. It complicates end-to-end reachability, troubleshooting, protocols that embed addresses, and inbound connections that need explicit mappings.",
+    "mental": "A gateway maintains a translation table: an outbound packet is rewritten and recorded; the reply matches that state and is rewritten back to the private endpoint.",
+    "points": [
+      "NAT is not a complete security policy; firewall rules and state tracking are separate concerns.",
+      "Port-address translation distinguishes concurrent flows that share the same public address.",
+      "Unsolicited inbound traffic may have no mapping and will commonly be dropped unless forwarding rules or a related connection authorize it.",
+      "NAT can complicate peer-to-peer and real-time communication, which may use discovery/relay techniques.",
+      "IPv6 reduces the address-scarcity pressure that made NAT ubiquitous, but firewalling and network policy still remain necessary."
+    ],
+    "steps": [
+      "A private host sends a packet to a public server.",
+      "The gateway replaces the source private IP and often source port with a public mapping.",
+      "The server replies to the public tuple stored in the translation state.",
+      "The gateway maps the reply to the original internal IP and port."
+    ],
+    "usage": [
+      "Troubleshooting a home router and port forwarding.",
+      "Explaining why an outbound connection works but an unsolicited inbound connection does not.",
+      "Distinguishing NAT from firewalling and authorization."
+    ],
+    "mistakes": [
+      "Saying NAT automatically makes a network secure.",
+      "Assuming port forwarding changes the application's authentication requirements.",
+      "Confusing NAT table state with the IP routing table."
+    ],
+    "interview": [
+      {
+        "q": "Why can many private hosts share one public IPv4 address?",
+        "a": "Port-address translation maps each outbound flow to a distinct public address/port tuple and tracks it for return traffic.",
+        "level": "beginner"
+      },
+      {
+        "q": "Is NAT the same as a firewall?",
+        "a": "No. NAT rewrites addresses and often ports; a firewall makes allow/deny decisions. Many gateways combine both functions.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "udp",
+    "section": "networks",
+    "title": "UDP",
+    "summary": "Datagrams with ports and a checksum. No connection, no retransmission, no congestion control.",
+    "level": "beginner",
+    "prereqs": [
+      "l4-transport"
+    ],
+    "related": [
+      "tcp",
+      "ports"
+    ],
+    "next": "ports",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "User Datagram Protocol (UDP) is a connectionless transport protocol that carries datagrams between application endpoints using port numbers. It provides minimal transport framing and checksum-based error detection in common cases, but does not provide reliable delivery, ordering, retransmission, or congestion control by itself.",
+    "why": "UDP lets applications choose the reliability, timing, and congestion behavior they need. DNS, streaming media, gaming, and real-time communication often benefit from avoiding built-in retransmission delay, but the application must be designed for loss and rate control.",
+    "mental": "UDP delivers independent datagrams rather than a reliable byte stream. A receiver may get a datagram, miss one, or receive them in a different order; transport does not repair those conditions automatically.",
+    "points": [
+      "UDP preserves datagram boundaries, unlike TCP's byte stream.",
+      "Ports allow the OS to demultiplex datagrams to sockets or application endpoints.",
+      "A checksum helps detect corruption according to the protocol's rules; it does not guarantee delivery.",
+      "Applications needing reliability can add acknowledgements, retries, ordering, or congestion handling, but must design these carefully.",
+      "QUIC runs over UDP while implementing substantial transport reliability, encryption, and congestion control in user space."
+    ],
+    "steps": [
+      "A client sends a UDP datagram to server IP and port 53.",
+      "The IP layer routes it toward the destination.",
+      "The receiving host uses the destination port to deliver the datagram to the appropriate socket.",
+      "If the reply is lost, UDP itself does not retransmit; the application decides what to do."
+    ],
+    "usage": [
+      "DNS queries, real-time media, telemetry, and latency-sensitive applications.",
+      "Choosing between message datagrams and reliable byte streams.",
+      "Understanding why QUIC can use UDP while still offering reliable streams."
+    ],
+    "mistakes": [
+      "Saying UDP never has congestion control at the application/protocol stack level; it has none built into basic UDP, but applications may implement it.",
+      "Assuming a checksum provides cryptographic integrity or authentication.",
+      "Using retries without limits and causing congestion amplification."
+    ],
+    "interview": [
+      {
+        "q": "What does UDP guarantee?",
+        "a": "Basic UDP provides datagram transport and port-based demultiplexing, but not reliable delivery, ordering, retransmission, or built-in congestion control.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why does QUIC use UDP?",
+        "a": "UDP offers a deployable datagram substrate while QUIC implements its own secure connection, streams, reliability, and congestion-control behavior above it.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "routing",
+    "section": "networks",
+    "title": "Routing",
+    "summary": "Choosing a next hop. Tables, longest prefix match, and intra- vs inter-domain.",
+    "level": "intermediate",
+    "prereqs": [
+      "ip",
+      "router"
+    ],
+    "related": [
+      "routing-protocols",
+      "bgp"
+    ],
+    "next": "icmp",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Routing determines paths or next hops for packets between IP networks. Routers maintain a forwarding table derived from connected networks, static routes, and routing protocols, then use destination-prefix matching to select an outgoing interface and next hop.",
+    "why": "Correct routing connects independent subnets and allows a network to adapt to topology changes. Incorrect or missing routes create black holes, loops, asymmetric paths, or excessive convergence time after failures.",
+    "mental": "Separate route computation from packet forwarding. Control-plane protocols learn and select routes; the forwarding plane performs a fast lookup for each packet using the resulting table.",
+    "points": [
+      "Longest-prefix match chooses the most specific matching destination prefix.",
+      "A default route is used when no more specific applicable route exists.",
+      "Routing protocols exchange reachability information; they use different metrics, policies, and convergence models.",
+      "Route preference and metrics are implementation- and protocol-specific, so route selection should be read from the actual routing table.",
+      "TTL/hop-limit fields limit looping packets but do not repair a faulty routing configuration."
+    ],
+    "steps": [
+      "A host compares a destination IP with connected prefixes.",
+      "If the destination is remote, its routing table selects the best route or default gateway.",
+      "The router forwards to the next hop or directly connected destination interface.",
+      "Each subsequent router repeats the lookup based on the packet's destination prefix."
+    ],
+    "usage": [
+      "Reading `ip route` or router forwarding tables.",
+      "Diagnosing asymmetric routing and unreachable subnets.",
+      "Distinguishing routing protocol convergence from packet forwarding."
+    ],
+    "mistakes": [
+      "Assuming a router uses the DNS name in every packet lookup; ordinary forwarding uses IP destination fields.",
+      "Assuming a longer route is always preferred; longest-prefix match concerns prefix specificity, not hop count.",
+      "Changing routes without checking return paths, ACLs, NAT, or routing policy."
+    ],
+    "interview": [
+      {
+        "q": "What is longest-prefix match?",
+        "a": "Among routes matching a destination IP, the router selects the matching route with the greatest prefix length.",
+        "level": "beginner"
+      },
+      {
+        "q": "How do routing and forwarding differ?",
+        "a": "Routing computes or selects reachability paths and next hops; forwarding applies the installed table to individual packets.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "ports",
+    "section": "networks",
+    "title": "Ports",
+    "summary": "16-bit transport addresses that multiplex a host. Well-known, registered, ephemeral.",
+    "level": "beginner",
+    "prereqs": [
+      "tcp",
+      "udp"
+    ],
+    "related": [
+      "tcp",
+      "nat"
+    ],
+    "next": "tcp-handshake",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A transport port is a 16-bit number used with an IP address and transport protocol to identify an application endpoint. Ports let many applications communicate concurrently through the same network interface, for example a web server on one port and a DNS service on another.",
+    "why": "IP directs packets to a host/interface, while ports help the transport layer deliver data to the correct socket or service on that host. A port number alone is not globally unique; the protocol and endpoint address context matter.",
+    "mental": "Think of an IP address as a building and a port as a service desk inside it. TCP and UDP each have their own port space, and client processes often use ephemeral source ports.",
+    "points": [
+      "The 16-bit port field ranges from 0 through 65535.",
+      "Well-known and registered port assignments are conventions managed through IANA; real services may use nondefault ports.",
+      "A connection is identified by a tuple including protocol, local/remote IP addresses, and local/remote ports.",
+      "A listening TCP socket is different from an established TCP connection.",
+      "Port reachability depends on local listeners, routing, firewalls, NAT, and the application's protocol behavior."
+    ],
+    "steps": [
+      "A browser opens a TCP connection to a web server at destination port 443.",
+      "The client chooses an ephemeral source port.",
+      "The OS demultiplexes incoming segments using the connection/socket tuple.",
+      "The server's listener accepts the connection and the application speaks HTTPS over it."
+    ],
+    "usage": [
+      "Debugging a service that is not listening on the expected port.",
+      "Understanding ephemeral ports and NAT translation.",
+      "Reading netstat/ss output and firewall rules."
+    ],
+    "mistakes": [
+      "Treating a port number as an identity independent of IP and protocol.",
+      "Assuming port 443 guarantees the service is HTTPS.",
+      "Confusing an open TCP listener with UDP reachability."
+    ],
+    "interview": [
+      {
+        "q": "What identifies a TCP connection?",
+        "a": "Typically the local and remote IP addresses and ports plus the transport protocol, with protocol state tracked by the stack.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Can TCP and UDP both use port 53?",
+        "a": "Yes. They have distinct transport protocol spaces, even though DNS commonly uses both in different situations.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "router",
+    "section": "networks",
+    "title": "Router",
+    "summary": "A network-layer device that forwards packets between subnets using a routing table.",
+    "level": "beginner",
+    "prereqs": [
+      "l3-network",
+      "ip"
+    ],
+    "related": [
+      "routing",
+      "gateway"
+    ],
+    "next": "bridge",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A router connects IP networks and forwards packets based on destination addresses and a routing/forwarding table. It typically removes the incoming link-layer frame and encapsulates the IP packet in a new frame for the next hop.",
+    "why": "Routers enable communication beyond a single broadcast domain and apply routing policy between networks. They also often enforce ACLs, NAT, or quality-of-service rules, but these functions are distinct from the core forwarding decision.",
+    "mental": "A router preserves the end-to-end IP destination while changing the link-layer envelope at each routed hop. Each interface belongs to or reaches a particular network and has its own layer-2 context.",
+    "points": [
+      "A router uses an IP route/forwarding table rather than a MAC-learning table as its primary forwarding decision.",
+      "The source and destination IPs generally remain the same across ordinary routing, aside from NAT or other network functions.",
+      "The incoming Ethernet frame is not carried unchanged across every hop; each link uses its own link-layer header.",
+      "TTL/Hop Limit is decremented to limit loops.",
+      "A router may host multiple routing domains, VLAN interfaces, or firewall policies depending on its design."
+    ],
+    "steps": [
+      "Host A determines the destination is outside its subnet.",
+      "It resolves the gateway's local MAC address and sends a frame to the router.",
+      "The router removes the local frame, checks the IP header and route table, then selects a next hop.",
+      "It wraps the packet in the next link's frame and forwards it."
+    ],
+    "usage": [
+      "Explaining the role of a default gateway.",
+      "Debugging packets that reach the local router but not the destination network.",
+      "Distinguishing routers, switches, and access points."
+    ],
+    "mistakes": [
+      "Saying the router replaces the destination IP with the next-hop IP under ordinary forwarding.",
+      "Assuming a router can forward to a destination without a route or default route.",
+      "Assuming routing is the same operation as DNS resolution."
+    ],
+    "interview": [
+      {
+        "q": "What changes when a packet crosses a router?",
+        "a": "The link-layer frame is replaced for the next link and TTL/Hop Limit decreases; the IP destination normally stays unchanged unless a function such as NAT modifies it.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does a default gateway provide?",
+        "a": "A next hop used for destinations not matched by a more specific route in the host's routing table.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "switching",
+    "section": "networks",
+    "title": "Switching",
+    "summary": "Learn MACs, flood unknowns, forward knowns, filter the rest. CAM tables and STP.",
+    "level": "intermediate",
+    "prereqs": [
+      "switch",
+      "ethernet"
+    ],
+    "related": [
+      "vlan",
+      "stp"
+    ],
+    "next": "arp",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Ethernet switching forwards frames among ports using a forwarding database that associates MAC addresses with ports within a VLAN. Switches learn from source addresses, forward known destinations, and flood certain unknown or broadcast traffic when required by the protocol and configuration.",
+    "why": "Switching lets many hosts share a local network without sending every unicast frame to every port. Loop prevention, VLANs, and correct MAC learning help keep the layer-2 topology stable.",
+    "mental": "A switch learns where a sender is located from the source MAC, then uses the destination MAC to decide where the frame should go. It does not need to interpret the application payload for basic forwarding.",
+    "points": [
+      "The forwarding table is learned dynamically and can age out entries.",
+      "Unknown unicast and broadcast flooding is scoped to the relevant VLAN.",
+      "Redundant layer-2 links can create loops; spanning-tree mechanisms block some paths to maintain a loop-free topology.",
+      "VLANs partition broadcast domains and require consistent access/trunk configuration.",
+      "Switching and routing operate at different logical layers, though multilayer devices combine them."
+    ],
+    "steps": [
+      "A frame enters on port 3 with source MAC A and destination MAC B.",
+      "The switch learns that A is reachable through port 3.",
+      "If B's location is known, it forwards only to that port; otherwise it floods eligible ports in the VLAN.",
+      "When B replies, the switch learns B's port and subsequent forwarding is more selective."
+    ],
+    "usage": [
+      "Debugging MAC-table learning, loops, and unknown-unicast flooding.",
+      "Understanding VLAN access and trunk ports.",
+      "Interpreting spanning-tree port states."
+    ],
+    "mistakes": [
+      "Assuming a basic layer-2 switch can route between subnets without a layer-3 interface/function.",
+      "Expecting the MAC table to be global across unrelated VLANs.",
+      "Ignoring loops that can multiply broadcast traffic."
+    ],
+    "interview": [
+      {
+        "q": "How does a switch learn a MAC address?",
+        "a": "It records the source MAC address and ingress port from received frames, scoped to the relevant VLAN.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why is spanning tree useful?",
+        "a": "It helps prevent persistent layer-2 forwarding loops when redundant links exist.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "vlan",
+    "section": "networks",
+    "title": "VLANs",
+    "summary": "One physical switch, many broadcast domains. 802.1Q tags and trunk ports.",
+    "level": "intermediate",
+    "prereqs": [
+      "switching"
+    ],
+    "related": [
+      "ethernet"
+    ],
+    "next": "ip",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A Virtual LAN (VLAN) partitions a switched Ethernet infrastructure into separate logical layer-2 broadcast domains. IEEE 802.1Q tagging carries VLAN identity across trunk links; access ports commonly connect endpoints to a single configured VLAN.",
+    "why": "VLANs organize networks by function or trust boundary without requiring one physical switch per network. Inter-VLAN communication still needs a layer-3 routing function and should be governed by routing and firewall policy.",
+    "mental": "VLANs separate layer-2 neighborhoods on shared physical infrastructure. An endpoint sends ordinary Ethernet frames on an access port; a trunk carries frames tagged to distinguish multiple VLANs across the link.",
+    "points": [
+      "An access port normally assigns untagged endpoint traffic to one configured VLAN.",
+      "A trunk carries traffic for multiple VLANs and uses 802.1Q tags, subject to allowed-VLAN configuration.",
+      "Broadcast and unknown-unicast flooding normally remains within a VLAN.",
+      "Devices in different VLANs do not communicate at layer 2 just because they share a switch chassis.",
+      "VLAN separation is not complete security by itself; routing ACLs, firewall rules, and management-plane controls matter."
+    ],
+    "steps": [
+      "Put two endpoint ports in VLAN 10 and VLAN 20.",
+      "Each host can exchange frames with peers in its own VLAN when addressing is valid.",
+      "An inter-VLAN packet needs a router or layer-3 switch interface.",
+      "Apply and verify routing/firewall rules before allowing cross-VLAN access."
+    ],
+    "usage": [
+      "Segmenting guest, staff, server, or IoT traffic.",
+      "Troubleshooting a port connected to the wrong VLAN.",
+      "Understanding access ports, trunks, native VLAN behavior, and inter-VLAN routing."
+    ],
+    "mistakes": [
+      "Believing a VLAN tag alone encrypts traffic.",
+      "Allowing a trunk to carry unintended VLANs.",
+      "Assuming VLANs automatically restrict traffic once a router permits it."
+    ],
+    "interview": [
+      {
+        "q": "What does a VLAN change?",
+        "a": "It defines a logical layer-2 broadcast domain on a shared switched infrastructure.",
+        "level": "beginner"
+      },
+      {
+        "q": "How do two VLANs communicate?",
+        "a": "Traffic typically requires a layer-3 routing function, and policy must permit the desired communication.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "wan",
+    "section": "networks",
+    "title": "WAN",
+    "summary": "A wide-area network spanning sites and usually several providers.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "lan",
+      "routing"
+    ],
+    "next": "man",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A Wide Area Network links networks across large geographic areas, often using service-provider infrastructure, leased circuits, tunnels, or the public internet. Sites can communicate through routed IP connectivity without sharing the same local broadcast domain.",
+    "why": "WANs connect branches, cloud networks, data centers, and remote users. Their design must handle latency, variable path quality, availability, provider boundaries, routing policy, and security across less-controlled infrastructure.",
+    "mental": "Treat each site as an IP network attached to a wide-area path. Routers and overlay tunnels move packets between sites; local Ethernet details usually stop at the site edge.",
+    "points": [
+      "WAN links may be private, provider-managed, internet-based, or built using overlays such as VPN tunnels.",
+      "Latency depends on distance, propagation, queueing, and routing path; bandwidth alone does not determine application responsiveness.",
+      "Routing protocols and policy determine reachability between site prefixes.",
+      "VPNs protect traffic across untrusted networks, but endpoints and routing configuration still need security controls.",
+      "Redundancy can improve availability but needs correct failover and routing behavior."
+    ],
+    "steps": [
+      "A branch host sends traffic toward a remote site prefix.",
+      "The local gateway selects the WAN interface, provider path, or VPN tunnel.",
+      "Intermediate routers forward the packet or tunnel encapsulation toward the remote gateway.",
+      "The destination gateway routes the packet to its local subnet."
+    ],
+    "usage": [
+      "Connecting offices, cloud virtual networks, and remote workers.",
+      "Comparing leased lines, internet VPNs, and managed SD-WAN approaches.",
+      "Diagnosing high RTT, packet loss, and asymmetric routing."
+    ],
+    "mistakes": [
+      "Assuming a WAN means one specific technology.",
+      "Confusing connectivity with encryption or authentication.",
+      "Measuring only bandwidth while ignoring latency, jitter, and loss."
+    ],
+    "interview": [
+      {
+        "q": "How does a WAN differ from a LAN?",
+        "a": "A WAN connects geographically separated networks over broader routed/provider infrastructure; a LAN is local site infrastructure. Exact boundaries depend on administration and design.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why may high-bandwidth WAN access still feel slow?",
+        "a": "High round-trip latency, loss, queueing, and application request patterns can dominate even when raw bandwidth is high.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "b-trees",
+    "section": "dbms",
+    "title": "B-Trees",
+    "summary": "Balanced multiway trees. Internal nodes hold keys and children; used widely in filesystems and DBs.",
+    "level": "intermediate",
+    "prereqs": [],
+    "related": [
+      "bplus-trees",
+      "indexes"
+    ],
+    "next": "bplus-trees",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A B-tree is a balanced search tree in which nodes hold multiple ordered keys and child pointers. Its branching factor is high, so the tree can remain shallow and limit the number of storage-page reads needed for search and updates.",
+    "why": "Databases and filesystems operate on pages, not just CPU pointer operations. Multiway nodes pack many keys into a page and reduce tree height compared with a binary tree for the same key count.",
+    "mental": "Think of each node as a sorted page containing separators. A search compares the key to the separators and follows the one child range that can contain the key.",
+    "points": [
+      "B-tree variants impose minimum and maximum occupancy rules that keep height balanced.",
+      "Search, insert, and delete traverse a root-to-leaf path; split, merge, or redistribution maintains occupancy.",
+      "High fan-out reduces tree height and random page I/O.",
+      "Depending on the B-tree variant, records or values may be stored in internal nodes as well as leaves.",
+      "B+ trees are a related variant with data entries in leaves and linked leaves for range scans."
+    ],
+    "steps": [
+      "Search the sorted separator keys in the current node.",
+      "Choose the child pointer whose key interval contains the target.",
+      "On insert, place the key in a leaf; if the node overflows, split it and propagate a separator upward.",
+      "On delete, rebalance underfull nodes with redistribution or merging as the chosen variant specifies."
+    ],
+    "usage": [
+      "Understanding database index structures and filesystem metadata trees.",
+      "Explaining why node size and key order affect I/O.",
+      "Comparing B-trees, B+ trees, and binary search trees."
+    ],
+    "mistakes": [
+      "Assuming every B-tree variant stores values only in leaves.",
+      "Calling an arbitrary multiway search tree balanced without the occupancy rules.",
+      "Ignoring page size and storage access when comparing tree complexities."
+    ],
+    "interview": [
+      {
+        "q": "Why are B-trees suitable for database storage?",
+        "a": "Their high fan-out keeps the tree shallow, reducing the number of page accesses for searches and updates.",
+        "level": "beginner"
+      },
+      {
+        "q": "How does a B-tree differ from a typical B+ tree?",
+        "a": "In a B-tree variant, records/values may appear in internal nodes; a B+ tree stores data entries at leaves and commonly links those leaves for range scans.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "bplus-trees",
+    "section": "dbms",
+    "title": "B+ Trees",
+    "summary": "All values in leaves, leaves linked. The index structure behind almost every relational PK.",
+    "level": "intermediate",
+    "prereqs": [
+      "b-trees",
+      "indexes"
+    ],
+    "related": [
+      "indexes"
+    ],
+    "next": "replication-db",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A B+ tree is a balanced multiway search tree in which internal nodes guide the search and all data entries or record pointers reside in the leaves. Leaf pages are often linked in key order, making range scans efficient.",
+    "why": "Database indexes must support more than finding one exact key. B+ trees balance point lookups, inserts, deletes, and ordered range scans while keeping most nodes aligned with storage pages.",
+    "mental": "Internal nodes are signposts; the leaves are the ordered index. The root-to-leaf path locates a key, while a range query walks successive leaf pages rather than restarting each search.",
+    "points": [
+      "High fan-out keeps the index height small and limits page reads.",
+      "Leaf linkage supports range scans and ordered iteration.",
+      "Node splits and merges maintain balance and occupancy after inserts/deletes.",
+      "Clustered versus secondary index organization changes what a leaf entry references and how table rows are accessed.",
+      "Index maintenance adds write amplification and storage overhead; every possible query does not benefit from an index."
+    ],
+    "steps": [
+      "Start at the root and follow separators to the leaf interval containing key K.",
+      "Search the leaf for K and retrieve the row identifier or clustered record.",
+      "For a range [K1,K2], find K1 then traverse linked leaves until K2.",
+      "On insert overflow, split the leaf and propagate a separator to the parent."
+    ],
+    "usage": [
+      "Understanding primary-key indexes in relational databases.",
+      "Explaining range scans, ordering, and index maintenance.",
+      "Reading query plans for index scans and index-only scans."
+    ],
+    "mistakes": [
+      "Calling every index a B+ tree; databases may use hash, bitmap, inverted, or other structures.",
+      "Assuming an index always makes queries faster.",
+      "Ignoring the cost of leaf splits, page writes, and index maintenance."
+    ],
+    "interview": [
+      {
+        "q": "Why do B+ tree indexes support range queries well?",
+        "a": "Values are stored in sorted leaves that can be traversed sequentially after finding the first key.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why might an optimizer choose a sequential scan over a B+ tree index?",
+        "a": "If many rows are needed or estimates make random index/table access more expensive than scanning pages, a sequential scan may be cheaper.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "query-optimization",
+    "section": "dbms",
+    "title": "Query Optimization",
+    "summary": "Turning SQL into a cheap plan: statistics, join order, and access paths.",
+    "level": "advanced",
+    "prereqs": [
+      "sql",
+      "indexes"
+    ],
+    "related": [
+      "query-planners"
+    ],
+    "next": "query-planners",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Query optimization transforms a parsed SQL query into an execution plan expected to return the required result at reasonable cost. A cost-based optimizer estimates cardinalities and compares alternatives such as scans, index lookups, join orders, and join algorithms.",
+    "why": "The declarative SQL result can remain the same while execution cost differs by orders of magnitude. Optimization helps databases use indexes, statistics, memory, and join strategies without requiring callers to hand-code every physical operation.",
+    "mental": "SQL is the specification; the execution plan is the chosen recipe. The optimizer estimates how many rows flow through each operator and the resources those operators consume.",
+    "points": [
+      "The optimizer considers logically equivalent rewrites and alternative physical operators.",
+      "Table statistics, histograms, and cardinality estimates strongly influence plan choice.",
+      "Join order matters because intermediate result sizes can multiply.",
+      "Index selectivity, clustering, memory, and I/O cost affect whether an index path is attractive.",
+      "Bad estimates from stale statistics or correlated predicates can produce poor plans."
+    ],
+    "steps": [
+      "Write a query joining Customers and Orders with a filter on order date.",
+      "The optimizer estimates filtered row counts using table/index statistics.",
+      "It chooses join order and algorithms such as nested-loop or hash join.",
+      "Use EXPLAIN (and EXPLAIN ANALYZE where safe) to compare estimates with actual row counts and execution behavior."
+    ],
+    "usage": [
+      "Diagnosing a query that becomes slow as data volume grows.",
+      "Choosing useful indexes based on real predicates and selectivity.",
+      "Understanding why two equivalent SQL formulations can receive different plans."
+    ],
+    "mistakes": [
+      "Optimizing from intuition alone without looking at actual plans.",
+      "Assuming an index is always cheaper than a sequential scan.",
+      "Ignoring stale statistics, parameter sensitivity, or data skew."
+    ],
+    "interview": [
+      {
+        "q": "What is cardinality estimation?",
+        "a": "It predicts the number of rows emitted by a table access or plan operator and helps the optimizer compare costs.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can inaccurate estimates cause a bad join order?",
+        "a": "The optimizer may expect a small intermediate result that is actually huge, making its chosen join algorithm or order much more expensive.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "query-planners",
+    "section": "dbms",
+    "title": "Query Planners",
+    "summary": "Cost-based vs rule-based planners, EXPLAIN, and why the optimizer is the real engine.",
+    "level": "advanced",
+    "prereqs": [
+      "query-optimization"
+    ],
+    "related": [
+      "storage-engines"
+    ],
+    "next": "storage-engines",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "A query planner selects a physical execution strategy for a logical query. Modern relational databases commonly use cost-based optimization, comparing estimates for access paths and join operators, while rule-based transformations still simplify and normalize query expressions.",
+    "why": "Knowing how a plan was selected helps distinguish SQL correctness from runtime cost. A slow query may need better statistics, a suitable index, fewer rows, or a different query shape rather than merely a different syntax.",
+    "mental": "Read the plan as a tree or pipeline of operators. Leaves access data; intermediate operators filter, join, sort, or aggregate; the root produces result rows. Actual row counts and timing reveal where estimates diverged.",
+    "points": [
+      "EXPLAIN shows the chosen plan; EXPLAIN ANALYZE executes the query and reports actual information, with possible side effects for modifying statements.",
+      "Nested-loop, hash, and merge joins suit different input sizes, indexes, and ordering.",
+      "Cost is an estimate based on statistics and configuration, not a promise of actual runtime.",
+      "Row estimates at inner plan nodes affect parent decisions.",
+      "Plan stability can change as data, statistics, parameters, cache state, or database versions change."
+    ],
+    "steps": [
+      "Capture the plan for a slow query.",
+      "Compare estimated rows against actual rows at each node.",
+      "Identify the first major cardinality error or expensive operator.",
+      "Make a targeted change—statistics, index, query shape, or configuration—and measure again under representative conditions."
+    ],
+    "usage": [
+      "Using EXPLAIN to diagnose slow SQL.",
+      "Reviewing estimated versus actual row counts.",
+      "Explaining plan changes after data growth or a database upgrade."
+    ],
+    "mistakes": [
+      "Reading only the total estimated cost as elapsed milliseconds.",
+      "Running EXPLAIN ANALYZE on a destructive statement without a safe transaction or test environment.",
+      "Adding indexes before understanding the filter, ordering, join, and write workload."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between EXPLAIN and EXPLAIN ANALYZE?",
+        "a": "EXPLAIN shows the estimated plan; EXPLAIN ANALYZE executes it and reports actual runtime/row information for executed operators.",
+        "level": "beginner"
+      },
+      {
+        "q": "Which plan value is often revealing when debugging?",
+        "a": "A large gap between estimated and actual row counts, especially near the first divergence in the plan tree.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "wal",
+    "section": "dbms",
+    "title": "Write-Ahead Log",
+    "summary": "Log the change before the page. Redo/undo, crash recovery, and replication's raw feed.",
+    "level": "advanced",
+    "prereqs": [
+      "acid",
+      "storage-engines"
+    ],
+    "related": [
+      "replication-db"
+    ],
+    "next": "b-trees",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "A write-ahead log (WAL) records changes in a sequential log before the corresponding modified data pages are written to their main data files. After a crash, the DBMS uses the log and checkpoint state to recover a consistent database according to its recovery design.",
+    "why": "WAL separates the durability of a committed logical change from the timing of random data-page writes. It supports crash recovery and can also provide a stream of changes for replication or point-in-time recovery.",
+    "mental": "Before flushing a dirty data page, the log record describing the change must be safely persisted to the required point. The log is a durable history that lets the engine redo or otherwise reconcile changes after a crash.",
+    "points": [
+      "The WAL rule requires relevant log records to reach durable storage before the data page they describe is flushed.",
+      "Commit protocols ensure the required log records are durable before acknowledging a transaction commit under the configured contract.",
+      "Checkpoints limit the amount of log that must be processed during recovery.",
+      "Recovery may redo changes that are logged but not present in data pages; exact undo/redo behavior depends on the storage/recovery design.",
+      "Log retention interacts with replication slots, backups, archive policies, and disk capacity."
+    ],
+    "steps": [
+      "A transaction updates a database row and creates WAL records.",
+      "The commit path flushes the log through the commit record when required.",
+      "The DBMS can acknowledge commit even if the changed data page has not yet been written, because recovery can replay the durable log.",
+      "After a crash, recovery reconciles data pages with durable log records and checkpoints."
+    ],
+    "usage": [
+      "Explaining durability and crash recovery.",
+      "Diagnosing WAL disk growth and replication lag.",
+      "Planning backup retention and point-in-time recovery."
+    ],
+    "mistakes": [
+      "Assuming a successful write to an in-memory buffer guarantees durable storage.",
+      "Deleting required WAL/archive files before backups or replicas no longer need them.",
+      "Treating WAL as a complete backup; it usually depends on base data and correct retention."
+    ],
+    "interview": [
+      {
+        "q": "Why must the log be durable before its data page is written?",
+        "a": "The log contains the recovery information needed to redo or reconcile the change after a crash; writing the page first could leave an unrecoverable state.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why can WAL grow unexpectedly?",
+        "a": "A slow replica, retained replication slot, long-running transaction, archive failure, or backup policy may prevent required log segments from being recycled.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "isolation-levels",
+    "section": "dbms",
+    "title": "Isolation Levels",
+    "summary": "Read uncommitted through serializable: which anomalies you tolerate for concurrency.",
+    "level": "advanced",
+    "prereqs": [
+      "acid",
+      "transactions"
+    ],
+    "related": [
+      "mvcc",
+      "locks-db"
+    ],
+    "next": "locks-db",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Transaction isolation defines which effects of concurrent transactions a transaction may observe. SQL isolation levels describe guarantees around anomalies such as dirty reads, non-repeatable reads, phantoms, and serialization anomalies, but exact semantics differ by database implementation.",
+    "why": "Concurrency increases throughput but can expose inconsistent observations if transaction reads and writes interleave. Isolation provides a defined compromise between consistency, concurrency, blocking, and retry cost.",
+    "mental": "Imagine two transactions reading and updating overlapping data. The isolation contract determines whether one can observe another's uncommitted data, repeat a read and get a changed value, or commit a result that could not correspond to a serial execution.",
+    "points": [
+      "Read Uncommitted permits the weakest isolation in systems that implement it distinctly; some engines treat it like a stronger level.",
+      "Read Committed commonly ensures each statement sees committed data but can allow different statements to observe different committed snapshots.",
+      "Repeatable Read strengthens repeat-read behavior, though phantom and serialization semantics are database-specific.",
+      "Serializable aims for results equivalent to some serial ordering, sometimes using locks or abort-and-retry validation.",
+      "Apps must handle serialization failures and retries, and should not rely on a level name without knowing the engine's implementation."
+    ],
+    "steps": [
+      "Transaction A reads a balance.",
+      "Transaction B updates and commits the balance.",
+      "Transaction A reads the balance again; whether it sees the old or new value depends on isolation and database semantics.",
+      "Choose the lowest level that preserves the business invariant, and handle conflicts explicitly."
+    ],
+    "usage": [
+      "Preventing lost updates and inconsistent financial computations.",
+      "Choosing transaction isolation in web services.",
+      "Explaining anomalies with interleaving schedules."
+    ],
+    "mistakes": [
+      "Assuming all databases implement every isolation level identically.",
+      "Assuming Repeatable Read universally prevents every anomaly called a phantom.",
+      "Using a stronger isolation level without handling retries or increased contention."
+    ],
+    "interview": [
+      {
+        "q": "What is a dirty read?",
+        "a": "A transaction reads data written by another transaction that has not committed; the writer may still roll back.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does Serializable aim to guarantee?",
+        "a": "The committed result should be equivalent to some serial execution of transactions, though the engine may block or abort transactions to enforce it.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "mvcc",
+    "section": "dbms",
+    "title": "MVCC",
+    "summary": "Readers see a snapshot; writers create versions. Postgres and InnoDB's answer to blocking reads.",
+    "level": "advanced",
+    "prereqs": [
+      "isolation-levels"
+    ],
+    "related": [
+      "locks-db",
+      "wal"
+    ],
+    "next": "concurrency-db",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Multi-Version Concurrency Control (MVCC) maintains multiple logical versions of rows so readers can observe a consistent snapshot while writers create newer versions. The database determines which version is visible using transaction metadata, timestamps, transaction IDs, or related visibility rules.",
+    "why": "MVCC can reduce reader-writer blocking and improve concurrent workloads, but it adds version cleanup, vacuum/purge work, and subtleties around isolation and write conflicts.",
+    "mental": "Instead of overwriting the only copy immediately, a writer creates a new version; each reader sees the version allowed by its snapshot. Old versions remain until no active transaction requires them.",
+    "points": [
+      "MVCC does not mean locking disappears; writers and schema operations may still take locks.",
+      "Snapshot rules differ by database and isolation level; statement snapshots and transaction snapshots are not identical.",
+      "Old row versions consume storage until vacuum/purge or garbage collection can reclaim them.",
+      "Long-running transactions can retain old versions and delay cleanup.",
+      "Write-write conflicts, uniqueness constraints, and serialization failures still need explicit handling."
+    ],
+    "steps": [
+      "Transaction A obtains a snapshot and reads row version V1.",
+      "Transaction B updates the row and commits version V2.",
+      "Depending on A's snapshot and isolation, A may continue to see V1 even after B commits.",
+      "When no active snapshot needs V1, the engine can eventually reclaim it."
+    ],
+    "usage": [
+      "Explaining readers and writers under load.",
+      "Diagnosing table bloat, vacuum pressure, and old snapshots.",
+      "Understanding snapshot isolation and serialization anomalies."
+    ],
+    "mistakes": [
+      "Assuming MVCC prevents all anomalies or all locks.",
+      "Leaving long-running transactions open and retaining old versions.",
+      "Assuming an old snapshot automatically sees every newly committed row."
+    ],
+    "interview": [
+      {
+        "q": "How can MVCC reduce read-write blocking?",
+        "a": "Readers can use visible older versions while writers create new versions, subject to the engine's snapshot and locking rules.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can a long-running transaction increase storage pressure?",
+        "a": "It can keep an old snapshot active, preventing cleanup of versions that might still be visible to it.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "replication-db",
+    "section": "dbms",
+    "title": "Replication (DB)",
+    "summary": "Copying data to other nodes: statement vs row, sync vs async, failover.",
+    "level": "advanced",
+    "prereqs": [
+      "wal"
+    ],
+    "related": [
+      "sharding"
+    ],
+    "next": "sharding",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Database replication copies data or change records from a source node to one or more replicas. Systems differ in whether they replicate statements, row changes, physical log records, or logical changes, and whether acknowledgements wait for replicas synchronously or proceed asynchronously.",
+    "why": "Replication can improve read capacity, availability, recovery options, and geographic locality, but adds lag, failover complexity, conflict semantics, and operational cost. A replica is not automatically a backup or a consistency guarantee.",
+    "mental": "Think of replication as distributing the ordered change history. A primary accepts writes and publishes changes; replicas apply them later or as part of a synchronous commit contract, depending on configuration.",
+    "points": [
+      "Synchronous replication waits for a defined replica acknowledgement before the primary reports commit, under the configured durability contract.",
+      "Asynchronous replication lets the primary acknowledge before all replicas apply the change, creating a lag and possible loss window on failover.",
+      "Read replicas may return stale data unless the application enforces a read-your-writes or consistency strategy.",
+      "Failover requires deciding which node is authoritative and fencing the old leader to prevent split-brain.",
+      "Backups protect against some deletion/corruption scenarios that replication may faithfully copy to every node."
+    ],
+    "steps": [
+      "A transaction commits on the primary and produces log/change records.",
+      "The replica receives the stream and applies the changes in order or according to its replication model.",
+      "Monitoring measures lag between source progress and replica replay.",
+      "During failover, the system promotes a sufficiently current node and prevents the former primary from accepting conflicting writes."
+    ],
+    "usage": [
+      "Scaling read-heavy applications.",
+      "Designing disaster recovery and RPO/RTO targets.",
+      "Diagnosing replication lag and stale reads."
+    ],
+    "mistakes": [
+      "Calling a replica a backup.",
+      "Failing over without fencing the previous primary.",
+      "Assuming a read replica always includes a transaction that the same user just committed."
+    ],
+    "interview": [
+      {
+        "q": "What is the main trade-off of asynchronous replication?",
+        "a": "The primary can acknowledge writes with lower latency, but a failover before replicas catch up can lose recently acknowledged changes.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why can replication spread an accidental DELETE?",
+        "a": "Replication faithfully propagates committed changes, so backups, retention, and recovery procedures are needed for accidental or malicious changes.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "sharding",
+    "section": "dbms",
+    "title": "Sharding",
+    "summary": "Partitioning rows across machines by a key. Hotspots and resharding are the cost.",
+    "level": "advanced",
+    "prereqs": [
+      "replication-db"
+    ],
+    "related": [
+      "partitioning"
+    ],
+    "next": "partitioning",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Sharding distributes subsets of a dataset across different database nodes, usually by a partition key. Each shard owns some range or hash space, allowing storage and write capacity to scale horizontally when a single node is insufficient.",
+    "why": "Sharding can increase capacity but makes cross-shard transactions, joins, uniqueness, rebalancing, and operational tooling more complex. The key determines distribution and can become a hotspot if traffic is skewed.",
+    "mental": "Hash-based sharding spreads keys across partitions; range-based sharding preserves key ranges but can overload popular or newly appended ranges. A routing layer must know which shard owns each key.",
+    "points": [
+      "Choose a shard key that distributes writes and aligns with common queries.",
+      "Hash partitioning often spreads load but makes range scans across key values harder.",
+      "Range partitioning can make range queries efficient but may create hot partitions.",
+      "Global uniqueness and transactions across shards require coordination or application-level design.",
+      "Resharding requires a migration/copy strategy, cutover rules, and consistent routing during movement."
+    ],
+    "steps": [
+      "A request arrives with customer_id.",
+      "The routing layer computes or looks up the owning shard.",
+      "The shard executes the local query, using local indexes and transactions.",
+      "Cross-shard reads or updates coordinate several shards and must define partial-failure behavior."
+    ],
+    "usage": [
+      "Planning horizontal database scale-out.",
+      "Designing tenant-based, range-based, or hash-based partitioning.",
+      "Explaining why a hot shard limits overall capacity."
+    ],
+    "mistakes": [
+      "Choosing a timestamp key that sends all writes to one shard.",
+      "Assuming one shard key suits every query pattern.",
+      "Resharding without a plan for dual writes, cutover, verification, and rollback."
+    ],
+    "interview": [
+      {
+        "q": "What makes a good shard key?",
+        "a": "It distributes workload and data while aligning with common access patterns and required locality, uniqueness, and transaction boundaries.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why is a hot shard a problem?",
+        "a": "The busiest shard can saturate before others, so adding more total nodes does not improve capacity for the skewed workload.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "locks-db",
+    "section": "dbms",
+    "title": "Locks (DB)",
+    "summary": "Shared/exclusive, row/table, intention locks. Two-phase locking as a correctness argument.",
+    "level": "advanced",
+    "prereqs": [
+      "transactions"
+    ],
+    "related": [
+      "mvcc",
+      "deadlocks"
+    ],
+    "next": "mvcc",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Database locks coordinate concurrent transactions around rows, pages, tables, schema objects, or other resources. Shared locks commonly permit compatible readers; exclusive locks protect writes, while intention and range/predicate locking express broader coordination needs.",
+    "why": "Locks preserve integrity under concurrent updates and can enforce serializable ordering, but contention lowers throughput and can create deadlocks. Understanding lock scope and duration helps explain blocking incidents.",
+    "mental": "Each transaction holds permissions over resources. A lock compatibility matrix says whether another transaction may acquire a conflicting lock; wait-for relationships help explain stalls and deadlocks.",
+    "points": [
+      "Lock granularity trades concurrency against bookkeeping cost.",
+      "Strict two-phase locking holds relevant locks until commit/rollback, supporting serializable behavior in classic models.",
+      "Deadlock occurs when transactions form a cycle of waits; engines may detect a victim or use timeouts.",
+      "MVCC can reduce read-write blocking, but locks remain for writes, metadata, and other operations.",
+      "Lock wait timeouts and deadlock errors must be handled deliberately by application transaction logic."
+    ],
+    "steps": [
+      "Transaction A locks row 1 for update.",
+      "Transaction B tries to update row 1 and waits for A.",
+      "A commits and releases the lock.",
+      "B proceeds or retries according to the database's conflict and timeout behavior."
+    ],
+    "usage": [
+      "Diagnosing blocked transactions and lock waits.",
+      "Understanding two-phase locking and deadlock detection.",
+      "Designing short, predictable transactions around shared rows."
+    ],
+    "mistakes": [
+      "Holding locks while waiting for a user or remote HTTP response.",
+      "Assuming row-level locking means only one row can ever be involved; index and range locks may widen the scope.",
+      "Retrying a deadlock without making the transaction safe to repeat."
+    ],
+    "interview": [
+      {
+        "q": "What is a deadlock in a database?",
+        "a": "Transactions wait on one another in a cycle, so none of the transactions in the cycle can proceed without intervention.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why keep transactions short?",
+        "a": "Long transactions can hold locks and snapshots longer, increasing contention, deadlock opportunities, and cleanup pressure.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "concurrency-db",
+    "section": "dbms",
+    "title": "Database Concurrency",
+    "summary": "Interleaving transactions without losing integrity. Conflict serializability is the theory.",
+    "level": "advanced",
+    "prereqs": [
+      "transactions"
+    ],
+    "related": [
+      "mvcc",
+      "locks-db"
+    ],
+    "next": "normalization",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Database concurrency control coordinates overlapping transactions so their committed effects meet the isolation guarantee. Techniques include locks, MVCC snapshots, optimistic validation, conflict detection, and serializable scheduling.",
+    "why": "Concurrent execution improves utilization, but careless interleavings can lose updates, read inconsistent combinations, or violate cross-row invariants. The model must protect business rules, not just individual rows.",
+    "mental": "Write each transaction as a sequence of reads and writes, then ask whether an interleaving could produce a result that no valid serial order would produce. The concurrency-control mechanism determines which schedules can commit.",
+    "points": [
+      "Conflict serializability considers pairs of conflicting operations on the same data item where at least one is a write.",
+      "A precedence graph with a cycle indicates that a schedule is not conflict-serializable under the classic test.",
+      "Snapshot isolation can still allow anomalies such as write skew when transactions update disjoint rows based on overlapping reads.",
+      "Locks and serializable validation can block or abort conflicting transactions.",
+      "Application-level invariants spanning several rows may need explicit constraints, locking, or serializable transactions."
+    ],
+    "steps": [
+      "Transaction A checks that fewer than ten reservations exist.",
+      "Transaction B checks the same condition before A commits.",
+      "Both insert different rows, so a simple row-level conflict may not expose the shared-count invariant.",
+      "Use a database constraint, a locking/serialization strategy, or a different schema that makes the invariant enforceable."
+    ],
+    "usage": [
+      "Preventing lost updates and write skew.",
+      "Solving conflict-serializability graph questions.",
+      "Designing safe booking, inventory, and quota workflows."
+    ],
+    "mistakes": [
+      "Assuming two transactions are safe because they update different rows.",
+      "Confusing a serial execution with any arbitrary interleaving.",
+      "Treating isolation-level labels as a substitute for reasoning about the actual invariant."
+    ],
+    "interview": [
+      {
+        "q": "What does conflict serializability mean?",
+        "a": "A schedule is conflict-serializable when its conflicting operation order is equivalent to some serial transaction order.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How can write skew occur under snapshot isolation?",
+        "a": "Two transactions read a shared invariant from the same snapshot and update disjoint rows, allowing both to commit a combined state that violates the invariant.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "buffer-pool",
+    "section": "dbms",
+    "title": "Buffer Pool",
+    "summary": "The database's cache of disk pages. Replacement policy, dirty pages, and checkpoints.",
+    "level": "advanced",
+    "prereqs": [
+      "storage-engines"
+    ],
+    "related": [
+      "wal"
+    ],
+    "next": "wal",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "A buffer pool is the database-managed memory cache for database pages read from persistent storage. It tracks page frames, dirty state, pin/reference information, replacement candidates, and coordination so many query operators can reuse pages safely.",
+    "why": "Disk access is much slower than memory access. A buffer pool reduces physical reads, amortizes repeated work, and mediates the timing of page writes, but an undersized or polluted pool can cause churn.",
+    "mental": "Treat the buffer pool as a bounded cache of fixed-size pages. A query pins pages it needs while using them; replacement can reuse unpinned frames, and dirty pages need proper writeback before their frames are reused.",
+    "points": [
+      "A page hit avoids a physical read when the page is already resident.",
+      "Dirty pages contain changes not yet written to the main data file.",
+      "Replacement policy selects eligible victim pages based on recency, frequency, or other workload signals.",
+      "WAL or another recovery method constrains when dirty pages may safely reach storage.",
+      "Pinning, latching, and transaction locks solve distinct problems: frame lifetime, in-memory consistency, and logical concurrency."
+    ],
+    "steps": [
+      "A query requests a database page.",
+      "The buffer manager finds it in memory or reads it into a free/victim frame.",
+      "The query pins the page and synchronizes access while inspecting data.",
+      "Dirty pages are written back according to recovery and checkpoint rules; unpinned frames can then be reused."
+    ],
+    "usage": [
+      "Explaining why repeated queries can be faster after warm-up.",
+      "Diagnosing buffer cache hit rate, dirty-page pressure, and read amplification.",
+      "Understanding the interaction between checkpoints, WAL, and storage."
+    ],
+    "mistakes": [
+      "Assuming a high cache hit rate alone proves queries are efficient.",
+      "Evicting a page that is still pinned by an active operation.",
+      "Confusing an in-memory page latch with a transaction-level row lock."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between a buffer-pool hit and a cache hit at the application level?",
+        "a": "A buffer-pool hit means the database page is resident in the DBMS cache; application caches may avoid the database query entirely.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why can dirty pages not simply be discarded?",
+        "a": "Their changes may be the only current copy of committed or uncommitted page state; the recovery and writeback protocol must preserve correctness before reuse.",
+        "level": "advanced"
+      }
+    ]
+  }
+]
