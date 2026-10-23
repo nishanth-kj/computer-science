@@ -1,23 +1,38 @@
 @if (open()) {
   <div class="fixed inset-0 z-50 flex items-start justify-center bg-bg/70 px-4 pt-[12vh]">
     <button type="button" class="absolute inset-0 cursor-default" aria-label="Close search" (click)="close()"></button>
-    <div class="relative z-10 w-full max-w-xl overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-border)]">
+    <div
+      class="relative z-10 w-full max-w-xl overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-border)]"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search computer science topics and learning paths"
+    >
       <input
         class="h-12 w-full border-b border-border bg-transparent px-4 text-sm outline-none placeholder:text-subtle"
-        placeholder="Search pages and paths…"
+        placeholder="Search topics or learning paths…"
+        aria-label="Search topics or learning paths"
         [value]="q()"
         (input)="q.set($any($event.target).value)"
       />
-      <div class="max-h-80 overflow-y-auto p-2">
-        @if (q() && !topics().length) {
-          <p class="px-3 py-6 text-center text-sm text-muted">No matches.</p>
+      <div class="max-h-[65vh] overflow-y-auto p-2">
+        @if (q() && !topics().length && !matchingPaths().length) {
+          <p class="px-3 py-6 text-center text-sm text-muted">No matches. Try a topic such as “SQL”, “networks”, or a path such as “interview”.</p>
         }
         @if (topics().length) {
-          <p class="px-3 py-1 text-[11px] text-muted">Pages</p>
+          <p class="px-3 py-1 text-[11px] text-muted">Topics</p>
           @for (t of topics(); track t.slug) {
             <button type="button" class="flex w-full flex-col rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go(topicHref(t.slug))">
               <span>{{ t.title }}</span>
               <span class="text-xs text-muted">{{ t.summary }}</span>
+            </button>
+          }
+        }
+        @if (matchingPaths().length) {
+          <p class="px-3 pt-3 pb-1 text-[11px] text-muted">Learning paths</p>
+          @for (p of matchingPaths(); track p.id) {
+            <button type="button" class="flex w-full flex-col rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go('/paths/' + p.id)">
+              <span>{{ p.title }}</span>
+              <span class="text-xs text-muted">{{ p.audience }} · {{ p.blurb }}</span>
             </button>
           }
         }
@@ -31,6 +46,10 @@
             <button type="button" class="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2" (click)="go('/paths/' + p.id)">{{ p.title }}</button>
           }
         }
+      </div>
+      <div class="flex items-center justify-between border-t border-border px-3 py-2 text-[11px] text-muted">
+        <span>Search topics, fields, and learning paths</span>
+        <button type="button" class="rounded px-2 py-1 hover:bg-surface-2" (click)="close()">Esc · Close</button>
       </div>
     </div>
   </div>
