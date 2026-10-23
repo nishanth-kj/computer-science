@@ -92,6 +92,7 @@ function materialize(nav: NavTopic): Topic {
   if (overlay) {
     return {
       ...overlay,
+      contentMode: "editorial",
       prereqs: known(overlay.prereqs),
       related: known(overlay.related),
       next:
@@ -108,6 +109,7 @@ function materialize(nav: NavTopic): Topic {
     section: nav.section,
     title: nav.title,
     summary: nav.summary,
+    contentMode: "summary",
     level: nav.level,
     prereqs: known(nav.prereqs),
     related: known(nav.related),

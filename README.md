@@ -42,11 +42,33 @@ Analytics and advertising are disabled by default. No third-party script or empt
 
 - `GA_MEASUREMENT_ID` — a Google Analytics web stream ID such as `G-...`.
 - `ADSENSE_PUBLISHER_ID` — the approved AdSense client ID in `ca-pub-` format.
-- `ADSENSE_IN_ARTICLE_SLOT` and `ADSENSE_LIBRARY_SLOT` — numeric ad-unit IDs created in the approved account.
+- `ADSENSE_IN_ARTICLE_SLOT` — the numeric in-article ad-unit ID created in the approved account.
+- `SUPPORT_URL` — an active HTTPS donation/support page (for example, a creator platform you have actually enabled).
+- `DIGITAL_PRODUCTS_URL` — a live HTTPS storefront for original paid study materials.
+- `NEWSLETTER_URL` — a live HTTPS newsletter signup page from a provider you use.
+
+When `GA_MEASUREMENT_ID` is configured and a visitor accepts optional analytics, the support page records outbound click events for the support checkout, product store, newsletter, and sponsorship contact. The events are not sent before analytics is permitted; mark appropriate events as key events in GA4 after real clicks appear.
 
 Leave any integration's values unset to keep it disabled. These identifiers are public browser configuration, not secrets. After AdSense approval, replace the comments in `public/ads.txt` with the exact authorized-seller record supplied by Google; never publish a placeholder publisher ID. AdSense approval, consent-platform requirements, and regional policy configuration remain external account tasks.
 
 For local testing, set the same environment variables before `npm run build`. The build writes validated public values to `dist/site-config.js`; source defaults stay empty.
+
+## Monetization and trust
+
+This is a static educational site. Monetization should not compromise the free core curriculum or disguise paid recommendations as editorial advice.
+
+- **Display ads:** Google AdSense support is implemented but remains off until the account is approved and the Actions variables `ADSENSE_PUBLISHER_ID` and `ADSENSE_IN_ARTICLE_SLOT` are correctly configured. Never commit a fake publisher or slot ID. Configure a certified consent-management platform for regions where Google requires one.
+- **Affiliate recommendations:** add only relevant books, courses, developer tools, or hosting/services that have been personally reviewed. Identify affiliate links close to the recommendation and keep `/affiliate-disclosure` current. The project currently has no affiliate URLs or partner IDs configured.
+- **Digital products:** offer original revision sheets, interview-workbook PDFs, printable diagrams, or worked-problem packs through a reputable creator checkout. The checkout can be external; do not put payment secrets in frontend code.
+- **Sponsorships:** use `/support` to invite relevant education and developer-tool partnerships. Clearly label paid placements and do not sell control over educational conclusions.
+- **Reader support:** a donation checkout is not connected yet. Add a real GitHub Sponsors, Ko-fi, or other creator link only after the account is active and the exact destination is confirmed.
+- **Courses and workshops:** sell live interview preparation, small-group classes, or advanced labs once the content and capacity exist.
+- **Membership or paid progress features:** saved progress across devices, member-only practice sets, subscriptions, and course gating require a backend or a hosted membership platform. They cannot be secured by hiding content in this static bundle.
+- **Newsletter, job board, licensing, and team training:** these are later options after there is a real audience and a reliable process for delivering value. Newsletter signup needs an email provider and clear privacy handling.
+
+The order of work matters: make the content genuinely useful and indexable first, then test a small number of relevant affiliate/product offers, and only then optimize ads or sponsorships against measured traffic. Ad revenue is traffic-dependent and is not guaranteed.
+
+For the full revenue roadmap, content priorities, compliance checklist, and configuration sequence, see [docs/monetization-plan.md](docs/monetization-plan.md).
 
 ## Test
 

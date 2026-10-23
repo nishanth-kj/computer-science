@@ -75,12 +75,16 @@ jobs:
           GA_MEASUREMENT_ID: ${{ vars.GA_MEASUREMENT_ID }}
           ADSENSE_PUBLISHER_ID: ${{ vars.ADSENSE_PUBLISHER_ID }}
           ADSENSE_IN_ARTICLE_SLOT: ${{ vars.ADSENSE_IN_ARTICLE_SLOT }}
-          ADSENSE_LIBRARY_SLOT: ${{ vars.ADSENSE_LIBRARY_SLOT }}
+          SUPPORT_URL: ${{ vars.SUPPORT_URL }}
+          DIGITAL_PRODUCTS_URL: ${{ vars.DIGITAL_PRODUCTS_URL }}
+          NEWSLETTER_URL: ${{ vars.NEWSLETTER_URL }}
         run: |
           node scripts/generate-sitemap.mjs
           npx ng build --base-href "$BASE_HREF"
           node scripts/configure-site.mjs
           node scripts/prerender.mjs
+          node scripts/audit-built-site.mjs
+          node scripts/audit-editorial-content.mjs
           touch dist/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3

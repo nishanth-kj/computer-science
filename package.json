@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --port 4200",
-    "build": "node scripts/generate-sitemap.mjs && ng build && node scripts/configure-site.mjs && node scripts/prerender.mjs",
+    "build": "node scripts/generate-sitemap.mjs && ng build && node scripts/configure-site.mjs && node scripts/prerender.mjs && node scripts/audit-built-site.mjs && node scripts/audit-editorial-content.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

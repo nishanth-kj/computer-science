@@ -41,6 +41,11 @@ export class AnalyticsService {
     this.pageView(this.router.url);
   }
 
+  trackEvent(name: string, params: Record<string, string | number | boolean> = {}) {
+    if (!this.loaded || !window.gtag) return;
+    window.gtag("event", name, params);
+  }
+
   private pageView(path: string) {
     if (!this.loaded || !window.gtag) return;
     window.gtag("event", "page_view", {

@@ -3,6 +3,8 @@ import { PATH_BY_ID, PHASES, PROGRAMMING_SECTION_IDS, SECTION_BY_ID, getSectionT
 import { MainLayout } from "@/app/layout/main";
 import { AboutPage } from "@/app/pages/about/about";
 import { ContactPage } from "@/app/pages/contact/contact";
+import { SupportPage } from "@/app/pages/support/support";
+import { AffiliateDisclosurePage } from "@/app/pages/affiliate-disclosure/affiliate-disclosure";
 import { Home } from "@/app/pages/home/home";
 import { Library } from "@/app/pages/library/library";
 import { NotFound } from "@/app/pages/not-found/not-found";
@@ -249,6 +251,8 @@ export const routes: Routes = [
       { path: "privacy", component: PrivacyPage, title: "Privacy · CS" },
       { path: "terms", component: TermsPage, title: "Terms of Service · CS" },
       { path: "contact", component: ContactPage, title: "Contact · CS" },
+      { path: "support", component: SupportPage, title: "Support the Handbook · CS" },
+      { path: "affiliate-disclosure", component: AffiliateDisclosurePage, title: "Affiliate Disclosure · CS" },
       { path: "**", component: NotFound, title: "Not found · CS" },
     ],
   },

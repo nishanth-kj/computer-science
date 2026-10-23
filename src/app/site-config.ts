@@ -5,8 +5,10 @@ type SiteConfig = {
   adsensePublisherId: string;
   adsenseSlots: {
     inArticle: string;
-    libraryBanner: string;
   };
+  supportUrl: string;
+  digitalProductsUrl: string;
+  newsletterUrl: string;
 };
 
 declare global {
@@ -25,8 +27,10 @@ export const SITE_CONFIG: SiteConfig = {
   adsensePublisherId: validPublisherId(raw?.adsensePublisherId) ? raw!.adsensePublisherId! : "",
   adsenseSlots: {
     inArticle: validSlotId(raw?.adsenseSlots?.inArticle) ? raw!.adsenseSlots!.inArticle! : "",
-    libraryBanner: validSlotId(raw?.adsenseSlots?.libraryBanner) ? raw!.adsenseSlots!.libraryBanner! : "",
   },
+  supportUrl: validHttpsUrl(raw?.supportUrl) ? raw!.supportUrl! : "",
+  digitalProductsUrl: validHttpsUrl(raw?.digitalProductsUrl) ? raw!.digitalProductsUrl! : "",
+  newsletterUrl: validHttpsUrl(raw?.newsletterUrl) ? raw!.newsletterUrl! : "",
 };
 
 export const OPTIONAL_SERVICES_CONFIGURED = Boolean(
@@ -44,4 +48,14 @@ function validPublisherId(value: unknown): value is string {
 
 function validSlotId(value: unknown): value is string {
   return typeof value === "string" && /^\d+$/.test(value);
+}
+
+function validHttpsUrl(value: unknown): value is string {
+  if (typeof value !== "string" || value.trim() !== value || !value) return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && Boolean(url.hostname);
+  } catch {
+    return false;
+  }
 }

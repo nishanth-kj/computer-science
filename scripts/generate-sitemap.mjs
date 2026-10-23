@@ -1,6 +1,8 @@
 import fs from "node:fs";
 
-const ORIGIN = (process.env.SITE_ORIGIN || "https://neuro-kodes.github.io/computer-science").replace(/\/$/, "");
+const cname = fs.existsSync("CNAME") ? fs.readFileSync("CNAME", "utf8").trim() : "";
+const fallbackOrigin = /^[a-z0-9.-]+$/i.test(cname) ? `https://${cname}` : "https://computer-science.site";
+const ORIGIN = (process.env.SITE_ORIGIN?.trim() || fallbackOrigin).replace(/\/+$/, "");
 
 const nav = JSON.parse(fs.readFileSync("src/data/content/nav.json", "utf8"));
 const navRest = JSON.parse(fs.readFileSync("src/data/content/nav-rest.json", "utf8"));
@@ -35,6 +37,8 @@ const urls = [
   { loc: "/privacy", priority: "0.3", changefreq: "yearly" },
   { loc: "/terms", priority: "0.3", changefreq: "yearly" },
   { loc: "/contact", priority: "0.4", changefreq: "yearly" },
+  { loc: "/support", priority: "0.5", changefreq: "monthly" },
+  { loc: "/affiliate-disclosure", priority: "0.2", changefreq: "yearly" },
   ...sections.map((s) => ({ loc: sectionPath(s), priority: "0.8", changefreq: "weekly" })),
   ...topics.map((t) => ({ loc: topicPath(t.slug, t.section), priority: "0.7", changefreq: "monthly" })),
   ...paths.map((p) => ({ loc: `/paths/${p.id}`, priority: "0.6", changefreq: "monthly" })),

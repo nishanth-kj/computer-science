@@ -9,7 +9,7 @@ import { PrivacyPreferences } from "@/app/services/privacy-preferences";
   host: { "[class.ad-enabled]": "enabled()" },
 })
 export class AdSlot {
-  readonly placement = input.required<"inArticle" | "libraryBanner">();
+  readonly placement = input.required<"inArticle">();
   readonly format = input<"auto" | "horizontal" | "rectangle">("auto");
   readonly enabled = signal(false);
   readonly adsense = inject(AdsenseService);

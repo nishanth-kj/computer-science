@@ -71,6 +71,8 @@ export type Topic = {
   section: SectionId;
   title: string;
   summary: string;
+  /** Editorial pages have authored depth; summary pages have navigation metadata only. */
+  contentMode?: "editorial" | "summary";
   level: Level;
   prereqs: string[];
   related: string[];

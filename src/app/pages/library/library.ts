@@ -5,13 +5,12 @@ import type { SectionId } from "@/lib/content/types";
 import { GraphView } from "@/app/components/ui/graph/graph";
 import { Pagination } from "@/app/components/ui/pagination/pagination";
 import { Table, type TableCell } from "@/app/components/ui/table/table";
-import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
 
 const PAGE_SIZE = 20;
 
 @Component({
   selector: "cs-library",
-  imports: [RouterLink, Table, Pagination, GraphView, AdSlot],
+  imports: [RouterLink, Table, Pagination, GraphView],
   templateUrl: "./library.html",
   styleUrl: "./library.css",
 })
