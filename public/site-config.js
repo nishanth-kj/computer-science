@@ -7,4 +7,7 @@ window.__CS_SITE_CONFIG__ = Object.freeze({
     inArticle: "",
     libraryBanner: "",
   }),
+  supportUrl: "",
+  digitalProductsUrl: "",
+  newsletterUrl: "",
 });
