@@ -12,7 +12,7 @@ import type { SectionId } from "./content/types";
 export const SITE_NAME = "Computer Science Handbook";
 export const SITE_TAGLINE = "Learn computer science in depth";
 export const SITE_DESCRIPTION =
-  "A free, structured computer science handbook with topic guides, code examples, visual explainers, prerequisites, and learning paths across programming, algorithms, operating systems, networking, databases, and AI.";
+  "Free computer science guides with examples, diagrams, prerequisites, and learning paths for programming, algorithms, operating systems, networks, databases, and AI.";
 export const SITE_IMAGE = "/og.jpg";
 export const SITE_THEME_COLOR = "#0c0e11";
 export const SITE_LOCALE = "en_US";
