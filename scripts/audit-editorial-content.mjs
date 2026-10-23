@@ -31,7 +31,7 @@ for (const [slug, topic] of topicsBySlug) {
 const total = topicsBySlug.size;
 const percent = total ? Math.round((fullEditorial.length / total) * 100) : 0;
 console.log(`Editorial coverage: ${fullEditorial.length}/${total} topic routes have a definition, rationale, mental model, 3+ learning points, and 2+ interview questions (${percent}%).`);
-const minimumEditorialPercent = 70;
+const minimumEditorialPercent = 95;
 if (percent < minimumEditorialPercent) {
   console.error(`Editorial coverage is below the ${minimumEditorialPercent}% quality gate. Add authored lesson content rather than generated boilerplate.`);
   process.exitCode = 1;
