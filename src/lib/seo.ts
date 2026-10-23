@@ -70,7 +70,7 @@ export function describePath(path: string): SeoPage {
   if (head === "paths" && rest.length === 0) {
     return page({
       kind: "collection",
-      description: "Guided learning paths through computer science — beginner, interview, backend, and AI tracks.",
+      description: "Guided learning paths through computer science, including a beginner route, software engineering interview preparation, and a backend engineering route.",
       breadcrumbs: [
         { name: SITE_NAME, path: "/" },
         { name: "Paths", path: "/paths" },
