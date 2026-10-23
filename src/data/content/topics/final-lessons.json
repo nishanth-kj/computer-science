@@ -1,0 +1,3186 @@
+[
+  {
+    "slug": "os-signals",
+    "section": "os",
+    "title": "Signals",
+    "summary": "Software interrupts to a process: SIGINT, SIGCHLD, handlers, and async-signal-safety.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "ipc"
+    ],
+    "next": "ipc",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A process signal is a small asynchronous notification delivered by the operating system to a process or thread. Common POSIX signals include SIGINT (often an interrupt request from a terminal), SIGTERM (a termination request), SIGCHLD (a child process changed state), and SIGKILL (an uncatchable termination request).",
+    "why": "Signals allow processes to respond to events without polling continuously. They are intentionally limited notifications, not general message payloads, and their asynchronous behavior imposes strict rules on what a handler may safely do.",
+    "mental": "Treat a signal as a doorbell, not a full message. It tells the process that something happened; the process may handle it, defer it, or be terminated according to the signal's disposition and platform rules.",
+    "points": [
+      "A signal can have a default action, be ignored where permitted, or be caught by a handler; SIGKILL and SIGSTOP cannot be caught or ignored.",
+      "Standard signals may coalesce while pending, so they are not a reliable counter of every event; real-time signals have different queuing semantics.",
+      "A signal handler can interrupt code at inconvenient points; only async-signal-safe operations are generally safe to call from a POSIX handler.",
+      "SIGTERM requests orderly termination, while SIGKILL forces termination without application cleanup.",
+      "Use sigaction-style APIs and carefully manage masks and shared state when handling signals."
+    ],
+    "steps": [
+      "A user presses Ctrl+C in a terminal attached to a foreground process group.",
+      "The terminal driver sends SIGINT to the foreground process group.",
+      "The process's signal disposition determines whether the default action occurs or a handler runs.",
+      "A robust application performs complex cleanup in normal control flow, using the handler only for minimal safe notification."
+    ],
+    "usage": [
+      "Handling graceful shutdown requests in command-line tools and services.",
+      "Managing child-process lifecycle and reacting to SIGCHLD.",
+      "Designing signal handling that avoids unsafe allocation, logging, or locking inside a handler."
+    ],
+    "mistakes": [
+      "Assuming every sent standard signal is queued as a separate event.",
+      "Calling arbitrary functions or taking ordinary mutexes inside an asynchronous handler.",
+      "Using SIGKILL when the application needs an opportunity to flush state or clean up."
+    ],
+    "interview": [
+      {
+        "q": "How does SIGTERM differ from SIGKILL?",
+        "a": "SIGTERM is a catchable termination request that an application can handle for cleanup. SIGKILL cannot be caught or ignored and forces termination.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why are signal handlers restricted?",
+        "a": "A signal can interrupt code while its internal state is inconsistent; calling non-async-signal-safe functions can deadlock or corrupt state.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "linux-process-model",
+    "section": "os",
+    "title": "Linux Process Model",
+    "summary": "Tasks, fork, clone, copy-on-write, namespaces, and cgroups as the real Unix.",
+    "level": "advanced",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "fork",
+      "threads"
+    ],
+    "next": "what-is-networking",
+    "tags": [
+      "os",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Linux represents schedulable execution entities as tasks. Process creation, thread creation, namespaces, cgroups, and copy-on-write combine to implement the familiar process model while sharing many kernel mechanisms.",
+    "why": "Understanding this model explains why threads share selected resources, why fork can be cheap before memory is modified, and how containers isolate or limit groups of processes without requiring a separate kernel.",
+    "mental": "A process is a collection of kernel-managed resources and one or more tasks. The clone-family system calls choose which resources a new task shares; namespaces change what it can see, while cgroups account for or constrain resource use.",
+    "points": [
+      "fork creates a child with a logically separate address space; copy-on-write lets parent and child initially share physical pages until one writes.",
+      "Thread implementations typically create tasks that share an address space and other selected resources, coordinated by the runtime and kernel.",
+      "exec replaces the calling process's program image while retaining the process identity aspects specified by the API.",
+      "Namespaces isolate views of resources such as process IDs, mounts, network interfaces, and hostnames.",
+      "Cgroups organize tasks and apply resource accounting and limits for CPU, memory, and other controllers."
+    ],
+    "steps": [
+      "A program calls fork; the kernel creates a child task and sets up copy-on-write mappings.",
+      "The parent and child execute with separate logical address spaces even if many physical pages are initially shared.",
+      "The child may call exec to replace its program image with another executable.",
+      "A container runtime configures namespaces, cgroups, mounts, and security controls before launching the workload."
+    ],
+    "usage": [
+      "Debugging process trees, zombies, fork/exec behavior, and resource limits.",
+      "Understanding containers and why they are not the same as virtual machines.",
+      "Explaining thread sharing and copy-on-write memory behavior."
+    ],
+    "mistakes": [
+      "Assuming fork immediately copies every physical memory page byte-for-byte.",
+      "Assuming namespaces alone provide complete container security; capabilities, seccomp, LSMs, mounts, and cgroups also matter.",
+      "Confusing a process ID with a single CPU-schedulable thread."
+    ],
+    "interview": [
+      {
+        "q": "Why is fork often inexpensive initially?",
+        "a": "Copy-on-write lets parent and child share physical pages until a write requires a private copy.",
+        "level": "beginner"
+      },
+      {
+        "q": "How do namespaces differ from cgroups?",
+        "a": "Namespaces isolate what resources a task can see; cgroups account for and constrain resource consumption.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "man",
+    "section": "networks",
+    "title": "MAN",
+    "summary": "A metropolitan network: a city-scale fabric, often provider-owned fiber.",
+    "level": "beginner",
+    "prereqs": [
+      "lan"
+    ],
+    "related": [
+      "wan"
+    ],
+    "next": "pan",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "A Metropolitan Area Network (MAN) connects multiple local networks across a city or metropolitan region. It may use provider-operated fiber, Ethernet services, or routed links to connect campuses, offices, and facilities.",
+    "why": "A MAN fills the gap between a local-site network and a wide-area network spanning larger regions. It allows nearby sites to share services while keeping local network design and routing boundaries.",
+    "mental": "Think of a city-scale network backbone linking several LANs. Each site still has its own local switching and addressing; the MAN transports traffic between site gateways.",
+    "points": [
+      "MAN describes geographic and administrative scale rather than one specific protocol or topology.",
+      "Provider Ethernet, metropolitan fiber rings, and routed IP services are common implementation choices.",
+      "Resilience may come from rings, redundant paths, diverse fiber routes, and fast failover mechanisms.",
+      "Security still depends on encryption, segmentation, routing policy, and provider configuration.",
+      "A MAN can be managed by one organization or delivered as a service by a carrier."
+    ],
+    "steps": [
+      "Each campus or office runs its own LAN and sends remote-site traffic to a gateway.",
+      "The gateway forwards packets over the metropolitan service toward the destination site.",
+      "The destination gateway routes the packets to the intended local network.",
+      "Operators monitor route availability, link capacity, latency, and redundant paths."
+    ],
+    "usage": [
+      "Connecting university campuses or offices across a city.",
+      "Planning regional connectivity between data centers and branch sites."
+    ],
+    "mistakes": [
+      "Assuming every MAN uses the same technology or is automatically one broadcast domain.",
+      "Confusing a provider's geographic service label with an IP addressing design."
+    ],
+    "interview": [
+      {
+        "q": "How does a MAN differ from a LAN?",
+        "a": "A LAN normally serves one site or local area; a MAN connects multiple local networks across a city-scale region.",
+        "level": "beginner"
+      },
+      {
+        "q": "What matters when designing a resilient MAN?",
+        "a": "Diverse paths, route convergence, capacity, latency, monitoring, and a tested failover plan.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "pan",
+    "section": "networks",
+    "title": "PAN",
+    "summary": "A personal area network: Bluetooth, USB, the devices around one person.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "lan"
+    ],
+    "next": "network-topology",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "A Personal Area Network (PAN) connects devices around one person or workstation, for example a phone, smartwatch, wireless headset, laptop, and peripheral. It may use Bluetooth, USB, or other short-range links.",
+    "why": "PANs reduce setup friction for small personal device groups. Their short range does not remove the need to manage pairing, permissions, interference, and device trust.",
+    "mental": "A PAN is the small network around one user's devices. It can be wired or wireless and is often managed by pairing or operating-system device discovery rather than a conventional enterprise router.",
+    "points": [
+      "Bluetooth commonly links peripherals and wearable devices over short distances and low power.",
+      "USB provides a wired host-peripheral relationship with negotiated roles and device classes.",
+      "PAN is a scale/category label, not a universal protocol or a guarantee that devices are secure.",
+      "Pairing authenticates or associates devices according to the technology's security model; users should avoid accepting unexpected pairing requests.",
+      "Interference, battery limits, and range affect real-world reliability."
+    ],
+    "steps": [
+      "The user enables pairing mode on a headset or wearable.",
+      "The host discovers the device and completes the required pairing/authentication flow.",
+      "The operating system exposes an audio, input, or data interface to the application.",
+      "The link may disconnect or change power state, so applications should handle reconnection and missing devices."
+    ],
+    "usage": [
+      "Connecting keyboards, headsets, wearables, or sensors to a laptop or phone.",
+      "Building low-power personal sensor and accessory workflows."
+    ],
+    "mistakes": [
+      "Assuming short range makes unauthorized access impossible.",
+      "Treating pairing as a guarantee of end-to-end application security.",
+      "Assuming all PANs are wireless; USB-based personal connections are common."
+    ],
+    "interview": [
+      {
+        "q": "Name two common PAN technologies.",
+        "a": "Bluetooth and USB are common ways to connect personal devices and peripherals.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why is pairing security important?",
+        "a": "An unintended pairing can expose audio, input, or device data; pairing should authenticate the intended device and use the technology's secure mode.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "network-topology",
+    "section": "networks",
+    "title": "Network Topology",
+    "summary": "Bus, star, ring, mesh, hybrid — how nodes are wired, logically and physically.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "switch",
+      "router"
+    ],
+    "next": "client-server",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "Network topology describes how devices and links are arranged physically and how traffic flows logically. Common physical or logical patterns include star, bus, ring, mesh, tree, and hybrid layouts.",
+    "why": "Topology influences failure domains, redundancy, cost, broadcast behavior, and how easy a network is to expand or troubleshoot. The physical cable layout and logical forwarding topology may differ.",
+    "mental": "Draw devices as nodes and links as edges, then ask whether a failed node or edge disconnects the graph and whether loops exist. The diagram should describe the relevant layer and not mix physical wiring with logical paths.",
+    "points": [
+      "A star connects endpoints to a central switch or hub; the central device is a shared dependency.",
+      "A full mesh offers many alternate paths but grows in link count rapidly as the number of nodes increases.",
+      "A ring provides a structured path but needs a protocol or design for handling link failures and loop behavior.",
+      "Tree and hierarchical designs scale through access, distribution, and core roles but need careful redundancy planning.",
+      "Logical topologies depend on protocol behavior; Ethernet switched paths and overlay networks may not match cable diagrams."
+    ],
+    "steps": [
+      "List the nodes and links at the layer being designed.",
+      "Mark critical endpoints and links whose failure would disconnect sites or overload a remaining path.",
+      "Identify loops and whether the forwarding protocol blocks or manages them.",
+      "Test a failure scenario and verify convergence, capacity, and monitoring."
+    ],
+    "usage": [
+      "Planning campus, data-center, and office networks.",
+      "Troubleshooting a single point of failure or an unexpected forwarding loop."
+    ],
+    "mistakes": [
+      "Calling a topology fault-tolerant without testing alternate paths and failover.",
+      "Confusing physical star wiring with a single logical broadcast domain.",
+      "Drawing redundant links without accounting for loop-prevention or routing protocols."
+    ],
+    "interview": [
+      {
+        "q": "What is the major failure dependency of a star topology?",
+        "a": "The central switch or hub is a dependency for communication across its connected spokes, unless the design includes additional redundancy.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can a mesh become expensive?",
+        "a": "The number of potential point-to-point links grows quickly; a full mesh of n nodes has n(n−1)/2 links.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "client-server",
+    "section": "networks",
+    "title": "Client/Server",
+    "summary": "A role split: clients initiate, servers wait and respond. Most of the internet.",
+    "level": "beginner",
+    "prereqs": [
+      "what-is-networking"
+    ],
+    "related": [
+      "peer-to-peer",
+      "http"
+    ],
+    "next": "peer-to-peer",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "The client-server model divides responsibilities between clients that request a service and servers that listen for requests and return responses. The roles are logical; a single machine or process can act in both roles for different interactions.",
+    "why": "This model allows a service to centralize shared state, authorization, and business logic while many clients use it. It introduces network latency, partial failure, and scaling requirements at the server.",
+    "mental": "A client initiates a protocol exchange; the server listens at an endpoint and processes requests. The network can fail even if either side is healthy, so timeouts, idempotency, and retry rules are part of the design.",
+    "points": [
+      "Servers commonly bind to a port and listen for incoming connections or datagrams.",
+      "A client timeout means no result arrived in time, not necessarily that the server did no work.",
+      "Servers need capacity limits, authentication, authorization, input validation, and observability.",
+      "Stateless request handlers can scale horizontally more easily, while shared state needs coordination or external storage.",
+      "Connection pooling and batching reduce setup costs, but pools need limits and timeouts."
+    ],
+    "steps": [
+      "The client resolves a service name and connects to the server endpoint.",
+      "It sends a request under an agreed protocol.",
+      "The server authenticates and validates the request, performs permitted work, and sends a response.",
+      "The client handles success, errors, retries, and timeouts according to the operation's semantics."
+    ],
+    "usage": [
+      "Web applications, database clients, APIs, and internal services.",
+      "Designing clear request/response APIs and server capacity limits."
+    ],
+    "mistakes": [
+      "Retrying a non-idempotent request without deduplication after a timeout.",
+      "Assuming a successful TCP connection means the application service is healthy.",
+      "Trusting client-side validation as a replacement for server-side checks."
+    ],
+    "interview": [
+      {
+        "q": "What is one benefit and one cost of client-server architecture?",
+        "a": "It centralizes service behavior and shared state; it also introduces network dependency, latency, and server capacity/failure concerns.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why should clients use idempotency keys for some retries?",
+        "a": "If a response is lost after a successful operation, the key lets the server recognize a retry and avoid performing the same logical action twice.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "peer-to-peer",
+    "section": "networks",
+    "title": "Peer-to-Peer",
+    "summary": "Nodes that are both client and server. BitTorrent, some overlay networks, some blockchains.",
+    "level": "intermediate",
+    "prereqs": [
+      "client-server"
+    ],
+    "related": [],
+    "next": "network-devices",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "Peer-to-peer (P2P) architecture lets participants act as both consumers and providers of resources. Peers may exchange data directly or use trackers, directories, or bootstrap nodes to discover one another.",
+    "why": "P2P can distribute bandwidth, storage, or computation across participants instead of requiring one central server to serve every byte. It makes discovery, churn, peer trust, abuse, and availability more complicated.",
+    "mental": "Every peer can contribute and consume. The network needs a way to find peers, decide what to request, verify data, and recover when a peer leaves or sends bad information.",
+    "points": [
+      "A tracker or distributed discovery mechanism can help peers learn which participants hold content.",
+      "Chunking lets peers download different pieces from multiple sources and reassemble the object.",
+      "Integrity checks verify that received chunks match expected hashes or authenticated manifests.",
+      "Peer churn and asymmetric bandwidth mean a peer set can change during a transfer.",
+      "P2P does not imply decentralization of every control function; discovery, naming, and admission may remain centralized."
+    ],
+    "steps": [
+      "A peer joins and discovers candidate peers or a content swarm.",
+      "It requests pieces it does not yet have and uploads verified pieces it owns.",
+      "Peers validate received pieces and advertise availability.",
+      "When a peer departs, remaining participants choose new sources and continue where possible."
+    ],
+    "usage": [
+      "Large file distribution, content swarms, and some decentralized communication systems.",
+      "Reducing a central server's outbound bandwidth when participants can contribute capacity."
+    ],
+    "mistakes": [
+      "Assuming peers are trusted and skip integrity verification.",
+      "Assuming a system is fully decentralized because data transfer is peer-to-peer.",
+      "Ignoring abuse controls, privacy leakage, NAT traversal, and churn."
+    ],
+    "interview": [
+      {
+        "q": "What are two main trade-offs of P2P?",
+        "a": "It can distribute serving cost and improve aggregate capacity, but adds discovery, trust, churn, and security complexity.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why verify downloaded chunks?",
+        "a": "A peer may send corrupt or malicious data; cryptographic hashes or authenticated manifests detect content that does not match the expected object.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "network-devices",
+    "section": "networks",
+    "title": "Network Devices",
+    "summary": "The box-level view: hubs, switches, routers, firewalls, and where each sits in the stack.",
+    "level": "beginner",
+    "prereqs": [
+      "osi-model"
+    ],
+    "related": [
+      "hub",
+      "switch",
+      "router"
+    ],
+    "next": "hub",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "Network devices move, repeat, filter, or translate traffic at different layers. Common examples are repeaters, hubs, bridges, switches, routers, access points, gateways, and firewalls.",
+    "why": "Knowing a device's role helps locate a fault and predict which addresses, headers, and failure domains matter. Product names overlap because commercial devices combine several functions.",
+    "mental": "Ask what information the device examines and what forwarding state it maintains. A repeater regenerates signals; a switch uses link-layer addresses; a router selects an IP next hop; a firewall applies policy.",
+    "points": [
+      "Repeaters regenerate physical signals without learning destination addresses.",
+      "Layer-2 switches/bridges forward frames based on MAC-address tables within a LAN/VLAN.",
+      "Routers forward IP packets between routed networks using routing tables.",
+      "Access points connect wireless stations to a wired LAN and manage radio association/security.",
+      "Firewalls allow or deny flows according to policy; gateways may also translate protocols or addresses."
+    ],
+    "steps": [
+      "Identify the traffic path and the device where connectivity stops.",
+      "Check link/radio state and VLAN/port assignment at the local layer.",
+      "Inspect MAC learning and ARP/neighbor resolution on the local network.",
+      "Inspect routes, ACLs/firewall logs, NAT state, and service listeners beyond the local hop."
+    ],
+    "usage": [
+      "Building a layered troubleshooting checklist.",
+      "Explaining hubs versus switches versus routers for interviews."
+    ],
+    "mistakes": [
+      "Assuming a consumer router only routes; many combine switch, firewall, NAT, Wi-Fi AP, and DHCP server.",
+      "Debugging DNS when the local link has no carrier or VLAN assignment.",
+      "Assuming one device's product label uniquely identifies every function it provides."
+    ],
+    "interview": [
+      {
+        "q": "How does a switch differ from a router?",
+        "a": "A basic switch forwards frames by layer-2 addressing within VLANs; a router forwards IP packets between networks using routes.",
+        "level": "beginner"
+      },
+      {
+        "q": "Where does a firewall fit?",
+        "a": "It enforces traffic policy at a host or network boundary and may inspect different layers; it is a function, not limited to one device form.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "hub",
+    "section": "networks",
+    "title": "Hub",
+    "summary": "A physical-layer repeater: every bit out every port. Collision domain = the whole hub.",
+    "level": "beginner",
+    "prereqs": [
+      "l1-physical"
+    ],
+    "related": [
+      "switch",
+      "repeater"
+    ],
+    "next": "switch",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "An Ethernet hub is a multiport physical-layer repeater. It repeats incoming bits out other ports rather than learning MAC addresses or selectively forwarding frames.",
+    "why": "Hubs illustrate the difference between physical signal repetition and intelligent switching. Shared collision domains limit efficiency, and hubs are largely obsolete in modern switched Ethernet.",
+    "mental": "A hub is like a shared loudspeaker: what enters one port is repeated to the others. All connected devices share the same collision domain in classic half-duplex Ethernet.",
+    "points": [
+      "A hub operates at the physical layer and does not inspect destination MAC addresses.",
+      "Signals are repeated to other ports, so traffic is visible on the shared segment.",
+      "Classic Ethernet hubs use a shared collision domain and CSMA/CD behavior in half-duplex operation.",
+      "A switch can selectively forward frames and gives each full-duplex port its own collision domain.",
+      "Hubs are mostly a historical teaching device; modern LANs use switches."
+    ],
+    "steps": [
+      "Host A transmits an Ethernet signal to the hub.",
+      "The hub repeats the signal to the other connected ports.",
+      "All attached hosts share the medium and only the intended destination processes the frame.",
+      "Replace the hub with a switch to gain selective forwarding and separate full-duplex links."
+    ],
+    "usage": [
+      "Learning physical-layer versus data-link forwarding concepts.",
+      "Interpreting legacy Ethernet and collision-domain questions."
+    ],
+    "mistakes": [
+      "Saying a hub filters on MAC addresses.",
+      "Applying CSMA/CD to modern full-duplex switched Ethernet as if it shares one collision domain.",
+      "Expecting hubs to isolate traffic between ports."
+    ],
+    "interview": [
+      {
+        "q": "What OSI layer does a hub operate at?",
+        "a": "The physical layer; it repeats signals without making MAC-address forwarding decisions.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why did switches replace hubs?",
+        "a": "Switches selectively forward frames and support separate full-duplex links, improving efficiency, bandwidth use, and traffic isolation.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "switch",
+    "section": "networks",
+    "title": "Switch",
+    "summary": "A data-link device that forwards frames by MAC and splits collision domains.",
+    "level": "beginner",
+    "prereqs": [
+      "l2-data-link",
+      "mac-addresses"
+    ],
+    "related": [
+      "bridge",
+      "vlan"
+    ],
+    "next": "router",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "An Ethernet switch is a multiport bridge that forwards frames using a MAC-address forwarding database, typically scoped by VLAN. Modern switches often include many additional functions but basic L2 switching uses source learning and destination lookup.",
+    "why": "Switches allow local networks to scale beyond a shared medium. Correct learning, VLAN configuration, and loop prevention keep traffic localized and protect the network from broadcast storms.",
+    "mental": "Learn where a source MAC was seen, then use the destination MAC to choose an egress port. Unknown destinations may be flooded within the VLAN; known unicast traffic is sent only where needed.",
+    "points": [
+      "The switch learns source MAC addresses and associates them with ingress ports.",
+      "Forwarding decisions use the destination MAC and VLAN context.",
+      "Broadcast and unknown-unicast frames may be flooded to eligible ports in the VLAN.",
+      "Spanning Tree Protocol or related mechanisms prevent redundant L2 links from forming forwarding loops.",
+      "Layer-3 switches add routing capabilities, but those are distinct from basic L2 forwarding."
+    ],
+    "steps": [
+      "Receive a frame on a port and identify its VLAN context.",
+      "Learn or refresh the source MAC-to-port entry.",
+      "Look up the destination MAC; forward to the known egress port when allowed.",
+      "If unknown or broadcast, flood only eligible ports in the same VLAN, excluding the ingress port."
+    ],
+    "usage": [
+      "Troubleshooting missing MAC entries, VLAN mismatch, and broadcast flooding.",
+      "Explaining campus LAN forwarding behavior."
+    ],
+    "mistakes": [
+      "Assuming switch forwarding uses IP addresses in basic L2 mode.",
+      "Ignoring VLAN context in a MAC-table lookup.",
+      "Forgetting redundant links can create layer-2 loops without appropriate control."
+    ],
+    "interview": [
+      {
+        "q": "How does a switch learn a host's location?",
+        "a": "It records the source MAC address and incoming port from a received frame, scoped to the relevant VLAN.",
+        "level": "beginner"
+      },
+      {
+        "q": "Does a switch always flood unknown unicast frames?",
+        "a": "Many switches do by default within the VLAN, but behavior can be affected by configuration and security features.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "bridge",
+    "section": "networks",
+    "title": "Bridge",
+    "summary": "Connects two L2 segments and learns MACs. A switch is a multi-port bridge.",
+    "level": "beginner",
+    "prereqs": [
+      "switch"
+    ],
+    "related": [
+      "switch"
+    ],
+    "next": "gateway",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "A network bridge connects layer-2 segments and forwards frames based on MAC addresses. Modern Ethernet switches are effectively multiport bridges with hardware-accelerated forwarding.",
+    "why": "Bridging joins local segments while limiting unnecessary traffic compared with repeating every signal. Redundant bridged paths need loop prevention because Ethernet frames do not carry a general hop limit.",
+    "mental": "A bridge learns which MAC addresses are reachable on which side. If a destination is on the same side as the source, it can filter the frame; otherwise it forwards it across.",
+    "points": [
+      "A bridge learns source addresses to build a forwarding database.",
+      "Bridges forward known unicast frames selectively and flood eligible unknown/broadcast frames.",
+      "Transparent bridging preserves the higher-layer IP packet while changing how the local link delivers the frame.",
+      "Spanning-tree protocols can create a loop-free forwarding topology across redundant bridges.",
+      "A router differs by making layer-3 forwarding decisions between IP networks."
+    ],
+    "steps": [
+      "Frame A arrives from segment 1 with source MAC A.",
+      "The bridge learns A is reachable through segment 1.",
+      "For a frame destined to MAC B on segment 2, it forwards the frame across the bridge.",
+      "For a destination already known on segment 1, it can filter rather than sending the frame onto segment 2."
+    ],
+    "usage": [
+      "Explaining basic Ethernet switching concepts.",
+      "Understanding the bridge/switch relationship and spanning tree."
+    ],
+    "mistakes": [
+      "Confusing a bridge with an IP router.",
+      "Assuming bridges can have arbitrary redundant forwarding paths without loops.",
+      "Assuming the bridge needs to inspect HTTP or TCP to forward ordinary Ethernet frames."
+    ],
+    "interview": [
+      {
+        "q": "What is the relationship between a bridge and a switch?",
+        "a": "A switch is commonly described as a multiport bridge, implementing the same basic layer-2 learning and forwarding behavior at higher port density and speed.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why does bridging need loop prevention?",
+        "a": "Layer-2 frames lack a general IP-style hop limit, so a forwarding loop can repeatedly circulate and amplify traffic.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "gateway",
+    "section": "networks",
+    "title": "Gateway",
+    "summary": "A node that translates between networks or protocols — often just 'the router'.",
+    "level": "beginner",
+    "prereqs": [
+      "router"
+    ],
+    "related": [
+      "nat",
+      "firewall"
+    ],
+    "next": "repeater",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "A gateway is a node or service that provides a path to another network or translates between protocols or address spaces. In everyday IP host configuration, “default gateway” usually means the router used for destinations outside directly connected routes.",
+    "why": "The term is overloaded. Knowing whether a gateway is a next-hop router, an application proxy, or a protocol translator makes troubleshooting and security boundaries clearer.",
+    "mental": "A default gateway is the local exit door for packets bound elsewhere. An application gateway may do more: terminate one protocol, inspect a request, and create a separate connection on the other side.",
+    "points": [
+      "A default gateway is selected by the IP routing table for nonlocal destinations when no more specific route wins.",
+      "An application gateway/proxy may terminate and recreate connections, enabling authentication or content inspection.",
+      "A gateway may perform NAT, but NAT is a separate address/port translation function.",
+      "Hosts need a route and link-layer reachability to the gateway before packets can leave the local network.",
+      "Gateway health affects downstream connectivity even if the local LAN itself is working."
+    ],
+    "steps": [
+      "A host checks whether the destination matches a connected prefix.",
+      "If not, it selects an applicable route whose next hop is a gateway.",
+      "It resolves the gateway's local MAC address (for IPv4 Ethernet) and sends the frame there.",
+      "The gateway forwards or translates traffic according to routes and configured policies."
+    ],
+    "usage": [
+      "Debugging why a host reaches local peers but not remote networks.",
+      "Distinguishing proxy gateways, default routers, and protocol translators."
+    ],
+    "mistakes": [
+      "Assuming a default gateway performs DNS resolution.",
+      "Treating every device called a gateway as the same OSI layer or function.",
+      "Assuming a valid gateway address guarantees an upstream route or internet access."
+    ],
+    "interview": [
+      {
+        "q": "What is a default gateway?",
+        "a": "The next hop a host uses for destinations not matched by a more specific route, normally the local router.",
+        "level": "beginner"
+      },
+      {
+        "q": "How is an application gateway different from a router?",
+        "a": "A router forwards packets based on network-layer routes; an application gateway can terminate and interpret application protocols and create another connection.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "repeater",
+    "section": "networks",
+    "title": "Repeater",
+    "summary": "Amplifies or retimes a signal to extend a physical segment.",
+    "level": "beginner",
+    "prereqs": [
+      "l1-physical"
+    ],
+    "related": [
+      "hub"
+    ],
+    "next": "modem",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "A repeater operates at the physical layer to regenerate or retime a signal so it can travel farther through a medium. It does not understand Ethernet MAC addresses or IP routing.",
+    "why": "Signals degrade with distance, noise, and attenuation. Repeaters can extend a physical link or radio coverage, but they do not create traffic policy or separate higher-layer networks by themselves.",
+    "mental": "Think of a repeater as restoring a weakening signal, not deciding where the message should go. It reproduces bits/signals according to the medium's rules.",
+    "points": [
+      "Repeaters work with physical signal characteristics rather than packet addresses.",
+      "They can extend range but may also propagate noise or poorly timed signals depending on the technology.",
+      "An Ethernet hub is a multiport repeater in classic Ethernet terminology.",
+      "Wireless range extenders/repeaters may share airtime and reduce effective throughput depending on radio design.",
+      "Switching and routing make forwarding decisions that a simple repeater does not."
+    ],
+    "steps": [
+      "A transmitted signal weakens across a long or lossy segment.",
+      "The repeater receives the signal and reconstructs/regenerates it within its design limits.",
+      "It retransmits the recovered signal onto the next segment.",
+      "Endpoints still rely on their link and network protocols to detect corruption and deliver data."
+    ],
+    "usage": [
+      "Understanding signal attenuation and physical network extension.",
+      "Distinguishing hubs, repeaters, switches, and routers."
+    ],
+    "mistakes": [
+      "Assuming a repeater filters traffic by MAC address or IP address.",
+      "Assuming every range extender doubles throughput; shared wireless airtime can reduce capacity.",
+      "Using repeaters as a substitute for proper cabling, link budgets, or network design."
+    ],
+    "interview": [
+      {
+        "q": "What does a repeater do?",
+        "a": "It regenerates or retimes a physical signal to extend the distance a signal can travel; it does not perform address-based forwarding.",
+        "level": "beginner"
+      },
+      {
+        "q": "How does a repeater differ from a switch?",
+        "a": "A repeater repeats physical signals; a switch learns MAC addresses and selectively forwards frames.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "modem",
+    "section": "networks",
+    "title": "Modem",
+    "summary": "Modulator-demodulator: analog carrier on, bits off, and the reverse.",
+    "level": "beginner",
+    "prereqs": [
+      "l1-physical"
+    ],
+    "related": [
+      "signals"
+    ],
+    "next": "access-point",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "A modem, or modulator-demodulator, converts digital information into a signal suitable for a communications medium and recovers digital information from the received signal. The exact function differs across DSL, cable, cellular, and other technologies.",
+    "why": "Access links often use physical media and provider signaling that differ from Ethernet inside a home or office. The modem bridges the customer's equipment to that access technology.",
+    "mental": "The router handles local IP forwarding; the modem handles the provider link's signaling and framing. A single consumer box may combine modem, router, switch, Wi-Fi access point, and firewall functions.",
+    "points": [
+      "Modulation maps information onto a signal suited to the channel; demodulation recovers the transmitted information.",
+      "DSL and cable modems use technology-specific signaling and provider protocols.",
+      "A modem may present an Ethernet interface to a separate router, but integrated gateways combine multiple roles.",
+      "Link synchronization or signal quality problems may prevent connectivity even when Wi-Fi works locally.",
+      "The public IP assignment and routing arrangement depend on the provider and device mode."
+    ],
+    "steps": [
+      "The customer router sends traffic to the modem-facing interface.",
+      "The modem encodes/transmits data using the access network's physical signaling.",
+      "The provider equipment receives and transports the data toward its network.",
+      "Return traffic is decoded and delivered through the modem to the customer's gateway."
+    ],
+    "usage": [
+      "Diagnosing ISP access problems versus internal Wi-Fi/LAN problems.",
+      "Explaining the separate roles inside an integrated home gateway."
+    ],
+    "mistakes": [
+      "Calling every home network box just a modem without checking its functions.",
+      "Assuming modem link synchronization proves DNS or internet routing is working.",
+      "Treating modulation as the only function of every modern cable/DSL modem."
+    ],
+    "interview": [
+      {
+        "q": "What does a modem's name describe?",
+        "a": "Modulation and demodulation: mapping digital information to channel-appropriate signals and recovering information from them.",
+        "level": "beginner"
+      },
+      {
+        "q": "Can a modem and router be in the same device?",
+        "a": "Yes. Consumer gateways often combine a modem, IP router, switch, Wi-Fi access point, DHCP service, and firewall.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "access-point",
+    "section": "networks",
+    "title": "Access Point",
+    "summary": "A bridge between wireless stations and a wired LAN, with association and encryption.",
+    "level": "beginner",
+    "prereqs": [
+      "l2-data-link"
+    ],
+    "related": [
+      "wifi"
+    ],
+    "next": "firewall",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "A wireless access point (AP) connects Wi-Fi stations to a wired LAN. It manages radio beacons, association, authentication/security negotiation, and the bridging of wireless traffic into the LAN.",
+    "why": "An AP extends local connectivity to wireless devices, but wireless access introduces airtime contention, radio interference, mobility, and authentication concerns beyond ordinary wired Ethernet.",
+    "mental": "The AP is a wireless bridge and radio coordinator. A station must associate and complete the configured security exchange before it can send normal network traffic.",
+    "points": [
+      "Association establishes a station relationship with a WLAN; authentication and encryption configuration control access.",
+      "Wi-Fi is a shared radio medium, so airtime, channel width, interference, and signal-to-noise ratio affect throughput.",
+      "Multiple APs can support roaming, but roaming behavior depends on client and network configuration.",
+      "An AP may bridge to a VLAN or apply policy; it is not inherently the IP router or DHCP server.",
+      "WPA2/WPA3 configuration, credential handling, and firmware updates matter for security."
+    ],
+    "steps": [
+      "The station scans for the target SSID and discovers the AP.",
+      "It associates and completes the configured security/authentication exchange.",
+      "The station obtains IP configuration, often through DHCP, and sends frames through the AP.",
+      "The AP bridges traffic to the wired LAN or applies configured VLAN/policy behavior."
+    ],
+    "usage": [
+      "Building office and campus Wi-Fi networks.",
+      "Diagnosing an associated client that has no IP address or cannot reach a service."
+    ],
+    "mistakes": [
+      "Assuming an SSID alone proves a secure authenticated network.",
+      "Confusing Wi-Fi association with successful DHCP, routing, or DNS.",
+      "Ignoring channel interference and airtime contention when measuring throughput."
+    ],
+    "interview": [
+      {
+        "q": "What is the basic role of an access point?",
+        "a": "It connects wireless stations to a wired network, managing radio association and bridging traffic according to its configuration.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why may Wi-Fi throughput vary even when signal strength looks good?",
+        "a": "Airtime contention, interference, retransmissions, channel width, client capabilities, and AP load all affect throughput.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "firewall",
+    "section": "networks",
+    "title": "Firewall",
+    "summary": "A policy box: filter, NAT, or proxy traffic by rule. Host or network, stateful or not.",
+    "level": "intermediate",
+    "prereqs": [],
+    "related": [
+      "nat",
+      "router"
+    ],
+    "next": "osi-model",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "viz": "network-topology-explorer",
+    "what": "A firewall enforces traffic policy between hosts or networks. It may filter packets, track connection state, proxy application requests, or combine several mechanisms; it can run on an endpoint, router, cloud boundary, or dedicated appliance.",
+    "why": "Network reachability should be limited to the flows needed for a system to work. Firewalls reduce the exposed attack surface, but rules must match the actual architecture and are only one part of security.",
+    "mental": "A firewall evaluates traffic against an explicit policy. Stateful firewalls remember flow state so replies to permitted connections can be recognized; application proxies can inspect higher-level requests at a more expensive boundary.",
+    "points": [
+      "Stateless rules evaluate each packet using fields such as addresses, protocol, and ports.",
+      "Stateful firewalls track connection/flow state and commonly permit related return traffic for an allowed flow.",
+      "Default-deny policies reduce exposure but require explicit rules for needed services and operational access.",
+      "Network and host firewalls protect different boundaries and may be used together.",
+      "Logging, rule review, segmentation, and least privilege are needed to prevent overly broad exceptions."
+    ],
+    "steps": [
+      "Define which source, destination, protocol, port, and direction the business operation needs.",
+      "Write the narrowest rule that permits the required flow.",
+      "Test both permitted and denied cases from relevant network locations.",
+      "Review logs and rule hits, then remove temporary or unused broad rules."
+    ],
+    "usage": [
+      "Restricting database ports to application subnets.",
+      "Securing administration paths and cloud network boundaries.",
+      "Troubleshooting a connection reset or timeout due to policy."
+    ],
+    "mistakes": [
+      "Assuming a successful NAT translation means firewall policy permits the connection.",
+      "Opening all ports to solve a single reachability failure.",
+      "Believing a network firewall can replace application authorization and secure coding."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between stateless and stateful filtering?",
+        "a": "Stateless filtering checks each packet independently; stateful filtering tracks flow state to apply rules based on a connection's progress.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why use default deny?",
+        "a": "It blocks traffic unless a specific rule permits it, reducing accidental exposure from forgotten or newly introduced services.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "signals",
+    "section": "networks",
+    "title": "Signals",
+    "summary": "The physical representation of bits: analog vs digital, encoding, and noise.",
+    "level": "intermediate",
+    "prereqs": [
+      "l1-physical"
+    ],
+    "related": [
+      "bandwidth",
+      "modulation"
+    ],
+    "next": "bandwidth",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "In communications, a signal is the physical representation of information over a medium. Signals may vary continuously (analog) or represent discrete symbol levels (digital), but real digital systems still use physical waveforms with finite noise margins.",
+    "why": "Network links must encode bits into electrical, optical, or radio signals. Noise, bandwidth limits, attenuation, interference, and timing determine how reliably a receiver can distinguish transmitted symbols.",
+    "mental": "The sender maps bits to symbols; the channel alters them; the receiver estimates which symbols were sent. Encoding and modulation are choices about how symbols use the available channel.",
+    "points": [
+      "Analog signals vary continuously; digital communication uses a finite symbol alphabet and decision thresholds.",
+      "Noise and attenuation reduce the receiver's ability to distinguish symbols, affecting bit-error rate.",
+      "Line coding and modulation are not identical: line coding maps bits into signal patterns, while modulation changes a carrier's properties.",
+      "Sampling and quantization matter when converting analog signals into digital representations.",
+      "Error detection/correction adds redundancy to detect or recover corrupted information."
+    ],
+    "steps": [
+      "The transmitter maps a bit sequence into symbols.",
+      "The physical transmitter produces a waveform over copper, fiber, or radio.",
+      "The channel changes the waveform through noise, attenuation, dispersion, or interference.",
+      "The receiver estimates symbols and reconstructs bits; error detection identifies some corrupt frames."
+    ],
+    "usage": [
+      "Understanding line coding, modulation, bandwidth, and link reliability.",
+      "Explaining why link errors increase with poor signal conditions."
+    ],
+    "mistakes": [
+      "Assuming digital signals are perfectly square or immune to noise.",
+      "Using bandwidth and bit rate as synonyms without stating the model and units.",
+      "Confusing modulation, multiplexing, and error correction."
+    ],
+    "interview": [
+      {
+        "q": "Why can a digital link suffer errors?",
+        "a": "Its physical waveform is affected by noise, attenuation, timing, and interference; the receiver can misclassify a symbol.",
+        "level": "beginner"
+      },
+      {
+        "q": "Does higher signal amplitude always solve transmission errors?",
+        "a": "No. Receiver saturation, noise, distortion, interference, and channel limitations still matter; link budgets and modulation/coding choices must be considered.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "bandwidth",
+    "section": "networks",
+    "title": "Bandwidth",
+    "summary": "How much spectrum or bit-rate a channel offers. Not the same thing as throughput.",
+    "level": "beginner",
+    "prereqs": [
+      "signals"
+    ],
+    "related": [
+      "latency"
+    ],
+    "next": "latency",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Bandwidth can refer to the frequency range of a channel in hertz or, in everyday networking, a link's nominal bit-rate capacity. The units and context must be specified to avoid confusion with actual throughput.",
+    "why": "Capacity limits how much data can be transmitted per unit time, but applications also depend on latency, packet loss, congestion, and protocol overhead. A link can have high bandwidth and still deliver poor interactive performance.",
+    "mental": "Bandwidth is the width of the pipe; throughput is the measured flow through it. Latency is how long a unit takes to travel, so large capacity does not imply a short round trip.",
+    "points": [
+      "Frequency bandwidth is measured in hertz; digital link rate is typically measured in bits per second.",
+      "Throughput is the achieved data rate and is lower than nominal capacity due to framing, contention, loss, and other overhead.",
+      "Goodput counts useful application data and excludes protocol overhead and retransmitted bytes.",
+      "Bandwidth-delay product estimates how much data can be in flight to fill a path: capacity × round-trip time.",
+      "Congestion and competing flows can keep a sender from using all nominal bandwidth."
+    ],
+    "steps": [
+      "Read the path's link capacities and round-trip latency.",
+      "Calculate the bandwidth-delay product to estimate the in-flight data needed to fill the path.",
+      "Measure achieved throughput and retransmissions under the expected workload.",
+      "Compare the application payload rate with overhead, loss, and queueing rather than judging by the advertised link rate alone."
+    ],
+    "usage": [
+      "Sizing network interfaces and WAN links.",
+      "Explaining why large transfers and interactive requests respond differently to a path.",
+      "Estimating TCP window and buffering needs."
+    ],
+    "mistakes": [
+      "Calling throughput the same as bandwidth.",
+      "Ignoring units such as Mbps versus MB/s.",
+      "Assuming buying a higher-rate link fixes latency caused by distance or queueing."
+    ],
+    "interview": [
+      {
+        "q": "What is the bandwidth-delay product?",
+        "a": "It is path capacity multiplied by round-trip time, estimating how many bits can be in flight to fully use the path.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why can throughput be below link bandwidth?",
+        "a": "Protocol overhead, congestion, competing traffic, packet loss, sender/receiver limits, and insufficient data in flight reduce achieved throughput.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "latency",
+    "section": "networks",
+    "title": "Latency",
+    "summary": "One-way or round-trip delay. Propagation, transmission, queueing, processing.",
+    "level": "beginner",
+    "prereqs": [
+      "bandwidth"
+    ],
+    "related": [],
+    "next": "transmission-media",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Network latency is the time required for data or a request to travel between points. It may be measured one-way or as a round-trip time, and it includes propagation, transmission, processing, and queueing delays.",
+    "why": "Latency strongly affects interactive APIs, remote terminals, gaming, and distributed transactions. A high-bandwidth link cannot make propagation or protocol round trips disappear.",
+    "mental": "Split total delay into components: serialization time to put bits onto a link, propagation time for the signal to travel, processing time at devices, and queueing time waiting behind other traffic.",
+    "points": [
+      "Propagation delay depends on physical distance and signal speed in the medium.",
+      "Transmission/serialization delay depends on packet size and link rate.",
+      "Queueing delay grows under contention and may dominate under congestion.",
+      "Round-trip time includes the forward and return paths, which may not be symmetric.",
+      "Application protocols that require multiple sequential round trips can multiply user-visible latency."
+    ],
+    "steps": [
+      "Measure a baseline RTT to separate network delay from application processing time as far as tools allow.",
+      "Check packet size, path distance, loss, and queueing metrics.",
+      "Trace how many sequential request-response exchanges the application requires.",
+      "Reduce unnecessary round trips or place compute/data closer when the workload justifies it."
+    ],
+    "usage": [
+      "Profiling interactive applications and database calls across regions.",
+      "Comparing bandwidth improvements with protocol and geographic improvements.",
+      "Diagnosing queueing spikes and tail latency."
+    ],
+    "mistakes": [
+      "Confusing RTT with one-way latency.",
+      "Assuming low ping guarantees high application throughput.",
+      "Ignoring p95/p99 latency when averages look healthy."
+    ],
+    "interview": [
+      {
+        "q": "What are the main latency components?",
+        "a": "Propagation, transmission, processing, and queueing delay.",
+        "level": "beginner"
+      },
+      {
+        "q": "How does a chatty protocol increase latency?",
+        "a": "Sequential request-response exchanges add repeated RTTs; reducing round trips or combining requests can reduce overall completion time.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "transmission-media",
+    "section": "networks",
+    "title": "Transmission Media",
+    "summary": "Copper, fiber, and wireless — each with a noise, cost, and distance story.",
+    "level": "beginner",
+    "prereqs": [
+      "l1-physical"
+    ],
+    "related": [
+      "fiber",
+      "copper",
+      "wireless-phy"
+    ],
+    "next": "fiber",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Transmission media are the physical channels that carry signals, commonly copper cabling, optical fiber, and wireless radio. Each medium has different distance, bandwidth, installation, interference, and security properties.",
+    "why": "The medium constrains how a network can be deployed and how reliable or fast it can be. Media selection affects link budgets, electromagnetic interference, cost, and the effort needed to maintain the connection.",
+    "mental": "Choose the channel based on distance, capacity, environment, and failure risks, not only the advertised speed. Higher layers cannot compensate for an unreliable physical link indefinitely.",
+    "points": [
+      "Twisted-pair copper is common for short Ethernet runs and may carry power through supported PoE designs.",
+      "Fiber uses light and offers long reach and immunity to electromagnetic interference, with transceiver and connector considerations.",
+      "Wireless uses shared spectrum and must contend with interference, fading, obstacles, and regulatory limits.",
+      "Coaxial cable remains common in cable broadband and RF systems.",
+      "Connector type, transceiver wavelength, supported reach, and installation quality must match at both ends."
+    ],
+    "steps": [
+      "Determine link distance, required bitrate, latency, and environmental constraints.",
+      "Choose a medium and compatible transceivers/cabling standards.",
+      "Verify connectors, cable category or fiber type, link budget, and device compatibility.",
+      "Test link errors, throughput, and stability under realistic conditions."
+    ],
+    "usage": [
+      "Selecting office cabling, fiber uplinks, or wireless access.",
+      "Debugging a link with CRC errors, low negotiated speed, or intermittent carrier."
+    ],
+    "mistakes": [
+      "Mixing incompatible optical transceivers or fiber types.",
+      "Assuming wireless is equivalent to a dedicated full-duplex cable.",
+      "Ignoring distance limits and installation quality."
+    ],
+    "interview": [
+      {
+        "q": "Why might fiber be selected over copper?",
+        "a": "Fiber supports long reach and high capacity and is immune to electromagnetic interference, though optics and installation can cost more.",
+        "level": "beginner"
+      },
+      {
+        "q": "What determines practical media compatibility?",
+        "a": "The standard, connector, transceiver/wavelength, cable category or fiber type, reach, and supported link mode at both ends.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "fiber",
+    "section": "networks",
+    "title": "Fiber",
+    "summary": "Light in glass. Huge bandwidth, long reach, immunity to electrical noise.",
+    "level": "beginner",
+    "prereqs": [
+      "transmission-media"
+    ],
+    "related": [
+      "copper"
+    ],
+    "next": "copper",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Optical fiber carries data as light through a glass or plastic waveguide. Common network systems use single-mode or multimode fiber with transceivers selected for wavelength, reach, and supported line rate.",
+    "why": "Fiber supports high capacity over long distances and avoids electromagnetic interference. It is widely used for backbone and data-center links, although connectors, optics, and handling require care.",
+    "mental": "The transmitter maps data to light pulses or modulation; the fiber guides the optical signal; the receiver converts the received signal back into electrical data.",
+    "points": [
+      "Single-mode fiber supports long-distance propagation with a small core; multimode fiber is common over shorter data-center distances.",
+      "Optical budget includes transmitter power, receiver sensitivity, connector loss, splices, and fiber attenuation.",
+      "Wavelength and transceiver types must match the fiber and supported distance specification.",
+      "Fiber is immune to electromagnetic interference but can still suffer bends, dirty connectors, breaks, or optic faults.",
+      "Optical links require careful connector cleaning and safe handling; never look into an active fiber."
+    ],
+    "steps": [
+      "Choose a compatible optic and fiber type for the required distance and rate.",
+      "Clean and connect the optical interfaces, respecting polarity where applicable.",
+      "Verify link state, receive power, and error counters using supported diagnostics.",
+      "Test throughput and errors; inspect bends and connectors if the link is unstable."
+    ],
+    "usage": [
+      "Campus, metropolitan, and data-center backbone links.",
+      "Interconnecting switches across long or electrically noisy paths."
+    ],
+    "mistakes": [
+      "Assuming every fiber connector or optic is interoperable.",
+      "Ignoring optical power budget and maximum reach specifications.",
+      "Handling or inspecting active fiber without appropriate safety precautions."
+    ],
+    "interview": [
+      {
+        "q": "What is a common single-mode vs multimode distinction?",
+        "a": "Single-mode fiber is designed for one propagation mode and is used for long reach; multimode supports multiple modes and is commonly used for shorter links.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why must optical power be checked?",
+        "a": "Too little received power can cause errors or link failure; excessive power can also exceed the receiver's supported range.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "copper",
+    "section": "networks",
+    "title": "Copper",
+    "summary": "Twisted pair and coax. Cheap, familiar, and still how most desks are wired.",
+    "level": "beginner",
+    "prereqs": [
+      "transmission-media"
+    ],
+    "related": [
+      "fiber"
+    ],
+    "next": "wireless-phy",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Copper transmission uses electrical signals through conductors, commonly twisted-pair Ethernet and coaxial cable. Twisting helps reduce electromagnetic pickup and crosstalk; cable category, length, connectors, and environment determine supported modes.",
+    "why": "Copper is economical and easy to terminate for many local connections, but it has distance limits and can be affected by interference, poor termination, and cable damage.",
+    "mental": "Bits are encoded as voltage/current changes and interpreted by a transceiver at the other end. The receiver depends on signal quality and timing, so wiring quality matters as much as the nominal standard.",
+    "points": [
+      "Twisted-pair Ethernet standards specify cable categories, link rates, and channel length assumptions.",
+      "Poor terminations, split pairs, tight bends, and damaged conductors can cause errors or lower negotiated link rates.",
+      "Coaxial cable uses a central conductor and shielding and is common in RF and cable access systems.",
+      "Power over Ethernet can deliver power over supported twisted-pair links with compatible equipment and limits.",
+      "Copper is electrically conductive between endpoints in ways that can introduce grounding and surge considerations."
+    ],
+    "steps": [
+      "Select cable category and length for the target Ethernet standard.",
+      "Terminate to the correct wiring scheme and verify connectors and pair integrity.",
+      "Check negotiated speed/duplex and error counters at the link endpoints.",
+      "Replace or certify the run if errors, attenuation, or pair faults persist."
+    ],
+    "usage": [
+      "Wiring offices, access switches, PoE cameras, and Wi-Fi access points.",
+      "Diagnosing a link that negotiates at a lower speed or reports CRC errors."
+    ],
+    "mistakes": [
+      "Exceeding the standard's channel length or mixing unsupported components.",
+      "Assuming a cable works correctly because carrier comes up.",
+      "Confusing shielded copper with optical immunity to electromagnetic interference."
+    ],
+    "interview": [
+      {
+        "q": "Why twist Ethernet cable pairs?",
+        "a": "Twisting helps reject electromagnetic interference and reduce crosstalk between pairs.",
+        "level": "beginner"
+      },
+      {
+        "q": "What can cause an Ethernet link to negotiate below its target rate?",
+        "a": "Cable category/length limits, pair damage, poor terminations, bad connectors, or endpoint configuration/capability mismatch.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "wireless-phy",
+    "section": "networks",
+    "title": "Wireless",
+    "summary": "Shared spectrum, fading, and a MAC that is nothing like a wire.",
+    "level": "intermediate",
+    "prereqs": [
+      "transmission-media"
+    ],
+    "related": [
+      "access-point"
+    ],
+    "next": "modulation",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "The wireless physical layer transmits information through radio waves over shared spectrum. Antennas, frequency bands, channel widths, modulation/coding, transmit power, fading, and interference influence achievable link quality.",
+    "why": "Wireless links change with distance and environment and are shared among stations. Understanding the physical layer helps explain why signal strength alone is not enough to predict throughput or reliability.",
+    "mental": "The transmitter creates a waveform, the radio channel changes it, and the receiver estimates the original symbols. Rate adaptation selects a robust or faster modulation/coding scheme based on conditions.",
+    "points": [
+      "Signal-to-noise ratio and interference affect which modulation and coding rates a receiver can decode reliably.",
+      "Wider channels can raise peak data rate but use more spectrum and can be more vulnerable to interference or co-channel contention.",
+      "Multipath fading and obstacles can alter signal quality even when distance changes little.",
+      "Multiple-input multiple-output (MIMO) uses multiple antennas/streams or spatial techniques to improve throughput or robustness when conditions allow.",
+      "A good RSSI value does not alone describe noise, airtime contention, retransmission rate, or backhaul constraints."
+    ],
+    "steps": [
+      "The AP and station negotiate capabilities and choose a channel and supported rate modes.",
+      "The transmitter encodes bits into modulation symbols and sends radio energy.",
+      "The propagation environment adds attenuation, interference, and multipath effects.",
+      "The receiver decodes symbols; rate adaptation and retransmissions respond to measured link conditions."
+    ],
+    "usage": [
+      "Diagnosing Wi-Fi performance across rooms or in dense deployments.",
+      "Choosing channel width, AP placement, and client capabilities."
+    ],
+    "mistakes": [
+      "Assuming more transmit power always improves every client and reduces interference.",
+      "Treating RSSI, bandwidth, and throughput as the same measurement.",
+      "Ignoring airtime competition from other clients and neighboring networks."
+    ],
+    "interview": [
+      {
+        "q": "Why can a strong RSSI still give poor Wi-Fi throughput?",
+        "a": "Noise, contention, retransmissions, channel width, AP load, and the other endpoint's capabilities all affect goodput.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is the trade-off of wider Wi-Fi channels?",
+        "a": "They can increase peak bitrate, but consume more spectrum and may increase interference/co-channel contention risk.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "modulation",
+    "section": "networks",
+    "title": "Modulation",
+    "summary": "Imprinting bits on a carrier: AM, FM, PSK, QAM — the physical alphabet.",
+    "level": "intermediate",
+    "prereqs": [
+      "signals"
+    ],
+    "related": [
+      "modem"
+    ],
+    "next": "frames",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Modulation maps information onto a carrier signal by varying properties such as amplitude, frequency, or phase. Digital systems use symbol constellations such as BPSK, QPSK, or QAM and pair them with coding to balance rate and robustness.",
+    "why": "A physical channel cannot transmit abstract bits directly; modulation determines how bits become signal states. Higher-order modulation can carry more bits per symbol but usually needs a cleaner signal.",
+    "mental": "Each symbol is a point or state in the transmitter's signal alphabet. The receiver measures the noisy received waveform and chooses the most likely symbol.",
+    "points": [
+      "Amplitude, frequency, and phase are common carrier properties that can be varied to encode information.",
+      "QAM encodes bits in combinations of amplitude and phase, allowing multiple bits per symbol.",
+      "Higher-order modulation increases spectral efficiency but requires a higher signal-to-noise ratio for a similar error rate.",
+      "Forward error correction adds redundancy so the receiver can recover some corrupted data.",
+      "Coding rate, symbol rate, bandwidth, and modulation order jointly affect effective throughput."
+    ],
+    "steps": [
+      "Map input bits into symbols according to the selected modulation and coding.",
+      "Transmit symbols over the physical channel.",
+      "The channel perturbs amplitude/phase/timing through noise and interference.",
+      "The receiver estimates symbols, decodes bits, and uses error correction to recover data where possible."
+    ],
+    "usage": [
+      "Understanding Wi-Fi/cellular bitrate adaptation and digital radio links.",
+      "Explaining the relationship between spectral efficiency and robustness."
+    ],
+    "mistakes": [
+      "Assuming the most bits per symbol is always the best choice.",
+      "Confusing symbol rate with bit rate when each symbol encodes multiple bits.",
+      "Treating modulation as the same thing as encryption or error correction."
+    ],
+    "interview": [
+      {
+        "q": "Why does QAM require good signal quality at higher orders?",
+        "a": "The constellation points are closer together for a fixed average power, so noise can more easily make the receiver choose the wrong symbol.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is spectral efficiency?",
+        "a": "It is the useful bit rate per unit bandwidth, usually measured in bits/s/Hz, with the exact definition depending on overhead assumptions.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "frames",
+    "section": "networks",
+    "title": "Frames",
+    "summary": "The data-link PDU: header, payload, trailer. Ethernet's 14-byte header is the one you will draw.",
+    "level": "beginner",
+    "prereqs": [
+      "l2-data-link"
+    ],
+    "related": [
+      "mac-addresses",
+      "ethernet"
+    ],
+    "next": "mac-addresses",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "packet-header-inspector",
+    "what": "A frame is a data-link protocol data unit containing fields such as destination/source addressing, a payload, control metadata, and sometimes error-detection information. Exact formats depend on the link technology; Ethernet is the common LAN example.",
+    "why": "Framing lets a receiver identify packet boundaries and apply local-link delivery rules. The frame header changes on each routed link even when the IP packet continues end-to-end.",
+    "mental": "The frame is an envelope for one link hop. It carries a payload that may itself contain an IP packet; the next router typically unwraps the incoming frame and builds a different frame for the next link.",
+    "points": [
+      "An Ethernet frame begins with destination and source MAC addresses followed by a type/length field and payload, with a frame check sequence at the end.",
+      "Preamble and start-frame delimiter assist reception on Ethernet but are often handled below ordinary packet captures.",
+      "Minimum and maximum payload/frame sizes are constrained by the Ethernet standard and extensions such as jumbo frames are implementation-dependent.",
+      "Frames on a link may be dropped when their check sequence fails.",
+      "Routers replace link-layer headers while forwarding the IP packet to a next hop."
+    ],
+    "steps": [
+      "The IP packet is prepared by the network layer.",
+      "The link layer adds its own source/destination addressing and control fields.",
+      "The physical layer transmits the encoded frame.",
+      "The receiver verifies framing/error-detection fields and passes the payload up if accepted."
+    ],
+    "usage": [
+      "Reading packet captures and identifying Ethernet fields.",
+      "Tracing encapsulation from HTTP to TCP to IP to Ethernet."
+    ],
+    "mistakes": [
+      "Confusing frame boundaries with TCP message boundaries; TCP is a byte stream.",
+      "Assuming the same Ethernet frame crosses all routers unchanged.",
+      "Treating every link technology as using Ethernet's exact fields."
+    ],
+    "interview": [
+      {
+        "q": "Why is a frame rebuilt at a router?",
+        "a": "The outgoing link has a new next-hop destination and link-layer format, while the IP packet is generally forwarded inside it with TTL/Hop Limit decremented.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does an Ethernet FCS help with?",
+        "a": "It detects many accidental frame corruptions using a cyclic redundancy check; it does not provide cryptographic authentication.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "mac-addresses",
+    "section": "networks",
+    "title": "MAC Addresses",
+    "summary": "48-bit link-layer identifiers. Unique-ish, local or universal, unicast or group.",
+    "level": "beginner",
+    "prereqs": [
+      "l2-data-link"
+    ],
+    "related": [
+      "ethernet",
+      "arp"
+    ],
+    "next": "ethernet",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "packet-header-inspector",
+    "what": "A MAC address is a link-layer identifier used by technologies such as Ethernet and Wi-Fi to address interfaces within a local link context. Ethernet MAC addresses are commonly 48 bits, with bits that indicate unicast/multicast and universal/local administration.",
+    "why": "MAC addressing lets link-layer devices deliver frames locally without using IP routing decisions. It is not a replacement for IP addressing, nor is it a reliable identity or authorization credential.",
+    "mental": "IP identifies a network-layer destination and routing path; MAC identifies the next local link-layer recipient. For remote IP traffic, the frame destination is usually the gateway's MAC, not the remote server's MAC.",
+    "points": [
+      "A globally administered 48-bit address is conventionally allocated from a vendor's assigned identifier and interface-specific bits; local administration can override uniqueness assumptions.",
+      "The least-significant bit of the first octet distinguishes individual versus group addressing in traditional Ethernet conventions.",
+      "Switches learn source MAC-to-port associations to forward frames efficiently.",
+      "ARP resolves IPv4 next-hop addresses to MAC on Ethernet; IPv6 uses Neighbor Discovery.",
+      "MAC addresses can be changed/spoofed by software, so they should not be treated as authentication secrets."
+    ],
+    "steps": [
+      "A host selects a next-hop IP address using its routing table.",
+      "It uses ARP or IPv6 Neighbor Discovery to resolve a local link-layer address.",
+      "The frame is sent to that MAC address on the local segment.",
+      "Switches use the destination MAC and VLAN context to forward it toward the next port."
+    ],
+    "usage": [
+      "Diagnosing ARP cache and switch-forwarding issues.",
+      "Explaining the relationship between local Ethernet delivery and IP routing."
+    ],
+    "mistakes": [
+      "Trying to ARP for a destination on a remote subnet instead of resolving the gateway.",
+      "Treating a MAC address as a secret or strong identity signal.",
+      "Confusing MAC address, IP address, and TCP/UDP port."
+    ],
+    "interview": [
+      {
+        "q": "Does a MAC address normally identify the final internet server on every hop?",
+        "a": "No. On a routed path, each link frame usually targets the next-hop device; the end-to-end IP destination remains the server.",
+        "level": "beginner"
+      },
+      {
+        "q": "Can a device spoof its MAC address?",
+        "a": "Often yes, because software or hardware configuration can change the address; MAC filtering alone is not strong authentication.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "error-detection",
+    "section": "networks",
+    "title": "Error Detection",
+    "summary": "Parity, checksums, CRC. Detecting corruption is cheaper than preventing it.",
+    "level": "intermediate",
+    "prereqs": [
+      "frames"
+    ],
+    "related": [
+      "ethernet"
+    ],
+    "next": "vlan",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Error detection adds redundant information to data so a receiver can detect some corruption. Common schemes include parity bits, checksums, and cyclic redundancy checks (CRCs); error correction adds enough structure to recover some errors without retransmission.",
+    "why": "Physical links and storage systems can experience noise or corruption. Detecting errors prevents damaged data from being silently treated as correct, while higher-layer protocols can decide whether to discard, correct, or retransmit.",
+    "mental": "The sender computes a check value from the data and sends both. The receiver recomputes or checks the value; a mismatch signals corruption, but a match does not mathematically prove that no error occurred.",
+    "points": [
+      "Parity detects some odd-numbered bit errors but misses many multi-bit patterns.",
+      "Checksums summarize data using arithmetic; the detection strength depends on the algorithm and how it is used.",
+      "CRC treats bits as a polynomial and detects broad classes of burst errors efficiently in hardware.",
+      "Error-detection schemes have finite detection guarantees; they are not substitutes for cryptographic message authentication against attackers.",
+      "Reliable protocols such as TCP may use checksums and retransmission, while Ethernet's FCS detects corrupt frames locally."
+    ],
+    "steps": [
+      "The sender computes parity/checksum/CRC over the defined fields.",
+      "The check bits/value travel with the data.",
+      "The receiver validates the received data according to the same algorithm.",
+      "If validation fails, the frame/message is rejected or a protocol-specific recovery action is taken."
+    ],
+    "usage": [
+      "Understanding Ethernet FCS, transport checksums, and storage checks.",
+      "Choosing between detection, correction, and retransmission strategies."
+    ],
+    "mistakes": [
+      "Assuming a checksum proves data came from a trusted sender.",
+      "Claiming parity detects every possible bit error.",
+      "Confusing error detection with error correction or encryption."
+    ],
+    "interview": [
+      {
+        "q": "Why is a CRC commonly used for frames?",
+        "a": "It detects many common accidental and burst-error patterns efficiently and is straightforward to implement in hardware.",
+        "level": "beginner"
+      },
+      {
+        "q": "Does a checksum provide security against malicious tampering?",
+        "a": "Not by itself; an attacker can often modify data and recompute a non-cryptographic checksum. Use cryptographic authentication when adversarial integrity matters.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "ipv6",
+    "section": "networks",
+    "title": "IPv6",
+    "summary": "128-bit addresses, no NAT-as-crutch, SLAAC, and a simpler header.",
+    "level": "intermediate",
+    "prereqs": [
+      "ip"
+    ],
+    "related": [
+      "ipv4"
+    ],
+    "next": "subnetting",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "viz": "packet-header-inspector",
+    "what": "IPv6 is Internet Protocol version 6, with 128-bit addresses and a fixed base header designed to support large address spaces and simpler forwarding. Additional information is carried in extension headers when required.",
+    "why": "IPv6 addresses the shortage of globally unique IPv4 addresses and supports modern address configuration and routing. Deployment requires dual-stack or transition planning, firewall policy, DNS records, and operational knowledge.",
+    "mental": "IPv6 keeps IP's best-effort packet delivery model but expands address space dramatically. A link-local address supports local-link behavior, while global unicast prefixes support routed reachability when configured and permitted.",
+    "points": [
+      "IPv6 addresses are 128 bits and written in hexadecimal groups with compression rules for consecutive zero groups.",
+      "The base header is fixed at 40 bytes; routers do not fragment IPv6 packets in transit, so Path MTU Discovery matters.",
+      "Neighbor Discovery replaces ARP for IPv6 link-local address resolution and related router discovery tasks.",
+      "SLAAC and DHCPv6 can both participate in address configuration, depending on the network's flags and policy.",
+      "IPv6 does not eliminate the need for firewalls, access controls, or secure service configuration."
+    ],
+    "steps": [
+      "A host configures a link-local address and discovers local router/prefix information.",
+      "It generates or receives an address under the network's configuration approach.",
+      "The host resolves a local next-hop MAC using Neighbor Discovery.",
+      "Routers forward the IPv6 packet based on destination prefix and decrement the Hop Limit."
+    ],
+    "usage": [
+      "Designing dual-stack application and enterprise networks.",
+      "Diagnosing IPv6 routes, RA behavior, DNS AAAA records, and MTU problems."
+    ],
+    "mistakes": [
+      "Assuming IPv6 traffic is secure by default because NAT is less common.",
+      "Ignoring IPv6 firewall rules while configuring only IPv4 policy.",
+      "Assuming every host uses DHCPv6 to receive its address."
+    ],
+    "interview": [
+      {
+        "q": "Why can IPv6 avoid many address-sharing NAT deployments?",
+        "a": "Its 128-bit address space supports abundant globally unique addressing, though firewalls and translation may still be used for policy or compatibility.",
+        "level": "beginner"
+      },
+      {
+        "q": "What replaces ARP for IPv6 address resolution?",
+        "a": "Neighbor Discovery Protocol, which operates using ICMPv6 messages.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "cidr",
+    "section": "networks",
+    "title": "CIDR",
+    "summary": "Classless addressing: a prefix and a length. Aggregation is the point.",
+    "level": "intermediate",
+    "prereqs": [
+      "subnetting",
+      "ipv4"
+    ],
+    "related": [
+      "routing"
+    ],
+    "next": "routing",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Classless Inter-Domain Routing (CIDR) represents an IP network using an address and prefix length, such as 203.0.113.0/24. It replaced rigid classful allocation and enables flexible subnetting and route aggregation.",
+    "why": "CIDR allocates address space more efficiently and lets routing systems advertise aggregated prefixes instead of one route per small network. Incorrect prefix lengths can create overlaps or unexpected route selection.",
+    "mental": "The prefix length specifies how many leading address bits identify the network. A route /24 is more specific than a route /16, so longest-prefix match normally prefers /24 when both match.",
+    "points": [
+      "For IPv4, a /p prefix leaves 32-p host bits and covers 2^(32-p) total addresses when aligned.",
+      "Prefix boundaries must align to the block size; not every arbitrary address is the network address for a chosen prefix.",
+      "Longest-prefix match chooses the most specific matching route, independent of route metric details among less-specific prefixes.",
+      "Route aggregation summarizes adjacent prefixes when their bit patterns allow a correct supernet.",
+      "IPv6 uses the same prefix-length concept over 128-bit addresses."
+    ],
+    "steps": [
+      "Choose the prefix length that supplies enough addresses and room for growth.",
+      "Calculate the block size and align the network address to that boundary.",
+      "Derive the range and check it does not overlap existing prefixes.",
+      "Advertise the most specific necessary routes or aggregate compatible adjacent routes when safe."
+    ],
+    "usage": [
+      "Subnet planning in enterprise, cloud VPCs, and home networks.",
+      "Understanding routing tables and IP address allocation."
+    ],
+    "mistakes": [
+      "Using dotted-decimal octet intuition for all prefix lengths.",
+      "Aggregating unrelated prefixes and accidentally attracting traffic to the wrong route.",
+      "Confusing route specificity with shortest path or lowest metric."
+    ],
+    "interview": [
+      {
+        "q": "What does /27 mean in IPv4?",
+        "a": "The prefix has 27 network bits and 5 host bits, for 32 total addresses in an aligned /27 block.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why is route aggregation useful?",
+        "a": "It reduces the number of advertised routes when several adjacent prefixes can be represented by one valid supernet.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "icmp",
+    "section": "networks",
+    "title": "ICMP",
+    "summary": "IP's control plane for errors and diagnostics. Ping and traceroute ride it.",
+    "level": "beginner",
+    "prereqs": [
+      "ip"
+    ],
+    "related": [
+      "ipv4"
+    ],
+    "next": "nat",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "packet-header-inspector",
+    "what": "Internet Control Message Protocol (ICMP) carries error reports and diagnostic messages associated with IP delivery. Tools such as ping and traceroute use ICMP in common modes, though traceroute implementations can also use UDP or TCP probes.",
+    "why": "IP itself is best-effort, so endpoints and routers need a way to report certain delivery problems and support diagnostics. ICMP helps locate failures but filtering and path behavior mean no single ICMP result proves full application availability.",
+    "mental": "ICMP is control and diagnostic signaling alongside IP, not a reliable application transport. A destination-unreachable message is a clue from a router or host; an echo reply proves that a particular echo request/reply path worked at that moment.",
+    "points": [
+      "IPv4 ICMP and ICMPv6 have different message definitions and roles; ICMPv6 is especially important for IPv6 operation.",
+      "Ping commonly uses echo request/reply messages but can be filtered even when the application service works.",
+      "Traceroute often relies on TTL/Hop Limit expiry and ICMP time-exceeded responses from intermediate hops.",
+      "Destination-unreachable messages can report network, host, port, or policy-related failures depending on message type/version.",
+      "ICMP messages may be rate-limited or filtered, so missing replies do not always mean packets cannot reach a destination."
+    ],
+    "steps": [
+      "A diagnostic tool sends an echo request or a probe with a limited TTL/Hop Limit.",
+      "A host or router processes the probe and may generate an ICMP response.",
+      "The diagnostic tool measures response time or the hop where expiry occurred.",
+      "Compare the result with TCP/UDP application tests and route information before concluding the service is down."
+    ],
+    "usage": [
+      "Using ping and traceroute to diagnose paths and delay.",
+      "Interpreting destination-unreachable and packet-too-big feedback."
+    ],
+    "mistakes": [
+      "Treating failed ping as proof that every service is unreachable.",
+      "Assuming traceroute always uses the same probe protocol.",
+      "Blocking all ICMPv6 without understanding its role in neighbor and path-MTU discovery."
+    ],
+    "interview": [
+      {
+        "q": "What does traceroute learn from TTL/Hop Limit?",
+        "a": "It causes probes to expire at successive hops, often eliciting ICMP time-exceeded messages that reveal intermediate routers.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why might ping fail while HTTPS works?",
+        "a": "The network may filter or rate-limit ICMP echo while still permitting TCP port 443 and the application response.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "routing-protocols",
+    "section": "networks",
+    "title": "Routing Protocols",
+    "summary": "RIP, OSPF, BGP: how routers learn paths they did not configure by hand.",
+    "level": "advanced",
+    "prereqs": [
+      "routing"
+    ],
+    "related": [
+      "bgp",
+      "ospf"
+    ],
+    "next": "tcp",
+    "tags": [
+      "networks",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Routing protocols exchange reachability information so routers can compute or select paths beyond directly connected networks. Interior Gateway Protocols such as OSPF operate within an administrative system; BGP exchanges reachability between autonomous systems using policy.",
+    "why": "Networks change through failures, maintenance, and topology growth. Protocols update routes so operators do not have to configure every path manually, while metrics and policy control which routes are preferred.",
+    "mental": "A routing protocol learns and evaluates candidate paths; the router installs selected routes in its routing information base, then programs forwarding entries for packet handling. Route learning and packet forwarding are distinct jobs.",
+    "points": [
+      "Distance-vector, link-state, and path-vector protocols use different information and convergence models.",
+      "OSPF is a link-state IGP that computes paths using topology information and configured costs.",
+      "BGP is path-vector and policy-rich; AS_PATH and other attributes inform route selection, not simply shortest hop count.",
+      "Administrative distance or route preference between sources is implementation-specific and separate from a protocol's metric.",
+      "Incorrect route redistribution or policy can leak routes, create loops, or cause traffic to take unexpected paths."
+    ],
+    "steps": [
+      "Routers discover neighbors and exchange protocol-specific routing information.",
+      "They validate, filter, and compute candidate routes from topology/attributes and policy.",
+      "The selected route is installed in the RIB and relevant forwarding plane.",
+      "When a link or route changes, the protocol converges and operators verify the actual forwarding path."
+    ],
+    "usage": [
+      "Operating enterprise or service-provider networks.",
+      "Explaining OSPF versus BGP and routing convergence.",
+      "Troubleshooting asymmetric routes and route leaks."
+    ],
+    "mistakes": [
+      "Assuming routing always chooses the path with fewest hops.",
+      "Confusing route advertisements with actual forwarding entries.",
+      "Changing BGP/OSPF policy without considering export filters, aggregation, and failure behavior."
+    ],
+    "interview": [
+      {
+        "q": "How does OSPF differ from BGP?",
+        "a": "OSPF is a link-state interior routing protocol; BGP is a path-vector protocol used between autonomous systems and strongly shaped by policy.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is convergence?",
+        "a": "The process by which routers update their state and forwarding choices after a topology or reachability change.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "tcp-teardown",
+    "section": "networks",
+    "title": "TCP Teardown",
+    "summary": "Four-way (or three-way with FIN-ACK) close, TIME-WAIT, and why half-open exists.",
+    "level": "intermediate",
+    "prereqs": [
+      "tcp-handshake"
+    ],
+    "related": [
+      "tcp"
+    ],
+    "next": "flow-control",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "viz": "tcp-simulator",
+    "lab": "tcp-simulator",
+    "what": "TCP connection teardown is the process of independently closing each direction of a byte stream. A FIN indicates that a sender has no more data to send in that direction; the peer may continue sending until it also closes.",
+    "why": "Full-duplex connections have two directions with separate state. Correct teardown prevents loss of trailing data and allows each endpoint to know when the peer has finished sending.",
+    "mental": "A TCP connection has two one-way streams. Closing one direction is a half-close; the other direction can continue until its endpoint sends FIN or the connection is reset.",
+    "points": [
+      "A typical orderly close uses FIN and ACK exchanges, often described as four segments although acknowledgements may be combined.",
+      "TIME-WAIT is held by the active closer in common TCP state models to handle delayed segments and protect a subsequent connection using the same tuple.",
+      "RST aborts a connection rather than performing an orderly half-close.",
+      "A process closing its socket should still read or handle pending data according to the protocol/API contract.",
+      "Application-level shutdown and TCP-level close are related but not identical events."
+    ],
+    "steps": [
+      "Endpoint A finishes sending data and sends FIN.",
+      "Endpoint B acknowledges A's FIN and can continue sending its own pending data.",
+      "When B finishes, it sends its FIN and A acknowledges it.",
+      "The endpoints transition through TCP states; the active closer may remain in TIME-WAIT before the tuple is safely reused."
+    ],
+    "usage": [
+      "Debugging lingering sockets and TIME-WAIT counts.",
+      "Implementing orderly shutdown for servers and streaming protocols."
+    ],
+    "mistakes": [
+      "Assuming FIN means the entire connection is immediately closed both ways.",
+      "Using RST where the application needs graceful delivery of pending bytes.",
+      "Treating TIME-WAIT as necessarily a leak; it serves protocol safety purposes."
+    ],
+    "interview": [
+      {
+        "q": "What does TCP FIN mean?",
+        "a": "The sender has finished sending on its direction of the byte stream; it does not automatically close the peer's sending direction.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why does TIME-WAIT exist?",
+        "a": "It helps absorb delayed duplicate segments and ensure the final acknowledgement can be retransmitted before the connection tuple is reused.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "flow-control",
+    "section": "networks",
+    "title": "Flow Control",
+    "summary": "Stopping a fast sender from drowning a slow receiver. TCP's window.",
+    "level": "intermediate",
+    "prereqs": [
+      "tcp"
+    ],
+    "related": [
+      "congestion-control"
+    ],
+    "next": "congestion-control",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Transport flow control prevents a sender from delivering data faster than a receiver can buffer or process it. TCP uses a receiver-advertised window to limit unacknowledged data from overrunning the receiving host.",
+    "why": "A fast sender and a slow receiver otherwise risk buffer exhaustion and dropped data. Flow control is distinct from congestion control, which responds to the capacity and congestion of the network path.",
+    "mental": "The receiver says how much additional data it can accept. The sender respects that window along with its own congestion window; the effective amount of data in flight is bounded by both controls.",
+    "points": [
+      "TCP's advertised receive window communicates receiver buffer capacity.",
+      "Window scaling allows larger windows than the original 16-bit window field can directly express.",
+      "A zero window can pause normal data transmission until the receiver advertises space again; probes help discover a reopened window.",
+      "Congestion window and receive window solve different problems and can independently limit throughput.",
+      "Application reads affect how quickly receive buffers drain and thus can influence advertised window size."
+    ],
+    "steps": [
+      "The receiver advertises available receive-buffer space in ACKs.",
+      "The sender keeps outstanding data within the receive and congestion limits.",
+      "If the receiver's buffer fills, it may advertise a zero window.",
+      "When the application reads data and space becomes available, a later window update permits sending to resume."
+    ],
+    "usage": [
+      "Diagnosing slow consumers and zero-window TCP captures.",
+      "Explaining why large-bandwidth paths need adequate receive windows."
+    ],
+    "mistakes": [
+      "Confusing receiver flow control with network congestion control.",
+      "Assuming the sender can transmit unlimited bytes merely because the link is fast.",
+      "Ignoring application code that fails to read from its socket promptly."
+    ],
+    "interview": [
+      {
+        "q": "What does TCP's receive window protect?",
+        "a": "It protects the receiver from being overwhelmed by more outstanding data than its advertised buffer capacity allows.",
+        "level": "beginner"
+      },
+      {
+        "q": "How does flow control differ from congestion control?",
+        "a": "Flow control reflects receiver capacity; congestion control adapts to the sending path's available capacity and congestion signals.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "ftp",
+    "section": "networks",
+    "title": "FTP",
+    "summary": "A historic file protocol with separate control and data channels. Prefer SFTP/HTTPS.",
+    "level": "beginner",
+    "prereqs": [
+      "tcp"
+    ],
+    "related": [
+      "ssh"
+    ],
+    "next": "smtp",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "File Transfer Protocol (FTP) is a legacy application protocol that commonly uses a control connection and a separate data connection. Classic FTP does not encrypt credentials or file data by default.",
+    "why": "FTP illustrates control/data channel design and active versus passive connection setup. Its lack of built-in confidentiality and integrity makes plain FTP unsuitable for sensitive traffic over untrusted networks.",
+    "mental": "One channel carries commands and replies; another carries file listings or file contents. Firewall and NAT configuration can become complicated because data-connection setup differs between active and passive modes.",
+    "points": [
+      "The control connection commonly uses TCP port 21; data connections are separate and vary by mode.",
+      "Active mode asks the server to connect back to a client-selected endpoint; passive mode lets the client initiate the data connection to a server-advertised endpoint.",
+      "Plain FTP transmits credentials and content without TLS protection.",
+      "FTPS adds TLS to FTP but retains its multi-channel model; SFTP is a different file-transfer protocol built over SSH.",
+      "Modern deployments usually prefer SFTP, HTTPS, or a managed file-transfer design with clear authentication and audit controls."
+    ],
+    "steps": [
+      "The client opens the FTP control connection and authenticates.",
+      "It sends a command such as LIST, RETR, or STOR.",
+      "The client and server negotiate or establish the data channel according to active/passive mode.",
+      "Commands and data complete, and the control connection is closed."
+    ],
+    "usage": [
+      "Understanding legacy file-transfer systems and firewall troubleshooting.",
+      "Migrating sensitive file transfer to SFTP or HTTPS."
+    ],
+    "mistakes": [
+      "Confusing FTP, FTPS, and SFTP as the same protocol.",
+      "Using plain FTP for passwords or sensitive files on untrusted networks.",
+      "Ignoring the extra data connection when debugging firewall behavior."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between FTP and SFTP?",
+        "a": "FTP is a separate control/data protocol; SFTP is a file-transfer subsystem carried over SSH and is not FTP wrapped in a different port.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can passive FTP help through NAT?",
+        "a": "The client initiates the data connection to the server's advertised passive port, avoiding a server-initiated inbound connection to the client's private address.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "smtp",
+    "section": "networks",
+    "title": "SMTP",
+    "summary": "How mail moves between MTAs. Store-and-forward, MX records, and spam as an adversarial load.",
+    "level": "beginner",
+    "prereqs": [
+      "dns",
+      "l7-application"
+    ],
+    "related": [
+      "dns"
+    ],
+    "next": "ssh",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Simple Mail Transfer Protocol (SMTP) transfers email between mail clients and mail transfer agents and between mail servers. It is a store-and-forward protocol: a server may accept a message for delivery and attempt onward transfer later.",
+    "why": "Email crosses independently operated domains, so the system must route messages, queue temporary failures, authenticate senders where possible, and mitigate spam and abuse.",
+    "mental": "An SMTP server accepts a message envelope and content, then relays it toward the recipient domain's mail server. Acceptance means responsibility for further delivery under the service contract, not proof the message reached the inbox.",
+    "points": [
+      "DNS MX records identify mail exchangers for a recipient domain; fallback behavior and DNS rules matter when no MX exists.",
+      "SMTP uses commands and status replies such as EHLO, MAIL FROM, RCPT TO, DATA, and QUIT.",
+      "STARTTLS or implicit TLS protects a connection when correctly negotiated, while SMTP AUTH authenticates a submitting client.",
+      "SPF, DKIM, and DMARC address different aspects of domain authorization, message signing, and policy/reporting.",
+      "Mail servers queue messages and retry temporary failures; permanent failures generally produce a bounce or status report."
+    ],
+    "steps": [
+      "A sender submits mail to an authenticated submission server.",
+      "The sender domain or sending MTA resolves the destination domain's mail exchanger.",
+      "The sending MTA opens SMTP, negotiates capabilities/TLS, and submits envelope plus message data.",
+      "The receiving MTA accepts or rejects the message, then local policy and filtering determine eventual mailbox delivery."
+    ],
+    "usage": [
+      "Diagnosing failed delivery and SMTP authentication problems.",
+      "Understanding MX, SPF, DKIM, DMARC, queues, and bounces."
+    ],
+    "mistakes": [
+      "Assuming SMTP acceptance guarantees inbox placement.",
+      "Confusing the SMTP envelope sender with the From header shown to the user.",
+      "Assuming TLS alone proves that the visible From domain is authorized."
+    ],
+    "interview": [
+      {
+        "q": "What is the role of an MX record?",
+        "a": "It identifies mail servers responsible for receiving email for a domain, with preference values used to choose among records.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does DKIM provide?",
+        "a": "It provides a cryptographic signature over selected message content/headers so receivers can verify that the signed parts were not altered and that a signing domain took responsibility.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "ssh",
+    "section": "networks",
+    "title": "SSH",
+    "summary": "Authenticated, encrypted remote shells and tunnels. Keys, not passwords, if you can.",
+    "level": "beginner",
+    "prereqs": [
+      "tcp"
+    ],
+    "related": [],
+    "next": "websockets",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Secure Shell (SSH) is a protocol suite for authenticated and encrypted remote command execution, file transfer, and tunneling. It commonly authenticates servers using host keys and clients using passwords, public keys, certificates, or other configured methods.",
+    "why": "SSH provides a secure administrative channel across untrusted networks. Secure use depends on host identity verification, key hygiene, access control, patching, and minimizing exposed services.",
+    "mental": "The client first establishes an encrypted channel and verifies the server's host identity, then authenticates the user. Encryption without correct host-key verification can protect traffic to an impostor.",
+    "points": [
+      "SSH host keys let clients detect server identity changes; blindly accepting unknown keys weakens this protection.",
+      "Public-key authentication lets the client prove possession of a private key without sending that private key to the server.",
+      "SSH agent forwarding and port forwarding introduce trust and exposure considerations.",
+      "SCP, SFTP, and remote shell capabilities use SSH in different ways and have distinct semantics.",
+      "Least privilege, key rotation, restrictive authorized_keys options, and disabling unnecessary account access improve security."
+    ],
+    "steps": [
+      "The client connects to the server and negotiates algorithms/keys.",
+      "It verifies the server host key according to the user's trust configuration.",
+      "The client authenticates the user with an allowed method.",
+      "The client opens a shell, command channel, file transfer, or tunnel according to server policy."
+    ],
+    "usage": [
+      "Secure remote administration and deployment workflows.",
+      "SFTP file transfer and local/remote port forwarding."
+    ],
+    "mistakes": [
+      "Disabling host-key checking as a routine workaround.",
+      "Sharing private keys or leaving them unprotected.",
+      "Assuming SSH tunnels automatically add application-layer authentication or authorization."
+    ],
+    "interview": [
+      {
+        "q": "What is the purpose of an SSH host key?",
+        "a": "It allows a client to identify the server endpoint and detect unexpected identity changes, helping prevent man-in-the-middle attacks.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can agent forwarding be risky?",
+        "a": "A remote host may be able to request signatures through the forwarded agent while the session is active, so forwarding increases the trust placed in that host.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "websockets",
+    "section": "networks",
+    "title": "WebSockets",
+    "summary": "A TCP-backed, full-duplex channel started with an HTTP upgrade.",
+    "level": "intermediate",
+    "prereqs": [
+      "http",
+      "tcp"
+    ],
+    "related": [
+      "http"
+    ],
+    "next": "database-fundamentals",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "WebSocket is a protocol for bidirectional messages over a single persistent connection. The classic browser flow begins with an HTTP upgrade handshake; WebSocket frames then carry messages until either endpoint closes the connection.",
+    "why": "Polling repeatedly requests updates even when nothing changes. WebSockets let servers push messages to connected clients and let either side send data with lower request overhead, at the cost of persistent connection management.",
+    "mental": "After the handshake, the connection is no longer a series of ordinary HTTP request-response exchanges. The application must define message types, authentication, backpressure, reconnect behavior, and lifecycle handling.",
+    "points": [
+      "The initial handshake uses HTTP semantics, including Upgrade and appropriate response headers; browser security also considers origin and cookies.",
+      "Frames may be split into fragments; message framing is different from TCP's byte-stream boundaries.",
+      "The protocol defines ping/pong control frames and close-handshake behavior.",
+      "Authentication and authorization still belong to the application/session design; an open socket can outlive a token or permission change unless handled.",
+      "Persistent connections require limits, heartbeats/timeouts, bounded send queues, and cleanup during deploys or network changes."
+    ],
+    "steps": [
+      "The client establishes HTTP(S) and requests a WebSocket upgrade.",
+      "The server validates the handshake, policy, and required authentication/origin information.",
+      "Both sides exchange application messages over the persistent connection.",
+      "On network loss or shutdown, the app handles reconnect/backoff and restores state safely."
+    ],
+    "usage": [
+      "Live dashboards, chat, collaborative editing, and game state updates.",
+      "Replacing frequent polling when both sides benefit from server push."
+    ],
+    "mistakes": [
+      "Assuming WebSocket messages align with individual TCP packets or reads.",
+      "Failing to revalidate authorization when a long-lived socket remains open.",
+      "Allowing unbounded outbound queues when clients consume messages slowly."
+    ],
+    "interview": [
+      {
+        "q": "How does WebSocket differ from ordinary HTTP polling?",
+        "a": "WebSocket keeps a persistent bidirectional channel after an upgrade handshake, avoiding repeated request setup for each update.",
+        "level": "beginner"
+      },
+      {
+        "q": "What must an application add beyond the WebSocket protocol?",
+        "a": "Message schema, authorization, resource limits/backpressure, reconnect semantics, validation, and operational monitoring.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "constraints",
+    "section": "dbms",
+    "title": "Constraints",
+    "summary": "Declarations the engine enforces: NOT NULL, UNIQUE, CHECK, FK — integrity that survives a bad insert.",
+    "level": "beginner",
+    "prereqs": [
+      "tables"
+    ],
+    "related": [
+      "primary-keys"
+    ],
+    "next": "joins",
+    "tags": [
+      "dbms",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Database constraints are rules enforced by the DBMS to keep stored data valid. Common examples include NOT NULL, CHECK, UNIQUE, PRIMARY KEY, and FOREIGN KEY constraints.",
+    "why": "Applications have multiple writers—APIs, scripts, batch jobs, and administrators. Constraints protect data invariants at the storage boundary instead of trusting every caller to implement validation correctly.",
+    "mental": "Put an invariant as close as possible to the data it protects. An application can still validate early for a better user experience, but the database constraint is the final enforcement layer.",
+    "points": [
+      "NOT NULL forbids a missing value in a column, while CHECK restricts values or row-level relationships according to the database's semantics.",
+      "UNIQUE constrains duplicate key values, with NULL handling varying by database and constraint form.",
+      "PRIMARY KEY combines uniqueness and non-null identity for rows.",
+      "FOREIGN KEY enforces references to an eligible key in another relation.",
+      "Constraint timing and deferrability vary across database systems; check the engine's documentation for complex transactions."
+    ],
+    "steps": [
+      "Write down the business invariant in precise terms.",
+      "Choose a constraint type that expresses it in the schema.",
+      "Add the constraint through a migration, handling existing invalid rows first.",
+      "Test valid and invalid inserts/updates from different access paths."
+    ],
+    "usage": [
+      "Protecting unique emails, nonnegative quantities, valid references, and mandatory fields.",
+      "Keeping integrity consistent across API endpoints and scheduled jobs."
+    ],
+    "mistakes": [
+      "Treating frontend validation as sufficient for integrity.",
+      "Writing a CHECK constraint without understanding NULL/three-valued logic.",
+      "Assuming a foreign key provides authorization or hides rows from unauthorized users."
+    ],
+    "interview": [
+      {
+        "q": "Why add database constraints if the API already validates input?",
+        "a": "Constraints protect invariants across every writer and prevent races or non-API writes from bypassing application checks.",
+        "level": "beginner"
+      },
+      {
+        "q": "Is a foreign key an access-control mechanism?",
+        "a": "No. It validates referential integrity; permissions and row-level authorization require separate controls.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "dbms-aggregation",
+    "section": "dbms",
+    "title": "Aggregation",
+    "summary": "GROUP BY, HAVING, and the reduction of many rows to a statistic.",
+    "level": "beginner",
+    "prereqs": [
+      "sql"
+    ],
+    "related": [
+      "joins"
+    ],
+    "next": "subqueries",
+    "tags": [
+      "dbms",
+      "beginner",
+      "core-concept"
+    ],
+    "viz": "sql-playground",
+    "lab": "sql-playground",
+    "what": "SQL aggregation reduces multiple rows to summary values using functions such as COUNT, SUM, AVG, MIN, and MAX. GROUP BY forms groups based on selected expressions, and HAVING filters those groups after aggregate values are computed.",
+    "why": "Aggregations answer reporting and analytical questions without requiring the application to fetch every row and compute totals itself. Correct grouping and join semantics are essential to avoid counting duplicated rows.",
+    "mental": "WHERE filters input rows first; GROUP BY partitions the remaining rows; aggregate functions reduce each group; HAVING filters the groups; SELECT returns expressions allowed by the query's grouping rules.",
+    "points": [
+      "COUNT(*) counts rows, while COUNT(column) excludes rows where that column is NULL.",
+      "WHERE filters individual rows before grouping; HAVING filters aggregate groups.",
+      "GROUP BY on several columns creates a group for each distinct combination under the DBMS's comparison rules.",
+      "Joins can multiply rows before aggregation, creating inflated sums/counts if the intended grain is not preserved.",
+      "Indexes, statistics, and hash/sort aggregation choices affect execution cost."
+    ],
+    "steps": [
+      "Decide the result's grain, such as one row per customer or per month.",
+      "Join only the data needed and verify the join does not unintentionally multiply facts.",
+      "Filter individual rows with WHERE and form groups with GROUP BY.",
+      "Use aggregate expressions and HAVING to filter groups, then check counts against a small hand-calculated example."
+    ],
+    "usage": [
+      "Calculating order totals, monthly active users, average scores, and inventory summaries.",
+      "Building dashboards and reports over relational data."
+    ],
+    "mistakes": [
+      "Using WHERE to test an aggregate result when HAVING is required.",
+      "Confusing COUNT(*) with COUNT(nullable_column).",
+      "Summing a parent amount after joining to multiple child rows and double-counting it."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between WHERE and HAVING?",
+        "a": "WHERE filters input rows before grouping; HAVING filters groups based on aggregate or grouped expressions.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can a join inflate an aggregate?",
+        "a": "A one-to-many join can repeat a fact row once for each matching child, so aggregate sums/counts may no longer represent the intended grain.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "subqueries",
+    "section": "dbms",
+    "title": "Subqueries",
+    "summary": "A query used as a value, a table, or a predicate. Correlated vs uncorrelated is the performance fork.",
+    "level": "intermediate",
+    "prereqs": [
+      "sql",
+      "joins"
+    ],
+    "related": [
+      "query-optimization"
+    ],
+    "next": "indexes",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A subquery is a query nested inside another SQL statement. It can return a scalar value, a single-column set for IN/ANY/ALL, a row relation in FROM, or a Boolean condition through EXISTS.",
+    "why": "Subqueries express dependencies between query results and can make existence tests, comparisons, and derived relations easier to read. Their performance depends on correlation, indexes, cardinality, and optimizer transformations.",
+    "mental": "First identify how the inner query is used. An uncorrelated subquery can often be evaluated independently; a correlated one references outer rows, though optimizers may rewrite it as a join or another plan.",
+    "points": [
+      "Scalar subqueries must meet the database's cardinality rules, often returning at most one row and one column.",
+      "EXISTS tests whether the inner query returns any row, and the projection value itself is usually irrelevant.",
+      "Correlated subqueries reference outer-query columns; logical correlation does not always imply literal repeated execution.",
+      "NOT IN can behave unexpectedly if the subquery returns NULL because SQL comparisons use three-valued logic; NOT EXISTS is often safer for anti-joins.",
+      "The optimizer may decorrelate or transform subqueries, so inspect the plan instead of assuming a fixed execution pattern."
+    ],
+    "steps": [
+      "Write the inner query independently and verify its intended result shape.",
+      "Connect it to the outer query through a scalar comparison, IN, EXISTS, or FROM relation.",
+      "Check NULL, empty-set, and multiple-row behavior.",
+      "Use EXPLAIN to see how the DBMS executes the final query on representative data."
+    ],
+    "usage": [
+      "Find customers who have at least one order using EXISTS.",
+      "Compare a row against an aggregate or retrieve a derived table for subsequent joins."
+    ],
+    "mistakes": [
+      "Using NOT IN without accounting for NULLs in the inner result.",
+      "Assuming every correlated subquery executes once per outer row.",
+      "Writing a scalar subquery that unexpectedly returns multiple rows."
+    ],
+    "interview": [
+      {
+        "q": "When is EXISTS useful?",
+        "a": "When the query only needs to know whether at least one matching row exists, especially for semijoin/anti-join logic.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can NOT IN return no rows unexpectedly?",
+        "a": "If the inner set contains NULL, comparisons can become UNKNOWN; WHERE keeps only TRUE. A carefully correlated NOT EXISTS often expresses the intended condition better.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "views",
+    "section": "dbms",
+    "title": "Views",
+    "summary": "Named queries. Virtual by default; materialized when you cache the result.",
+    "level": "beginner",
+    "prereqs": [
+      "sql"
+    ],
+    "related": [
+      "indexes"
+    ],
+    "next": "transactions",
+    "tags": [
+      "dbms",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A view is a named query that presents a virtual relation to callers. An ordinary view stores the query definition rather than a separate copy of its results; a materialized view stores results and must be refreshed or maintained.",
+    "why": "Views can simplify repeated query logic, provide a stable logical interface, and restrict which columns/rows a client sees. They do not automatically make an expensive query fast or enforce every form of security.",
+    "mental": "A regular view behaves like a reusable query expression. A materialized view behaves more like a cached result, trading storage and freshness/refresh complexity for faster reads.",
+    "points": [
+      "A regular view generally reflects current underlying data according to the transaction's visibility rules when queried.",
+      "A materialized view may be stale until refreshed or incrementally maintained.",
+      "Views can provide abstraction when underlying table structure changes, subject to compatibility and dependency constraints.",
+      "Security depends on the DBMS's view/definer/invoker and privilege semantics; a view alone is not universally a complete authorization boundary.",
+      "Complex views may be expanded into larger queries and optimized along with the caller's statement."
+    ],
+    "steps": [
+      "Define a view around a useful projection/filter/join over underlying tables.",
+      "Grant the relevant caller access to the view and choose underlying privilege semantics carefully.",
+      "Inspect the query plan if the view is slow; its logic may expand into joins, filters, or sorts.",
+      "For materialized results, define refresh timing and acceptable staleness."
+    ],
+    "usage": [
+      "Providing a stable schema for reports and application queries.",
+      "Exposing a limited column set for a specific consumer.",
+      "Caching expensive aggregates through materialized views."
+    ],
+    "mistakes": [
+      "Assuming an ordinary view stores data or improves performance automatically.",
+      "Ignoring materialized-view staleness and refresh failures.",
+      "Treating the existence of a view as proof that sensitive underlying data are inaccessible."
+    ],
+    "interview": [
+      {
+        "q": "How does a materialized view differ from a regular view?",
+        "a": "A regular view stores a query definition and computes results when used; a materialized view stores query results and needs refresh/maintenance.",
+        "level": "beginner"
+      },
+      {
+        "q": "Can views help with security?",
+        "a": "They can expose only selected data with appropriate privilege configuration, but the exact security boundary depends on database semantics and grants.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "2nf",
+    "section": "dbms",
+    "title": "2NF",
+    "summary": "1NF plus no partial dependence of a non-key attribute on part of a composite key.",
+    "level": "intermediate",
+    "prereqs": [
+      "1nf"
+    ],
+    "related": [
+      "3nf"
+    ],
+    "next": "3nf",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "viz": "normalization-stepper",
+    "what": "Second Normal Form (2NF) requires a relation to be in 1NF and every non-prime attribute to depend on the whole of each candidate key, not merely a proper subset. Partial dependencies matter primarily when candidate keys are composite.",
+    "why": "Partial dependencies repeat facts unnecessarily. Decomposing them reduces update anomalies and ensures each non-key fact is tied to the complete identity it describes.",
+    "mental": "If the key is (student_id, course_id), ask whether an attribute needs both values to be determined. A student's name depends only on student_id, so it belongs with the student, not the enrollment pair.",
+    "points": [
+      "2NF is evaluated against candidate keys and functional dependencies, not just whether the table has a primary key.",
+      "A table with only single-attribute candidate keys has no partial dependency on a proper subset of such a key.",
+      "Non-prime attributes are attributes that are not part of any candidate key.",
+      "Decomposition should preserve information through a lossless join; dependency preservation should also be considered.",
+      "2NF does not remove every transitive dependency; 3NF addresses another class of dependency."
+    ],
+    "steps": [
+      "Identify all candidate keys and functional dependencies.",
+      "Find any non-prime attribute determined by only a proper subset of a composite key.",
+      "Move those dependent attributes into a relation keyed by that subset.",
+      "Keep a relation for the original full-key fact and join relations back by their key."
+    ],
+    "usage": [
+      "Normalizing enrollment, order-line, and other composite-key tables.",
+      "Solving normalization questions by listing dependencies."
+    ],
+    "mistakes": [
+      "Checking 2NF using only the chosen primary key while ignoring other candidate keys.",
+      "Thinking a repeated value automatically proves a 2NF violation without examining functional dependencies.",
+      "Assuming 2NF automatically implies 3NF."
+    ],
+    "interview": [
+      {
+        "q": "What is a partial dependency?",
+        "a": "A non-prime attribute depends on a proper subset of a candidate key, rather than on the entire candidate key.",
+        "level": "beginner"
+      },
+      {
+        "q": "When is a relation automatically in 2NF with respect to partial dependency?",
+        "a": "When every candidate key is a single attribute, there is no proper nonempty subset of that key on which a partial dependency could exist.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "3nf",
+    "section": "dbms",
+    "title": "3NF",
+    "summary": "2NF plus no transitive dependence of a non-key attribute on the key.",
+    "level": "intermediate",
+    "prereqs": [
+      "2nf"
+    ],
+    "related": [
+      "bcnf"
+    ],
+    "next": "bcnf",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "viz": "normalization-stepper",
+    "what": "Third Normal Form (3NF) requires 2NF and constrains nontrivial functional dependencies so that the determinant is a superkey or the dependent attribute is prime, under the formal definition. Introductory lessons often describe this as removing transitive dependencies of non-key attributes on a key.",
+    "why": "Transitive dependencies can repeat facts that belong to another entity. Separating those facts reduces anomalies while allowing the original view to be reconstructed using joins.",
+    "mental": "A key should determine attributes that describe the row's entity. If key→department_id and department_id→department_name, storing department_name with each employee repeats a department fact that can change independently.",
+    "points": [
+      "A functional dependency X→Y means rows with equal X values must have equal Y values.",
+      "3NF's formal definition must be checked across candidate keys, prime attributes, and all relevant functional dependencies.",
+      "A simple transitive dependency of a non-key attribute on the key is a common 3NF violation pattern.",
+      "A 3NF synthesis can preserve dependencies under the standard assumptions, while BCNF decomposition may not preserve all dependencies.",
+      "Normalization aims for lossless and maintainable design, not the maximum possible number of tables."
+    ],
+    "steps": [
+      "List candidate keys and known functional dependencies.",
+      "Look for non-key facts determined by another non-key determinant.",
+      "Move that fact and determinant into a separate relation with a key, keeping a reference where needed.",
+      "Check that the decomposition is lossless and preserves required constraints."
+    ],
+    "usage": [
+      "Removing duplicated department, supplier, or category descriptions from transactional tables.",
+      "Explaining why 3NF and BCNF differ."
+    ],
+    "mistakes": [
+      "Defining 3NF only by table appearance rather than functional dependencies.",
+      "Assuming every determinant must be a superkey; that is the stricter BCNF rule.",
+      "Decomposing without checking if joins reconstruct the original facts."
+    ],
+    "interview": [
+      {
+        "q": "What does 3NF try to prevent?",
+        "a": "It rules out certain dependencies that make non-key facts depend transitively on a candidate key, subject to the formal 3NF definition.",
+        "level": "beginner"
+      },
+      {
+        "q": "How is BCNF stricter than 3NF?",
+        "a": "BCNF requires every determinant of a nontrivial functional dependency to be a superkey, while 3NF allows a dependency when its right-hand side is prime.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "bcnf",
+    "section": "dbms",
+    "title": "BCNF",
+    "summary": "Every determinant is a candidate key. Stricter than 3NF; sometimes you lose a dependency.",
+    "level": "intermediate",
+    "prereqs": [
+      "3nf"
+    ],
+    "related": [
+      "normalization"
+    ],
+    "next": "query-optimization",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "viz": "normalization-stepper",
+    "what": "Boyce-Codd Normal Form (BCNF) requires that for every nontrivial functional dependency X→Y, X is a superkey. It is stricter than 3NF and focuses on whether every determinant can identify a row.",
+    "why": "Some relations satisfy 3NF yet retain redundancy because a non-superkey determinant determines another attribute. BCNF removes that class of dependency anomaly, though a decomposition can lose dependency preservation.",
+    "mental": "For each meaningful determinant, ask whether knowing it identifies an entire tuple. If not, the dependency may require decomposition under BCNF.",
+    "points": [
+      "A superkey functionally determines all attributes of the relation; a candidate key is a minimal superkey.",
+      "BCNF is violated by any nontrivial dependency whose determinant is not a superkey.",
+      "BCNF decomposition is lossless under the standard decomposition step based on a violating dependency.",
+      "BCNF decomposition may fail to preserve every original dependency, so constraints can become harder to enforce without joins.",
+      "Formal analysis needs the set of functional dependencies, not just observed example rows."
+    ],
+    "steps": [
+      "Determine candidate keys and relevant functional dependencies.",
+      "Find a nontrivial dependency X→Y where X is not a superkey.",
+      "Decompose the relation into projections that separate the violating dependency.",
+      "Verify the decomposition is lossless, then check which dependencies remain locally enforceable."
+    ],
+    "usage": [
+      "Advanced database normalization problems.",
+      "Evaluating the trade-off between BCNF and dependency-preserving 3NF schemas."
+    ],
+    "mistakes": [
+      "Assuming BCNF always preserves every functional dependency.",
+      "Confusing superkeys with minimal candidate keys.",
+      "Inferring functional dependencies only from a small set of sample tuples."
+    ],
+    "interview": [
+      {
+        "q": "What condition defines BCNF?",
+        "a": "For every nontrivial functional dependency X→Y, X must be a superkey.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is one trade-off of BCNF decomposition?",
+        "a": "It is lossless for the standard violating-dependency decomposition but may not preserve all dependencies locally, requiring joins or additional enforcement.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "storage-engines",
+    "section": "dbms",
+    "title": "Storage Engines",
+    "summary": "The physical implementation: heap files, clustered indexes, InnoDB vs MyISAM vs LSM.",
+    "level": "advanced",
+    "prereqs": [
+      "database-fundamentals"
+    ],
+    "related": [
+      "buffer-pool",
+      "wal"
+    ],
+    "next": "buffer-pool",
+    "tags": [
+      "dbms",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "A database storage engine implements the physical layout and persistence of records and indexes. Engines may use heap pages, B+ tree indexes, log-structured merge trees, write-ahead logs, buffer pools, and engine-specific concurrency/recovery rules.",
+    "why": "The storage engine determines much of the database's write/read profile, durability, compression, indexing, and maintenance behavior. Logical SQL alone does not reveal these costs.",
+    "mental": "Separate the logical database from physical storage. A query plan chooses operators; the storage engine decides how rows/pages/indexes are laid out and how changes survive failure.",
+    "points": [
+      "Heap or heap-like tables store records in pages without requiring every row to be physically ordered by a key.",
+      "B+ tree indexes support point and range access with page-oriented balanced trees.",
+      "LSM-tree designs batch writes through memory structures and immutable sorted runs, trading compaction/write behavior against read amplification.",
+      "WAL or another recovery mechanism records sufficient information to restore a consistent state after crash.",
+      "Engine choice and settings affect locking/MVCC, compression, durability, and operational maintenance; compare actual product documentation."
+    ],
+    "steps": [
+      "Choose a logical schema and query workload.",
+      "Inspect the engine's row/index layout and write path.",
+      "Measure query plans, cache behavior, and write amplification using representative data.",
+      "Plan backup, recovery, compaction/checkpoint/vacuum, and schema maintenance around the chosen engine."
+    ],
+    "usage": [
+      "Choosing between row-oriented transactional storage and columnar analytical storage.",
+      "Explaining why storage engine and index design affect performance."
+    ],
+    "mistakes": [
+      "Assuming every SQL database has identical physical storage and concurrency behavior.",
+      "Choosing an engine from generic benchmarks without matching the workload.",
+      "Treating a replicated copy as a replacement for backups and recovery tests."
+    ],
+    "interview": [
+      {
+        "q": "What is a storage engine?",
+        "a": "The database subsystem responsible for physical record/index organization, persistence, and associated storage-level operations.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why might an LSM tree suit write-heavy workloads?",
+        "a": "It can batch and sequentialize writes, although compaction and read amplification impose their own costs.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "partitioning",
+    "section": "dbms",
+    "title": "Partitioning",
+    "summary": "Splitting a table by range, list, or hash — within one instance or across them.",
+    "level": "intermediate",
+    "prereqs": [
+      "tables"
+    ],
+    "related": [
+      "sharding"
+    ],
+    "next": "key-value",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Partitioning splits one logical table or index into smaller physical partitions according to a key or rule such as range, list, or hash. In many systems the partitions remain within one database instance, unlike sharding across independent nodes.",
+    "why": "Partitioning can improve maintenance, data lifecycle operations, pruning for selective queries, and manageability of large tables. It does not guarantee faster queries and can complicate unique constraints and partition-key choice.",
+    "mental": "A partitioning rule sends each row to a physical subset. If a query filters on the partition key, the database may skip irrelevant partitions; otherwise it may need to visit many or all of them.",
+    "points": [
+      "Range partitioning groups values such as dates into intervals and can simplify dropping old data.",
+      "Hash partitioning distributes keys across partitions and can reduce skew when the hash distribution is suitable.",
+      "List partitioning maps values to named partitions, often for regions or categories.",
+      "Partition pruning works when the planner can relate query predicates to the partition bounds.",
+      "Partitioning and sharding are distinct: partitioned data may still belong to one DBMS instance and failure domain."
+    ],
+    "steps": [
+      "Choose a partition key aligned with data lifecycle or query predicates.",
+      "Define bounds/list/hash rules and create representative test partitions.",
+      "Check whether important queries prune partitions in their execution plans.",
+      "Plan indexes, constraints, data movement, and maintenance for growing partitions."
+    ],
+    "usage": [
+      "Partitioning large event tables by date.",
+      "Dropping expired data by partition rather than row-by-row deletion.",
+      "Reducing scan scope for frequently filtered queries."
+    ],
+    "mistakes": [
+      "Partitioning by a key that creates an empty/overloaded hot partition.",
+      "Assuming every query will prune partitions automatically.",
+      "Confusing table partitioning with distribution across multiple independent servers."
+    ],
+    "interview": [
+      {
+        "q": "What is partition pruning?",
+        "a": "The optimizer excludes partitions that cannot contain rows matching the query predicates and partition bounds.",
+        "level": "beginner"
+      },
+      {
+        "q": "How does partitioning differ from sharding?",
+        "a": "Partitioning often divides a table within one database instance; sharding distributes partitions or key ranges across separate nodes or instances.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "key-value",
+    "section": "dbms",
+    "title": "Key-Value Stores",
+    "summary": "The simplest NoSQL: get/put by key. Redis, Dynamo-style systems.",
+    "level": "intermediate",
+    "prereqs": [
+      "database-fundamentals"
+    ],
+    "related": [
+      "document-stores"
+    ],
+    "next": "document-stores",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "viz": "hash-collisions",
+    "what": "A key-value store associates each key with a value and offers operations such as GET, PUT, and DELETE. Values may be opaque bytes, serialized objects, or structured data depending on the product.",
+    "why": "Key-value stores provide a simple access pattern for caching, sessions, counters, and lookup-heavy workloads. They can offer high throughput, but query capabilities and transaction guarantees depend on the implementation.",
+    "mental": "A key is the lookup handle; the value is retrieved without necessarily searching fields inside it. If the access pattern needs arbitrary predicates or joins, a relational or document model may fit better.",
+    "points": [
+      "Key distribution and partition strategy affect load balancing in distributed key-value systems.",
+      "TTL and eviction policies can be central for cache workloads; persistent stores have different durability goals.",
+      "Atomicity scope may be limited to one key or operation, or may be broader in particular databases.",
+      "Serialization format and schema versioning still matter even when the server treats values as opaque.",
+      "Cache misses, stale values, and invalidation are application-level correctness concerns."
+    ],
+    "steps": [
+      "Choose a stable key that represents the lookup needed by the application.",
+      "Serialize the value with an explicit schema/version where needed.",
+      "Use GET/PUT/DELETE and define TTL, persistence, and consistency behavior.",
+      "Handle cache misses, errors, and invalidation without assuming the value always exists."
+    ],
+    "usage": [
+      "Session stores, lookup tables, caches, and idempotency-key registries.",
+      "Storing small values that are retrieved by known key."
+    ],
+    "mistakes": [
+      "Using ever-growing unbounded keys/values with no eviction or retention plan.",
+      "Treating cached values as authoritative when invalidation is not reliable.",
+      "Expecting relational joins or arbitrary filtering from a pure key-value access model."
+    ],
+    "interview": [
+      {
+        "q": "When is a key-value store a natural fit?",
+        "a": "When applications primarily retrieve or replace values by known key and do not need broad relational queries over value fields.",
+        "level": "beginner"
+      },
+      {
+        "q": "What makes cache invalidation difficult?",
+        "a": "The application must keep cached copies aligned with changing source data across races, failures, TTLs, and multiple readers.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "document-stores",
+    "section": "dbms",
+    "title": "Document Stores",
+    "summary": "JSON/BSON documents with secondary indexes. Schema-on-read, query-on-fields.",
+    "level": "intermediate",
+    "prereqs": [
+      "key-value"
+    ],
+    "related": [
+      "column-stores"
+    ],
+    "next": "column-stores",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A document store persists records as structured documents, commonly JSON-like objects with nested fields and arrays. It typically supports key lookups and indexes or queries on selected document fields.",
+    "why": "Document stores can fit variable-shaped entities and aggregate-like reads without decomposing every nested object into separate tables. Schema flexibility shifts some validation and migration discipline to application design.",
+    "mental": "Treat each document as an aggregate boundary chosen around common reads and updates. Embed data that is naturally owned and used together; reference data that changes independently or must be shared widely.",
+    "points": [
+      "Documents often have a unique identifier and may be indexed by selected fields or paths.",
+      "Embedding supports locality but can duplicate facts and enlarge writes when nested values change.",
+      "Referencing avoids some duplication but may require extra round trips or joins/lookups.",
+      "Schema flexibility does not mean no schema; applications still need validation and backward-compatible migrations.",
+      "Atomicity, transaction boundaries, indexing, and consistency differ across document databases."
+    ],
+    "steps": [
+      "Model the data around the document's access patterns and update boundaries.",
+      "Choose which fields to embed and which to reference.",
+      "Define required fields, types, indexes, and versioning rules.",
+      "Test common queries and updates against realistic document sizes and cardinality."
+    ],
+    "usage": [
+      "Product catalogs, content metadata, event payloads, and nested aggregate records.",
+      "Workloads where entities have variable fields and are usually read together."
+    ],
+    "mistakes": [
+      "Embedding unbounded arrays that make documents too large or updates expensive.",
+      "Assuming flexible fields remove the need for validation and migrations.",
+      "Denormalizing shared facts without a plan to keep copies consistent."
+    ],
+    "interview": [
+      {
+        "q": "When would you embed instead of reference a document's related data?",
+        "a": "Embed when the data is bounded, owned by the parent, and usually read/updated together; reference when it is shared, unbounded, or independently managed.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Does schema flexibility eliminate schema design?",
+        "a": "No. Applications still need validation, versioning, index design, and rules for fields that readers and writers expect.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "column-stores",
+    "section": "dbms",
+    "title": "Column Stores",
+    "summary": "Values stored by column, not row. Analytics, compression, and vectorized execution.",
+    "level": "intermediate",
+    "prereqs": [
+      "database-fundamentals"
+    ],
+    "related": [
+      "graph-databases"
+    ],
+    "next": "graph-databases",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A column-oriented database stores or processes values by column rather than row-oriented records. Analytical systems use columnar layout, compression, and vectorized execution to scan a few columns across many rows efficiently.",
+    "why": "Analytical queries often aggregate a small subset of fields across millions or billions of rows. Columnar storage can reduce I/O and improve compression when the query does not need every field.",
+    "mental": "A row store is efficient when an operation needs a complete record; a column store is efficient when it needs a few attributes from many records. Modern systems may use hybrid layouts or row groups rather than a pure choice.",
+    "points": [
+      "Columnar layout avoids reading unrelated columns for projection-heavy analytical queries.",
+      "Similar values compress well, reducing I/O and storage when the data distribution is suitable.",
+      "Vectorized execution processes batches of values to reduce per-row overhead and improve CPU utilization.",
+      "Point updates and small transaction-oriented reads can be less natural in some columnar systems, depending on implementation.",
+      "Partitioning, sorting, clustering, and statistics remain important for scan pruning and query planning."
+    ],
+    "steps": [
+      "Identify the analytical query's selected columns and filter predicates.",
+      "The engine prunes irrelevant partitions/row groups and reads only required column chunks.",
+      "It decompresses and processes vectors of values for filters and aggregates.",
+      "The query combines partial results and returns the required rows or summaries."
+    ],
+    "usage": [
+      "Business intelligence, telemetry analytics, data warehouses, and large aggregations.",
+      "Scanning massive tables when most columns are irrelevant to the query."
+    ],
+    "mistakes": [
+      "Assuming all column stores are unsuitable for updates; modern systems vary widely.",
+      "Choosing columnar storage solely because the table has many columns without studying the workload.",
+      "Ignoring sort order and pruning when optimizing scans."
+    ],
+    "interview": [
+      {
+        "q": "Why do column stores compress well?",
+        "a": "Values from the same column often have similar types and distributions, making encoding and compression more efficient than mixed row payloads.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why are column stores common in analytics?",
+        "a": "Analytical queries often scan a subset of columns across many rows, so columnar layout reduces I/O and supports vectorized processing.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "graph-databases",
+    "section": "dbms",
+    "title": "Graph Databases",
+    "summary": "First-class nodes and edges. Index-free adjacency and graph query languages.",
+    "level": "intermediate",
+    "prereqs": [],
+    "related": [
+      "document-stores"
+    ],
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A graph database represents entities as nodes and their relationships as edges, often with properties on both. It is designed for traversals and queries where relationship structure is central rather than incidental.",
+    "why": "Relational joins can become complex for variable-depth relationships, such as social connections, network dependencies, or fraud rings. Graph storage/query models make traversals more natural, but do not automatically outperform relational databases for every workload.",
+    "mental": "The main question is often who is connected to whom and how. Start from a node, follow edge types and direction, and constrain traversal depth and predicates.",
+    "points": [
+      "Nodes represent entities; edges represent directed or undirected relationships according to the model.",
+      "Properties can annotate nodes and edges, while labels/types constrain traversal and indexing.",
+      "Index-free adjacency is an implementation concept in some graph systems, not a universal performance guarantee for all graph databases.",
+      "Traversal cost depends on degree distribution, path depth, filtering, and data placement.",
+      "Some workloads are better expressed as SQL joins or recursive queries; choose by access pattern and operational requirements."
+    ],
+    "steps": [
+      "Identify the entities and relationships the application must query.",
+      "Choose node/edge types, direction, properties, and uniqueness constraints.",
+      "Create indexes for the entry points used by queries.",
+      "Bound traversals and inspect performance on highly connected nodes as well as typical data."
+    ],
+    "usage": [
+      "Recommendation graphs, dependency maps, identity relationships, and path analysis.",
+      "Queries involving multi-hop relationships or variable-depth paths."
+    ],
+    "mistakes": [
+      "Assuming a graph database is automatically faster for every connected-data problem.",
+      "Allowing unbounded traversals over hubs with huge degree.",
+      "Failing to model edge direction and relationship semantics carefully."
+    ],
+    "interview": [
+      {
+        "q": "When might a graph database be a good choice?",
+        "a": "When central queries traverse variable-depth or dense relationships and the graph model expresses those operations naturally.",
+        "level": "beginner"
+      },
+      {
+        "q": "What can make graph traversals expensive?",
+        "a": "Large branching factors, deep paths, poor entry-point selectivity, and distributed data movement can cause huge traversal work.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "wifi",
+    "section": "networks",
+    "title": "Wi-Fi",
+    "summary": "802.11: association, airtime, and a MAC that is nothing like a switched Ethernet.",
+    "level": "beginner",
+    "prereqs": [
+      "access-point",
+      "l2-data-link"
+    ],
+    "related": [
+      "ethernet",
+      "wireless-phy"
+    ],
+    "next": "firewall",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Wi-Fi is a family of IEEE 802.11 wireless LAN standards. Stations associate with an access point or operate in supported peer modes, share radio channels, and use link-layer procedures to coordinate transmission and protect frames.",
+    "why": "Wi-Fi provides mobility without cabling but shares airtime and depends on radio conditions, authentication, roaming, and channel planning. Its performance differs from switched full-duplex Ethernet even when both ultimately carry IP packets.",
+    "mental": "Stations listen and contend for a shared radio medium; acknowledgements and retransmissions help deal with collisions or errors. Throughput is a property of the whole airtime ecosystem, not just an advertised PHY rate.",
+    "points": [
+      "CSMA/CA and link-layer acknowledgements help coordinate use of a shared medium; it is not the same as classic Ethernet CSMA/CD.",
+      "Association connects the station to the WLAN; WPA2/WPA3 security settings determine authentication and encryption behavior.",
+      "Rate adaptation responds to radio quality and retry performance.",
+      "Roaming across APs depends on client decisions, network configuration, and supported 802.11 features.",
+      "Channel interference, adjacent/co-channel networks, walls, and airtime contention can dominate speed."
+    ],
+    "steps": [
+      "A station discovers the SSID and chooses an AP.",
+      "It associates and completes the security handshake.",
+      "It exchanges data using the selected PHY mode and channel-access behavior.",
+      "If signal quality or AP association changes, it adapts rate or roams while higher-level sessions may continue or recover."
+    ],
+    "usage": [
+      "Deploying home, campus, and enterprise wireless LANs.",
+      "Troubleshooting retransmissions, roaming, and crowded channels."
+    ],
+    "mistakes": [
+      "Assuming advertised Wi-Fi PHY rate equals application throughput.",
+      "Confusing authentication to the WLAN with authorization to every internal service.",
+      "Changing channels or power without measuring nearby co-channel interference."
+    ],
+    "interview": [
+      {
+        "q": "Why does Wi-Fi use collision avoidance rather than wired Ethernet's old collision detection?",
+        "a": "A wireless transmitter generally cannot reliably detect a collision while transmitting; 802.11 coordinates medium access and uses acknowledgements/retries.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why does client roaming vary across devices?",
+        "a": "Clients make roaming decisions using signal, scan behavior, supported features, and vendor algorithms, while AP configuration also influences the process.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "bgp",
+    "section": "networks",
+    "title": "BGP",
+    "summary": "The internet's inter-domain routing protocol: path vectors, policy, and the default-free zone.",
+    "level": "advanced",
+    "prereqs": [
+      "routing-protocols"
+    ],
+    "related": [
+      "ospf",
+      "routing"
+    ],
+    "next": "tcp",
+    "tags": [
+      "networks",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Border Gateway Protocol (BGP) is a path-vector routing protocol used to exchange IP reachability between autonomous systems and in other policy-driven routing contexts. It selects routes using attributes and local policy rather than simply choosing the physically shortest path.",
+    "why": "The global internet consists of independently operated networks with business and security policies. BGP allows operators to control which routes they announce and prefer, but configuration mistakes can leak or withdraw large numbers of routes.",
+    "mental": "BGP advertisements include a destination prefix and path/policy attributes. A router applies import policy, selects a best path among eligible candidates, and applies export policy before advertising reachability onward.",
+    "points": [
+      "AS_PATH records autonomous systems traversed and is used for loop prevention and policy decisions.",
+      "LOCAL_PREF influences preferred exit paths within an AS in common BGP policy; exact selection order follows the BGP implementation/policy.",
+      "NEXT_HOP must resolve for a route to be usable.",
+      "BGP can establish external (eBGP) or internal (iBGP) sessions; their rules and topology requirements differ.",
+      "Route filters, prefix limits, RPKI-based validation, and monitoring help reduce route-leak and hijack risks."
+    ],
+    "steps": [
+      "Routers establish a BGP session with a peer and exchange capabilities and routes.",
+      "Import policy filters or modifies candidate advertisements.",
+      "The router selects eligible best paths using attributes and configured policy.",
+      "Export policy determines which routes to advertise to other peers; operators monitor changes and reachability."
+    ],
+    "usage": [
+      "Interconnecting internet service providers and large enterprise networks.",
+      "Managing multiple upstream providers and controlled traffic engineering."
+    ],
+    "mistakes": [
+      "Assuming BGP picks the lowest-latency or fewest-hop route by default.",
+      "Accepting all routes from a peer without appropriate filters and limits.",
+      "Confusing route announcement with proof of legitimate ownership or reachability at the destination."
+    ],
+    "interview": [
+      {
+        "q": "Why is BGP called policy-driven?",
+        "a": "Its path attributes and operator policies determine which routes are accepted, preferred, and exported; the selected route is not simply the shortest physical path.",
+        "level": "beginner"
+      },
+      {
+        "q": "How does AS_PATH help?",
+        "a": "It lists ASes traversed and helps detect routing loops; operators also use it in route selection and policy.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "ospf",
+    "section": "networks",
+    "title": "OSPF",
+    "summary": "A link-state IGP: flood LSAs, run Dijkstra, install routes in the RIB.",
+    "level": "advanced",
+    "prereqs": [
+      "routing-protocols"
+    ],
+    "related": [
+      "bgp",
+      "routing"
+    ],
+    "next": "tcp",
+    "tags": [
+      "networks",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Open Shortest Path First (OSPF) is a link-state interior gateway protocol. Routers exchange link-state advertisements within areas, build a topology database, and run a shortest-path calculation to choose routes based on configured costs.",
+    "why": "OSPF adapts to internal topology changes without manually configuring every route. Its areas and summarization support scale, but adjacency, area, metric, and network-type mismatches can prevent neighbors from exchanging usable routes.",
+    "mental": "Every router learns a common view of the area's topology, then computes its own shortest paths from that view. The resulting routing table is local even though the topology database is shared.",
+    "points": [
+      "OSPF uses neighbor relationships and link-state advertisements to distribute topology information.",
+      "Routers run Dijkstra's shortest-path-first algorithm against the link-state database.",
+      "Areas limit flooding scope and support hierarchical routing; Area 0 is the backbone in conventional multi-area designs.",
+      "Interface costs influence path preference; equal-cost multipath may install several next hops where supported.",
+      "Authentication, timers, MTU/network type, router IDs, and area settings must be compatible for adjacency."
+    ],
+    "steps": [
+      "Interfaces send Hellos and discover eligible OSPF neighbors.",
+      "Neighbors establish adjacencies and synchronize relevant link-state databases.",
+      "Link-state changes are flooded and the router recomputes shortest paths.",
+      "The router installs routes and forwards packets using its forwarding plane."
+    ],
+    "usage": [
+      "Routing inside enterprises, campuses, and provider networks.",
+      "Diagnosing a route absent because an OSPF adjacency or area design is wrong."
+    ],
+    "mistakes": [
+      "Assuming OSPF is used between autonomous systems on the public internet; BGP typically serves that role.",
+      "Confusing an OSPF database entry with an installed forwarding route.",
+      "Changing costs without checking equal-cost paths and convergence impact."
+    ],
+    "interview": [
+      {
+        "q": "What algorithm does OSPF use for route calculation?",
+        "a": "It uses a shortest-path-first calculation based on the link-state topology and configured link costs.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why use OSPF areas?",
+        "a": "Areas constrain flooding and support hierarchical scale and summarization, while requiring an area design with a backbone connection in conventional multi-area OSPF.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "stp",
+    "section": "networks",
+    "title": "Spanning Tree",
+    "summary": "A loop-free active topology on a switched LAN. Without it, broadcasts amplify until the LAN dies.",
+    "level": "intermediate",
+    "prereqs": [
+      "switching"
+    ],
+    "related": [
+      "vlan",
+      "ethernet"
+    ],
+    "next": "arp",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Spanning Tree Protocol (STP) builds a loop-free active topology for redundant layer-2 Ethernet links. Switches exchange bridge protocol data units, elect a root bridge, and select port roles/states that block some forwarding paths while retaining backups.",
+    "why": "Redundant L2 links improve resilience, but an unmanaged Ethernet loop can multiply broadcasts and destabilize MAC learning. STP keeps redundancy without allowing all physical links to forward at once.",
+    "mental": "Treat the switches and links as a graph. STP selects one logical spanning tree from the redundant graph, then recalculates after topology changes so loops are avoided.",
+    "points": [
+      "The root bridge is elected using bridge ID, based on priority and MAC-address tie-breaking.",
+      "Path costs help determine root ports and designated ports.",
+      "Blocked/non-forwarding ports provide alternate links that can be activated after a failure.",
+      "Rapid STP and vendor variants improve convergence, but exact timer and edge-port behavior matter.",
+      "PortFast/edge settings should only be applied to appropriate endpoint-facing ports; BPDU protections help prevent accidental switch loops."
+    ],
+    "steps": [
+      "Switches exchange BPDUs and elect the root bridge.",
+      "Each non-root switch selects a root port for its best path to the root.",
+      "Each segment selects a designated port; redundant ports are placed in non-forwarding states.",
+      "When a link changes, the protocol recalculates and activates a safe alternate path."
+    ],
+    "usage": [
+      "Designing redundant campus and enterprise switching.",
+      "Diagnosing broadcast storms and unexpected blocked ports."
+    ],
+    "mistakes": [
+      "Connecting redundant switches without a loop-control design.",
+      "Enabling edge/PortFast behavior on a switch-to-switch connection without safeguards.",
+      "Assuming a blocked port is broken rather than intentionally preventing a loop."
+    ],
+    "interview": [
+      {
+        "q": "Why does STP block some healthy physical links?",
+        "a": "It removes redundant paths from the active layer-2 forwarding topology so frames cannot circulate indefinitely, while keeping backup links available.",
+        "level": "beginner"
+      },
+      {
+        "q": "What determines the root bridge?",
+        "a": "The switch with the best bridge ID wins, normally based on configured priority and then MAC-address tie-breakers.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "fork",
+    "section": "os",
+    "title": "fork()",
+    "summary": "Copy a process: the child gets 0, the parent gets a pid. Copy-on-write makes the copy cheap until a write.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "linux-process-model"
+    ],
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "On POSIX systems, fork() creates a child process from the calling process. The child starts with a logical copy of the parent's address space and inherited process attributes, while the return value distinguishes the child from the parent.",
+    "why": "fork plus exec is a classic way to launch programs while preserving the parent process. Copy-on-write keeps initial memory duplication relatively cheap, but the child must still handle inherited descriptors and multithreaded-process rules correctly.",
+    "mental": "After fork, parent and child continue from the same point but have separate process identities and logically separate memory. They may run in either order, so communication should use explicit IPC rather than assuming execution order.",
+    "points": [
+      "In the parent, fork returns the child PID; in the child it returns zero; failure returns -1 in the parent and creates no child.",
+      "Copy-on-write initially shares physical pages where safe and copies pages when a process writes.",
+      "Open file descriptors are inherited and refer to the same underlying open file descriptions, affecting offsets and flags.",
+      "After fork in a multithreaded process, only the calling thread exists in the child; only async-signal-safe operations are safe until exec under POSIX rules.",
+      "Zombie children remain until their exit status is collected, typically via wait/waitpid or an equivalent mechanism."
+    ],
+    "steps": [
+      "The parent calls fork and checks its return value.",
+      "The kernel creates the child task/process and sets up resource and memory semantics.",
+      "Parent and child continue independently; either may run first.",
+      "The child often calls exec to replace its program image, while the parent supervises or waits for its completion."
+    ],
+    "usage": [
+      "Launching subprocesses in shells and service supervisors.",
+      "Understanding process trees, inherited file descriptors, and zombie cleanup."
+    ],
+    "mistakes": [
+      "Assuming parent always executes before child.",
+      "Assuming fork eagerly copies all physical memory pages.",
+      "Calling unsafe library operations in a forked child of a multithreaded process before exec."
+    ],
+    "interview": [
+      {
+        "q": "What does fork return in parent and child?",
+        "a": "The parent receives the child's PID, the child receives 0, and the parent receives -1 on failure.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why must a multithreaded child be careful before exec?",
+        "a": "Only the calling thread survives in the child while locks may have been held by vanished threads; POSIX restricts pre-exec operations to async-signal-safe functions.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "working-set",
+    "section": "os",
+    "title": "Working Set",
+    "summary": "The pages a process is actually using. If they do not fit in RAM, the system thrashes.",
+    "level": "intermediate",
+    "prereqs": [
+      "virtual-memory"
+    ],
+    "related": [
+      "thrashing",
+      "page-replacement"
+    ],
+    "next": "file-systems",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A process's working set is the set of pages it has referenced during a chosen recent time window. It approximates the memory needed to keep that process's current locality resident and avoid frequent page faults.",
+    "why": "Working-set information helps explain and prevent thrashing. Allocating fewer frames than an active working set may cause repeated eviction and reload of pages, wasting I/O and reducing useful CPU work.",
+    "mental": "The working set moves as the application changes phases. A database scan, a graph traversal, and a compiler phase may need different page sets; the OS cannot assume one fixed number is best forever.",
+    "points": [
+      "Working-set size depends on the measurement window and the program's current phase.",
+      "If the sum of active working sets exceeds available memory, some workloads may thrash.",
+      "Working-set models help reason about frame allocation and degree of multiprogramming.",
+      "Working-set estimates are approximations; pages referenced recently may not always be needed again soon.",
+      "Reducing memory footprint, limiting concurrency, or changing access locality can reduce pressure more effectively than adding CPU."
+    ],
+    "steps": [
+      "Choose a recent reference window and track which pages were touched.",
+      "Estimate the current working-set size for each active process.",
+      "Compare the combined demand with available physical frames.",
+      "If demand exceeds capacity, reduce active memory pressure or adjust allocation and workload behavior."
+    ],
+    "usage": [
+      "Diagnosing thrashing, high page faults, and low throughput under memory pressure.",
+      "Understanding locality in compilers, databases, and streaming data processing."
+    ],
+    "mistakes": [
+      "Treating a working set as every page ever allocated by the process.",
+      "Assuming the estimate is independent of the chosen time window.",
+      "Responding to memory thrashing by increasing process concurrency without measurement."
+    ],
+    "interview": [
+      {
+        "q": "How does a working set relate to thrashing?",
+        "a": "When active working sets do not fit in physical memory, processes may repeatedly fault on pages that were recently evicted, causing excessive paging.",
+        "level": "beginner"
+      },
+      {
+        "q": "Can a working set remain constant throughout a program?",
+        "a": "No. The set can change as the program moves between phases with different code, data, and access patterns.",
+        "level": "beginner"
+      }
+    ]
+  }
+]
