@@ -4,7 +4,7 @@ describe("Editorial content quality", () => {
   const coreLessons = FLAGSHIP.filter((topic) => topic.tags.includes("core-concept"));
 
   it("adds a substantial set of authored core lessons", () => {
-    expect(coreLessons.length).toBeGreaterThanOrEqual(70);
+    expect(coreLessons.length).toBeGreaterThanOrEqual(125);
   });
 
   it("gives every authored core lesson a full editorial structure", () => {
@@ -19,6 +19,12 @@ describe("Editorial content quality", () => {
       expect(topic?.steps?.length ?? 0).withContext(`${entry.slug}: worked steps`).toBeGreaterThanOrEqual(3);
       expect(topic?.interview.length).withContext(`${entry.slug}: interview questions`).toBeGreaterThanOrEqual(2);
       expect(topic?.mistakes.length).withContext(`${entry.slug}: common mistakes`).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it("provides a full authored lesson for every catalog topic", () => {
+    for (const entry of ALL_NAV) {
+      expect(getTopic(entry.slug)?.contentMode).withContext(entry.slug).toBe("editorial");
     }
   });
 
