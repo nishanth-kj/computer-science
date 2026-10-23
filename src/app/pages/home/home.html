@@ -1,10 +1,10 @@
 <div class="lp">
   <section class="hero">
     <div class="hero__copy">
-      <p class="kicker">The complete catalog</p>
+      <p class="kicker">Computer science handbook</p>
       <h1>Learn the <em>whole</em> of computer science.</h1>
       <p class="lede">
-        From the first program to kernels, networks, and databases — written in depth, as pages you can finish.
+        Programming, operating systems, networks, and databases — one catalog of pages you can finish.
       </p>
       <div class="actions">
         <a routerLink="/library" class="btn btn--solid">Browse the catalog <cs-icon name="arrow" /></a>
@@ -29,71 +29,6 @@
           </li>
         }
       </ol>
-    </div>
-  </section>
-
-  <section class="strip">
-    <p>One idea. One page. A next link. That is the whole method.</p>
-  </section>
-
-  <section class="block">
-    <header class="block__head">
-      <p class="kicker">Method</p>
-      <h2>How you actually learn it.</h2>
-    </header>
-    <div class="tri">
-      @for (b of beats; track b.n) {
-        <article>
-          <span>{{ b.n }}</span>
-          <h3>{{ b.title }}</h3>
-          <p>{{ b.text }}</p>
-        </article>
-      }
-    </div>
-  </section>
-
-  <section class="block">
-    <header class="block__head">
-      <p class="kicker">Catalog</p>
-      <h2>Four fields, one place.</h2>
-      <p>Everything lives in the library. Pick a field and start.</p>
-    </header>
-    <div class="mosaic">
-      @for (g of featured; track g.id; let i = $index) {
-        <a [routerLink]="g.href" class="tile" [class.tile--lg]="i === 0">
-          <span class="tile__n">{{ g.n }}</span>
-          <h3>{{ g.title }}</h3>
-          <p>{{ g.blurb }}</p>
-          <span class="tile__meta">{{ g.count }} pages</span>
-        </a>
-      }
-    </div>
-  </section>
-
-  <section class="block">
-    <header class="block__head">
-      <p class="kicker">Foundations</p>
-      <h2>Six pages that unlock the rest.</h2>
-    </header>
-    <div class="found">
-      @for (t of start; track t.slug; let i = $index) {
-        <a [routerLink]="topicHref(t.slug)" class="found__card">
-          <div class="flex items-center justify-between">
-            <span>{{ i + 1 }}</span>
-          </div>
-          <h3>{{ t.title }}</h3>
-          <p>{{ t.summary }}</p>
-        </a>
-      }
-    </div>
-  </section>
-
-  <section class="finale">
-    <p class="kicker">Begin</p>
-    <h2>The whole degree, as pages.</h2>
-    <p>Open the library, or jump a field. Depth is the point.</p>
-    <div class="actions">
-      <a routerLink="/library" class="btn btn--solid">Open the library <cs-icon name="arrow" /></a>
     </div>
   </section>
 </div>

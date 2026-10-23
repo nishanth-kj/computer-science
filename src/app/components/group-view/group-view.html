@@ -8,9 +8,7 @@
         <h3 class="font-display text-xl">
           <a [routerLink]="topicHref(s.id)" class="hover:underline">{{ s.title }}</a>
         </h3>
-        <span class="font-mono text-xs text-subtle tabular-nums" [attr.title]="s.read + ' of ' + s.total + ' pages read'">
-          {{ s.read }}/{{ s.total }}
-        </span>
+        <span class="font-mono text-xs text-subtle tabular-nums">{{ s.total }}</span>
       </div>
       <p class="mt-1 text-sm text-muted">{{ s.blurb }}</p>
       <ul class="mt-4 flex flex-wrap gap-1.5">
@@ -18,9 +16,7 @@
           <li>
             <a
               [routerLink]="topicHref(t.slug)"
-              class="inline-block rounded-full border px-2.5 py-1 text-xs hover:bg-surface-2"
-              [class.border-border]="!progress.isVisited(t.slug)"
-              [class.border-emerald-500/40]="progress.isVisited(t.slug)"
+              class="inline-block rounded-full border border-border px-2.5 py-1 text-xs hover:bg-surface-2"
               >{{ t.title }}</a
             >
           </li>

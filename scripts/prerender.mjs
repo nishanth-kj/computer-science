@@ -153,7 +153,7 @@ const staticPages = [
   {
     path: "/",
     title: "Computer Science Handbook — Learn CS in Depth",
-    desc: "Free computer science guides with examples, diagrams, and learning paths for programming, algorithms, operating systems, networks, databases, and AI.",
+    desc: "Free computer science guides with examples and diagrams for programming, algorithms, operating systems, networks, and databases.",
     h1: "Learn computer science in depth",
   },
   {

@@ -5,7 +5,13 @@ import { Icon } from "@/app/components/ui/icon";
 import { SearchDialog } from "@/app/components/search/search";
 import { SidebarState } from "@/app/components/sidebar/sidebar-state";
 
-const NAV = [{ href: "/library", label: "Library" }] as const;
+const NAV = [
+  { href: "/programming", label: "Programming" },
+  { href: "/os", label: "OS" },
+  { href: "/networks", label: "Networks" },
+  { href: "/dbms", label: "Databases" },
+  { href: "/library", label: "Library" },
+] as const;
 
 @Component({
   selector: "cs-navbar, cs-header",

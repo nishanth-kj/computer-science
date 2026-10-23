@@ -5,7 +5,6 @@ import { SECTION_BY_ID } from "@/lib/content/sections";
 import type { ContentBlock } from "@/lib/content/types";
 import { hasViz } from "@/lib/viz-ids";
 import { Badge } from "@/app/components/ui/badge";
-import { GraphView, neighborhoodGraph } from "@/app/components/ui/graph/graph";
 import { Table } from "@/app/components/ui/table/table";
 import { Callout } from "./callout";
 import { CodeBlock } from "./code-block";
@@ -15,7 +14,7 @@ import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
 
 @Component({
   selector: "cs-article",
-  imports: [RouterLink, Callout, CodeBlock, Pipeline, Viz, Badge, Table, GraphView, AdSlot],
+  imports: [RouterLink, Callout, CodeBlock, Pipeline, Viz, Badge, Table, AdSlot],
   template: `
     <article class="w-full pb-24">
       <p class="mb-3 text-xs tracking-wide text-muted uppercase">
@@ -88,20 +87,6 @@ import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
           <p class="text-[15px] leading-relaxed text-fg/90">None — you can start here.</p>
         }
       </section>
-      @if (hasGraph()) {
-        <section class="scroll-mt-24">
-          <h2 id="topic-map" class="mt-10 mb-3 font-display text-2xl tracking-tight">How it connects</h2>
-          <p class="mb-3 text-[15px] leading-relaxed text-muted">The neighborhood around this idea. Click a node to open that page.</p>
-          <cs-graph
-            [nodes]="graph().nodes"
-            [edges]="graph().edges"
-            layout="split"
-            [focus]="topic().slug"
-            [label]="'Connections for ' + topic().title"
-            [legend]="['Left: prerequisites', 'Center: this page', 'Right: related / next']"
-          />
-        </section>
-      }
       <section class="scroll-mt-24">
         <h2 id="mental-model" class="mt-10 mb-3 font-display text-2xl tracking-tight">Mental model</h2>
         <p class="text-[15px] leading-relaxed text-fg/90">{{ topic().mental }}</p>
@@ -256,17 +241,10 @@ export class DocArticle {
   extra(): ContentBlock[] {
     return this.topic().extra ?? [];
   }
-  graph() {
-    return neighborhoodGraph(this.topic());
-  }
   vizId() {
     const topic = this.topic();
     const id = topic.viz || topic.lab;
     return hasViz(id) ? id : undefined;
-  }
-  hasGraph() {
-    const topic = this.topic();
-    return topic.prereqs.length + topic.related.length + (topic.next ? 1 : 0) > 0;
   }
   titleOf(slug: string) {
     return getTopic(slug)?.title ?? SECTION_BY_ID[slug as keyof typeof SECTION_BY_ID]?.title ?? slug;

@@ -195,29 +195,3 @@ export const STATS = {
   pages: ALL_NAV.length,
   sections: SECTION_GROUPS.length,
 };
-
-export function graphData() {
-  const nodes = ALL_NAV.map((t) => ({
-    id: t.slug,
-    title: t.title,
-    section: t.section,
-    level: t.level,
-  }));
-  const edges: { from: string; to: string; kind: "prereq" | "related" }[] = [];
-  const seen = new Set<string>();
-  for (const t of ALL_NAV) {
-    for (const p of known(t.prereqs)) {
-      const k = `${p}->${t.slug}`;
-      if (seen.has(k)) continue;
-      seen.add(k);
-      edges.push({ from: p, to: t.slug, kind: "prereq" });
-    }
-    for (const r of known(t.related).slice(0, 4)) {
-      const k = t.slug < r ? `${t.slug}~${r}` : `${r}~${t.slug}`;
-      if (seen.has(k)) continue;
-      seen.add(k);
-      edges.push({ from: t.slug, to: r, kind: "related" });
-    }
-  }
-  return { nodes, edges };
-}

@@ -1,46 +1,6 @@
 <div class="w-full px-4 py-8 sm:px-6 md:px-8 lg:px-12">
   <h1 class="font-display text-4xl tracking-tight">Library</h1>
-  <p class="mt-2 max-w-2xl text-muted">{{ count }} pages covering full CS in depth. Pick a field, then a page — every neighborhood is a peer, not a side quest.</p>
-
-  <section class="mt-10">
-    <h2 class="font-display text-2xl tracking-tight">How it connects</h2>
-    <p class="mt-2 max-w-2xl text-sm text-muted">Prerequisites and neighbors. Click a node to open that page.</p>
-    <div class="mt-4 flex flex-wrap gap-1.5">
-      <button
-        type="button"
-        class="rounded-full border px-3 py-1 text-xs"
-        [class.border-primary]="graphSection() === 'all'"
-        [class.bg-primary]="graphSection() === 'all'"
-        [class.text-primary-fg]="graphSection() === 'all'"
-        [class.border-border]="graphSection() !== 'all'"
-        (click)="graphSection.set('all')"
-      >
-        Sample
-      </button>
-      @for (id of fields; track id) {
-        <button
-          type="button"
-          class="rounded-full border px-3 py-1 text-xs"
-          [class.border-primary]="graphSection() === id"
-          [class.bg-primary]="graphSection() === id"
-          [class.text-primary-fg]="graphSection() === id"
-          [class.border-border]="graphSection() !== id"
-          (click)="graphSection.set(id)"
-        >
-          {{ SECTION_BY_ID[id].short }}
-        </button>
-      }
-    </div>
-    <div class="mt-4">
-      <cs-graph
-        [nodes]="graph().nodes"
-        [edges]="graph().edges"
-        layout="radial"
-        label="Library graph"
-        [legend]="['Dashed: prerequisite', 'Solid: related']"
-      />
-    </div>
-  </section>
+  <p class="mt-2 max-w-2xl text-muted">{{ count }} pages. Pick a field, then open a page.</p>
 
   <div class="mt-10 space-y-14">
     @for (group of groups; track group.id) {
@@ -69,14 +29,4 @@
       </section>
     }
   </div>
-
-
-  <section class="mt-14">
-    <h2 class="font-display text-2xl tracking-tight">Every page</h2>
-    <p class="mt-2 max-w-2xl text-sm text-muted">The full catalog in one table. Open a title, or page through the rest.</p>
-    <div class="mt-5">
-      <cs-table [headers]="['Page', 'Field', 'Level']" [rows]="catalog()" />
-      <cs-pagination [total]="count" [pageSize]="pageSize" [(page)]="page" />
-    </div>
-  </section>
 </div>

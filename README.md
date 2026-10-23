@@ -1,6 +1,6 @@
 # Computer Science Handbook
 
-Static Angular website for computer science pages, learning paths, interactive labs, and interview preparation. The website is frontend-only and does not require an account.
+Static Angular website for computer science pages. Frontend only — no server, no database, no auth.
 
 ## Run locally
 
@@ -66,3 +66,13 @@ npm test
 ```
 
 Run the full unit test and build workflow before merging changes. A green build validates the generated site structure; it does not validate the live domain's DNS, AdSense approval, CMP certification, audience metrics, payment links, or sponsorship sales process.
+
+Page specs live next to each screen in `src/app/pages/` (`home.spec.ts`, `library.spec.ts`, …).
+
+## Layout
+
+- `src/data/content/` — catalog and topic data
+- `src/lib/` — theme, content helpers, utilities
+- `src/app/components/` — layout and article
+- `src/app/pages/` — routed pages
+- `src/app/app.routes.ts` — home, library, fields, and topic pages
