@@ -43,6 +43,9 @@ Analytics and advertising are disabled by default. No third-party script or empt
 - `GA_MEASUREMENT_ID` — a Google Analytics web stream ID such as `G-...`.
 - `ADSENSE_PUBLISHER_ID` — the approved AdSense client ID in `ca-pub-` format.
 - `ADSENSE_IN_ARTICLE_SLOT` and `ADSENSE_LIBRARY_SLOT` — numeric ad-unit IDs created in the approved account.
+- `SUPPORT_URL` — an active HTTPS donation/support page (for example, a creator platform you have actually enabled).
+- `DIGITAL_PRODUCTS_URL` — a live HTTPS storefront for original paid study materials.
+- `NEWSLETTER_URL` — a live HTTPS newsletter signup page from a provider you use.
 
 Leave any integration's values unset to keep it disabled. These identifiers are public browser configuration, not secrets. After AdSense approval, replace the comments in `public/ads.txt` with the exact authorized-seller record supplied by Google; never publish a placeholder publisher ID. AdSense approval, consent-platform requirements, and regional policy configuration remain external account tasks.
 
