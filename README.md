@@ -66,6 +66,8 @@ This is a static educational site. Monetization should not compromise the free c
 
 The order of work matters: make the content genuinely useful and indexable first, then test a small number of relevant affiliate/product offers, and only then optimize ads or sponsorships against measured traffic. Ad revenue is traffic-dependent and is not guaranteed.
 
+For the full revenue roadmap, content priorities, compliance checklist, and configuration sequence, see [docs/monetization-plan.md](docs/monetization-plan.md).
+
 ## Test
 
 ```bash
