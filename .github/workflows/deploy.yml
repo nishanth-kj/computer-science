@@ -85,6 +85,7 @@ jobs:
           node scripts/configure-site.mjs
           node scripts/prerender.mjs
           node scripts/audit-built-site.mjs
+          node scripts/audit-editorial-content.mjs
           touch dist/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3
