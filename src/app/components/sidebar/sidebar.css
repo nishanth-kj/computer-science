@@ -2,6 +2,7 @@
   display: flex;
   height: 100%;
   min-height: 0;
+  flex: 1 1 auto;
   flex-direction: column;
 }
 
@@ -9,8 +10,10 @@
   display: flex;
   height: 100%;
   min-height: 0;
+  flex: 1 1 auto;
   flex-direction: column;
   overflow: hidden;
+  background: var(--surface);
 }
 
 .sidebar__filter {
@@ -22,4 +25,23 @@
   min-height: 0;
   flex: 1 1 auto;
   padding: 0 0.5rem 2.5rem;
+}
+
+.sidebar__nav > div,
+.sidebar__nav li,
+.sidebar__nav ul {
+  flex: 0 0 auto;
+  height: auto;
+}
+
+.sidebar__nav ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar__nav li > a {
+  display: block;
+  flex: none;
+  height: auto;
 }

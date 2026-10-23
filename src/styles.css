@@ -99,6 +99,33 @@ html.dark {
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Custom elements are inline until :host runs. Keep the shell laid out
+     even if a component stylesheet is also pulled in as a global file. */
+  app-root,
+  cs-main-layout,
+  cs-topic-frame {
+    display: block;
+    height: 100%;
+    min-height: 0;
+  }
+
+  cs-header,
+  cs-navbar {
+    display: block;
+  }
+
+  cs-footer {
+    display: block;
+    margin-top: auto;
+  }
+
+  cs-sidebar {
+    display: flex;
+    height: 100%;
+    min-height: 0;
+    flex-direction: column;
+  }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;

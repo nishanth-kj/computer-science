@@ -32,6 +32,13 @@
         color: #1c1f24;
       }
     </style>
+    <noscript>
+      <style>
+        #cs-boot {
+          display: none !important;
+        }
+      </style>
+    </noscript>
     <link rel="stylesheet" href="boot.css" />
     <title>Computer Science Handbook — Learn CS in Depth</title>
     <meta
@@ -85,7 +92,14 @@
     <script src="site-config.js" defer></script>
   </head>
   <body class="min-h-dvh bg-bg font-sans text-fg antialiased">
-    <div id="cs-boot" aria-hidden="true"></div>
+    <div id="cs-boot" aria-hidden="true">
+      <div class="cs-boot__panel">
+        <span class="cs-boot__glow"></span>
+        <img class="cs-boot__logo" src="logo.svg" alt="" width="56" height="56" />
+        <p class="cs-boot__title">Computer Science</p>
+        <span class="cs-boot__bar"></span>
+      </div>
+    </div>
     <app-root></app-root>
   </body>
 </html>

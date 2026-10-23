@@ -59,17 +59,132 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Light lenurple splash until the Angular shell is in the DOM. */
 #cs-boot {
+  --boot-paper: #fbf7fd;
+  --boot-mist: #f3e9fa;
+  --boot-lenurple: #bd93d8;
+  --boot-ink: #4a3260;
   position: fixed;
-  inset: 0 0 auto;
-  z-index: 40;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(920px 620px at 50% 42%, #ead4f6 0%, var(--boot-mist) 42%, var(--boot-paper) 100%);
+  color: var(--boot-ink);
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s linear;
+}
+
+.cs-boot__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.cs-boot__glow {
+  position: absolute;
+  width: 11rem;
+  height: 11rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in oklab, var(--boot-lenurple) 42%, transparent) 0%, transparent 70%);
+  animation: cs-boot-breathe 2.4s ease-in-out infinite;
+}
+
+.cs-boot__logo {
+  position: relative;
+  z-index: 1;
+  width: 3.5rem;
   height: 3.5rem;
-  border-bottom: 1px solid var(--border);
-  background: color-mix(in oklab, var(--bg) 90%, transparent);
+  border-radius: 0.9rem;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--boot-lenurple) 35%, transparent), 0 10px 28px color-mix(in oklab, var(--boot-lenurple) 28%, transparent);
+  animation: cs-boot-rise 0.7s cubic-bezier(0.05, 0.7, 0.1, 1) both;
+}
+
+.cs-boot__title {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--boot-ink);
+  animation: cs-boot-rise 0.7s cubic-bezier(0.05, 0.7, 0.1, 1) 0.08s both;
+}
+
+.cs-boot__bar {
+  position: relative;
+  z-index: 1;
+  width: 7.5rem;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--boot-lenurple) 28%, white);
+}
+
+.cs-boot__bar::after {
+  content: "";
+  display: block;
+  width: 40%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--boot-lenurple);
+  animation: cs-boot-bar 0.9s ease-in-out infinite;
 }
 
 body:has(cs-header) #cs-boot {
-  display: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+@keyframes cs-boot-breathe {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes cs-boot-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cs-boot-bar {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(280%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-boot__glow,
+  .cs-boot__logo,
+  .cs-boot__title,
+  .cs-boot__bar::after {
+    animation: none;
+  }
+
+  body:has(cs-header) #cs-boot {
+    transition: none;
+  }
 }
 
 /* SEO prerender is a direct child of app-root until Angular replaces it. */

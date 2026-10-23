@@ -38,8 +38,11 @@
 
 .frame__sidebar > cs-sidebar,
 .frame__sheet > cs-sidebar {
+  display: flex;
   min-height: 0;
-  flex: 1;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .frame__rail-btn {
