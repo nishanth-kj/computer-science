@@ -7,6 +7,9 @@ type SiteConfig = {
     inArticle: string;
     libraryBanner: string;
   };
+  supportUrl: string;
+  digitalProductsUrl: string;
+  newsletterUrl: string;
 };
 
 declare global {
@@ -27,6 +30,9 @@ export const SITE_CONFIG: SiteConfig = {
     inArticle: validSlotId(raw?.adsenseSlots?.inArticle) ? raw!.adsenseSlots!.inArticle! : "",
     libraryBanner: validSlotId(raw?.adsenseSlots?.libraryBanner) ? raw!.adsenseSlots!.libraryBanner! : "",
   },
+  supportUrl: validHttpsUrl(raw?.supportUrl) ? raw!.supportUrl! : "",
+  digitalProductsUrl: validHttpsUrl(raw?.digitalProductsUrl) ? raw!.digitalProductsUrl! : "",
+  newsletterUrl: validHttpsUrl(raw?.newsletterUrl) ? raw!.newsletterUrl! : "",
 };
 
 export const OPTIONAL_SERVICES_CONFIGURED = Boolean(
