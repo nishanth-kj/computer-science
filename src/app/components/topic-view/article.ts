@@ -39,7 +39,7 @@ import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
         <h2 id="prerequisites" class="mt-10 mb-3 font-display text-2xl tracking-tight">Prerequisites</h2>
         @if (topic().prereqs.length) {
           <ul class="list-disc space-y-1 pl-5 text-[15px]">
-            @for (s of topic().prereqs; track s) {
+            @for (s of topic().prereqs; track $index) {
               @if (exists(s)) {
                 <li><a [routerLink]="topicHref(s)" class="text-link underline-offset-2 hover:underline">{{ titleOf(s) }}</a></li>
               }
@@ -169,7 +169,7 @@ import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
           @for (u of topic().mistakes; track u) { <li>{{ u }}</li> }
         </ul>
       </section>
-      <cs-ad-slot slot="in-article" format="auto" />
+      <cs-ad-slot placement="inArticle" format="auto" />
       <section class="scroll-mt-24">
         <h2 id="interview-questions" class="mt-10 mb-3 font-display text-2xl tracking-tight">Interview questions</h2>
         <div class="space-y-2">
@@ -188,7 +188,7 @@ import { AdSlot } from "@/app/components/ui/ad-slot/ad-slot";
       <section class="scroll-mt-24">
         <h2 id="related" class="mt-10 mb-3 font-display text-2xl tracking-tight">Related concepts</h2>
         <div class="flex flex-wrap gap-2">
-          @for (s of topic().related; track s) {
+          @for (s of topic().related; track $index) {
             @if (exists(s)) {
               <a [routerLink]="topicHref(s)" class="rounded-full border border-border px-3 py-1 text-sm hover:bg-surface-2">{{ titleOf(s) }}</a>
             }

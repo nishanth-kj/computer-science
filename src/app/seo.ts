@@ -98,11 +98,6 @@ export class SeoService {
       description: SITE_DESCRIPTION,
       inLanguage: "en",
       publisher,
-      potentialAction: {
-        "@type": "SearchAction",
-        target: `${this.abs("/library")}?q={search_term_string}`,
-        "query-input": "required name=search_term_string",
-      },
     };
     const breadcrumbs = {
       "@type": "BreadcrumbList",

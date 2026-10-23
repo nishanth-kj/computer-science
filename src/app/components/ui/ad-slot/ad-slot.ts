@@ -1,30 +1,38 @@
-import { Component, AfterViewInit, input, signal } from "@angular/core";
-
-declare global {
-  interface Window {
-    adsbygoogle?: unknown[];
-  }
-}
+import { Component, effect, inject, input, signal } from "@angular/core";
+import { AdsenseService } from "@/app/services/adsense";
+import { PrivacyPreferences } from "@/app/services/privacy-preferences";
 
 @Component({
   selector: "cs-ad-slot",
   templateUrl: "./ad-slot.html",
   styleUrl: "./ad-slot.css",
+  host: { "[class.ad-enabled]": "enabled()" },
 })
-export class AdSlot implements AfterViewInit {
-  readonly slot = input<string>("default");
+export class AdSlot {
+  readonly placement = input.required<"inArticle" | "libraryBanner">();
   readonly format = input<"auto" | "horizontal" | "rectangle">("auto");
   readonly enabled = signal(false);
+  readonly adsense = inject(AdsenseService);
+  private readonly privacy = inject(PrivacyPreferences);
+  private requested = false;
 
-  ngAfterViewInit() {
-    // If window.adsbygoogle is loaded by index.html verification script, push the ad unit
-    if (typeof window !== "undefined" && typeof window.adsbygoogle !== "undefined") {
-      try {
-        window.adsbygoogle.push({});
-        this.enabled.set(true);
-      } catch {
-        // Safe fallback if blocked by adblockers or in dev
+  constructor() {
+    effect(() => {
+      const slot = this.adsense.slot(this.placement());
+      if (this.privacy.consent() === "accepted" && slot && !this.requested) {
+        this.requested = true;
+        void this.adsense.load().then(() => {
+          this.enabled.set(true);
+          setTimeout(() => {
+            try {
+              window.adsbygoogle = window.adsbygoogle ?? [];
+              window.adsbygoogle.push({});
+            } catch {
+              this.enabled.set(false);
+            }
+          });
+        }).catch(() => this.enabled.set(false));
       }
-    }
+    });
   }
 }

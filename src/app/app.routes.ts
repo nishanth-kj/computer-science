@@ -1,5 +1,5 @@
 import { RedirectFunction, Routes } from "@angular/router";
-import { PHASES, PROGRAMMING_SECTION_IDS, SECTION_BY_ID, getSectionTopics, topicHref } from "@/lib/content";
+import { PATH_BY_ID, PHASES, PROGRAMMING_SECTION_IDS, SECTION_BY_ID, getSectionTopics, topicHref } from "@/lib/content";
 import { MainLayout } from "@/app/layout/main";
 import { AboutPage } from "@/app/pages/about/about";
 import { ContactPage } from "@/app/pages/contact/contact";
@@ -235,7 +235,14 @@ export const routes: Routes = [
         path: "paths",
         children: [
           { path: "", component: Paths, title: "Learning paths · CS" },
-          { path: ":id", component: Path, title: "Path · CS" },
+          {
+            path: ":id",
+            component: Path,
+            title: ({ params }) => {
+              const path = PATH_BY_ID[params["id"] ?? ""];
+              return path ? `${path.title} · Learning Path · CS` : "Path not found · CS";
+            },
+          },
         ],
       },
       { path: "about", component: AboutPage, title: "About · CS" },

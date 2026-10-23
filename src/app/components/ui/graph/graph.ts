@@ -52,8 +52,11 @@ export type FlowLayout = {
 };
 
 export function neighborhoodGraph(topic: Topic): { nodes: GraphNode[]; edges: GraphEdge[] } {
-  const prereqs = known(topic.prereqs).slice(0, 5);
-  const related = known(topic.related.filter((s) => s !== topic.next)).slice(0, 5);
+  const prereqs = [...new Set(known(topic.prereqs))].slice(0, 5);
+  const prereqIds = new Set(prereqs);
+  const related = [...new Set(known(topic.related))]
+    .filter((s) => s !== topic.next && !prereqIds.has(s))
+    .slice(0, 5);
   const next = topic.next && exists(topic.next) ? topic.next : undefined;
   const nodes: GraphNode[] = [{ id: topic.slug, title: topic.title, kind: "here" }];
   const edges: GraphEdge[] = [];
@@ -64,7 +67,7 @@ export function neighborhoodGraph(topic: Topic): { nodes: GraphNode[]; edges: Gr
   }
 
   const right = [...related];
-  if (next && !right.includes(next)) right.push(next);
+  if (next && !prereqIds.has(next) && !right.includes(next)) right.push(next);
   for (const id of right) {
     nodes.push({
       id,

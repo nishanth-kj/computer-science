@@ -116,7 +116,7 @@ function escapeHtml(str) {
     .replace(/>/g, "&gt;");
 }
 
-function renderHtml(p, title, desc, bodyContent, schema) {
+function renderHtml(p, title, desc, bodyContent, schema, robots = "index, follow, max-image-preview:large", ogType = "website") {
   let html = template;
 
   // Replace Title
@@ -129,7 +129,7 @@ function renderHtml(p, title, desc, bodyContent, schema) {
   );
 
   // Replace Canonical Link
-  const canonicalUrl = `${ORIGIN}${p === "/" ? "" : p}`;
+  const canonicalUrl = `${ORIGIN}${p === "/" ? "/" : p}`;
   html = html.replace(
     /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/,
     `<link rel="canonical" href="${canonicalUrl}" />`
@@ -148,6 +148,14 @@ function renderHtml(p, title, desc, bodyContent, schema) {
     /<meta\s+property="og:url"\s+content="[^"]*"\s*\/?>/,
     `<meta property="og:url" content="${canonicalUrl}" />`
   );
+  html = html.replace(
+    /<meta\s+property="og:type"\s+content="[^"]*"\s*\/?>/,
+    `<meta property="og:type" content="${ogType}" />`
+  );
+  html = html.replace(
+    /<meta\s+property="og:image"\s+content="[^"]*"\s*\/?>/,
+    `<meta property="og:image" content="${ORIGIN}/og.jpg" />`
+  );
 
   // Replace Twitter
   html = html.replace(
@@ -157,6 +165,14 @@ function renderHtml(p, title, desc, bodyContent, schema) {
   html = html.replace(
     /<meta\s+name="twitter:description"\s+content="[^"]*"\s*\/?>/,
     `<meta name="twitter:description" content="${escapeHtml(desc)}" />`
+  );
+  html = html.replace(
+    /<meta\s+name="twitter:image"\s+content="[^"]*"\s*\/?>/,
+    `<meta name="twitter:image" content="${ORIGIN}/og.jpg" />`
+  );
+  html = html.replace(
+    /<meta\s+name="robots"\s+content="[^"]*"\s*\/?>/,
+    `<meta name="robots" content="${robots}" />`
   );
 
   // Inject Schema.org JSON-LD
@@ -180,7 +196,6 @@ let count = 0;
 
 // 1. Static Pages
 for (const page of staticPages) {
-  if (page.path === "/") continue; // Root already exists as dist/index.html
   const routeDir = path.join("dist", page.path.replace(/^\//, ""));
   fs.mkdirSync(routeDir, { recursive: true });
 
@@ -192,13 +207,21 @@ for (const page of staticPages) {
     </div>
   `;
 
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: page.title,
-    description: page.desc,
-    url: `${ORIGIN}${page.path}`,
-  };
+  const schema = page.path === "/"
+    ? {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "CS",
+        description: page.desc,
+        url: `${ORIGIN}/`,
+      }
+    : {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        name: page.title,
+        description: page.desc,
+        url: `${ORIGIN}${page.path}`,
+      };
 
   const html = renderHtml(page.path, page.title, page.desc, body, schema);
   fs.writeFileSync(path.join(routeDir, "index.html"), html);
@@ -223,7 +246,7 @@ for (const p of pathsList) {
 
   const schema = {
     "@context": "https://schema.org",
-    "@type": "Course",
+    "@type": "CollectionPage",
     name: p.title,
     description: p.blurb,
     url: `${ORIGIN}${routePath}`,
@@ -258,7 +281,7 @@ for (const s of sectionsList) {
     url: `${ORIGIN}${routePath}`,
   };
 
-  const html = renderHtml(routePath, title, desc, body, schema);
+  const html = renderHtml(routePath, title, desc, body, schema, "index, follow, max-image-preview:large", "article");
   fs.writeFileSync(path.join(routeDir, "index.html"), html);
   count++;
 }
@@ -313,5 +336,21 @@ for (const t of navItems) {
   fs.writeFileSync(path.join(routeDir, "index.html"), html);
   count++;
 }
+
+// GitHub Pages serves this document for unknown paths. Keep the Angular app shell
+// so client-side routing can recover, but never present the fallback as the home page.
+const notFoundHtml = renderHtml(
+  "/404",
+  "Page not found · CS",
+  "The requested computer science page could not be found.",
+  `<main style="max-width: 44rem; margin: 0 auto; padding: 3rem 1.5rem;">
+    <p style="font-size: 0.8rem; color: #888;">404</p>
+    <h1 style="font-size: 2.25rem; font-weight: 700; margin-bottom: 1rem;">Page not found</h1>
+    <p style="font-size: 1.1rem; color: #888;">Try the library or return to the home page.</p>
+  </main>`,
+  null,
+  "noindex, nofollow",
+).replace(/\s*<link\s+rel="canonical"[^>]*>/, "");
+fs.writeFileSync(path.join("dist", "404.html"), notFoundHtml);
 
 console.log(`Prerendered ${count} static HTML route pages with SEO & Schema.org tags into dist/`);

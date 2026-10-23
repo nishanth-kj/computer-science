@@ -32,8 +32,21 @@ The deploy job reads the site's URL from the Pages settings, so the same workflo
 ```bash
 SITE_ORIGIN=https://<owner>.github.io/<repo> node scripts/generate-sitemap.mjs
 npx ng build --base-href /<repo>/
-node scripts/prerender.mjs && cp dist/index.html dist/404.html
+node scripts/configure-site.mjs
+node scripts/prerender.mjs
 ```
+
+## Optional analytics and advertising
+
+Analytics and advertising are disabled by default. No third-party script or empty ad placement is rendered without both valid configuration and the visitor's consent. For a GitHub Pages deployment, add these **Actions variables** under **Settings → Secrets and variables → Actions → Variables**:
+
+- `GA_MEASUREMENT_ID` — a Google Analytics web stream ID such as `G-...`.
+- `ADSENSE_PUBLISHER_ID` — the approved AdSense client ID in `ca-pub-` format.
+- `ADSENSE_IN_ARTICLE_SLOT` and `ADSENSE_LIBRARY_SLOT` — numeric ad-unit IDs created in the approved account.
+
+Leave any integration's values unset to keep it disabled. These identifiers are public browser configuration, not secrets. After AdSense approval, replace the comments in `public/ads.txt` with the exact authorized-seller record supplied by Google; never publish a placeholder publisher ID. AdSense approval, consent-platform requirements, and regional policy configuration remain external account tasks.
+
+For local testing, set the same environment variables before `npm run build`. The build writes validated public values to `dist/site-config.js`; source defaults stay empty.
 
 ## Test
 

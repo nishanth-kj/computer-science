@@ -1,7 +1,6 @@
-import { Component, OnInit, signal } from "@angular/core";
+import { Component, OnInit, inject, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
-
-const CONSENT_KEY = "cs-cookie-consent";
+import { PrivacyPreferences } from "@/app/services/privacy-preferences";
 
 @Component({
   selector: "cs-cookie-banner",
@@ -11,30 +10,22 @@ const CONSENT_KEY = "cs-cookie-consent";
 })
 export class CookieBanner implements OnInit {
   readonly visible = signal(false);
+  private readonly privacy = inject(PrivacyPreferences);
 
   ngOnInit() {
-    try {
-      const consent = localStorage.getItem(CONSENT_KEY);
-      if (!consent) {
-        // Small delay so it smoothly slides in without blocking initial paint
-        setTimeout(() => this.visible.set(true), 800);
-      }
-    } catch {
-      // localStorage may be unavailable in private browsing
+    if (this.privacy.optionalServicesConfigured && !this.privacy.consent()) {
+      // Small delay so it smoothly slides in without blocking initial paint.
+      setTimeout(() => this.visible.set(true), 800);
     }
   }
 
   accept() {
-    try {
-      localStorage.setItem(CONSENT_KEY, "accepted");
-    } catch {}
+    this.privacy.choose("accepted");
     this.visible.set(false);
   }
 
   decline() {
-    try {
-      localStorage.setItem(CONSENT_KEY, "declined");
-    } catch {}
+    this.privacy.choose("declined");
     this.visible.set(false);
   }
 }

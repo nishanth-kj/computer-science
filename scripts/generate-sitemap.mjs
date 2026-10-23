@@ -1,7 +1,6 @@
 import fs from "node:fs";
 
 const ORIGIN = (process.env.SITE_ORIGIN || "https://neuro-kodes.github.io/computer-science").replace(/\/$/, "");
-const TODAY = new Date().toISOString().slice(0, 10);
 
 const nav = JSON.parse(fs.readFileSync("src/data/content/nav.json", "utf8"));
 const navRest = JSON.parse(fs.readFileSync("src/data/content/nav-rest.json", "utf8"));
@@ -54,7 +53,6 @@ ${unique
   .map(
     (u) => `  <url>
     <loc>${ORIGIN}${u.loc === "/" ? "/" : u.loc}</loc>
-    <lastmod>${TODAY}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>
   </url>`,
