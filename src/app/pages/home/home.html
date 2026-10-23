@@ -1,27 +1,27 @@
 <div class="lp">
-  <section class="hero">
+  <section class="hero" aria-labelledby="home-title">
     <div class="hero__copy">
-      <p class="kicker">Computer science handbook</p>
-      <h1>Learn the <em>whole</em> of computer science.</h1>
+      <p class="kicker">Computer Science Handbook</p>
+      <h1 id="home-title">Learn the <em>whole</em> of computer science.</h1>
       <p class="lede">
-        Programming, operating systems, networks, and databases — one catalog of pages you can finish.
+        A structured, free reference for programming, operating systems, networking, databases, and the ideas that connect them.
       </p>
       <div class="actions">
         <a routerLink="/library" class="btn btn--solid">Browse the catalog <cs-icon name="arrow" /></a>
-        <a [routerLink]="topicHref('what-is-programming')" class="btn btn--line">Start reading</a>
+        <a [routerLink]="topicHref('what-is-programming')" class="btn btn--line">Start with programming</a>
       </div>
-      <ul class="stats">
-        <li><b>{{ stats.pages }}</b> pages</li>
+      <ul class="stats" aria-label="Handbook coverage">
+        <li><b>{{ stats.pages }}</b> topic pages</li>
         <li><b>{{ stats.sections }}</b> fields</li>
       </ul>
     </div>
-    <div class="hero__panel" aria-label="Fields">
-      <p class="kicker">Fields</p>
+    <div class="hero__panel" aria-label="Explore the fields">
+      <p class="kicker">Explore the fields</p>
       <ol>
         @for (g of featured; track g.id) {
           <li>
             <a [routerLink]="g.href">
-              <span class="dot"></span>
+              <span class="dot" aria-hidden="true"></span>
               <span class="idx">{{ g.n }}</span>
               <strong>{{ g.title }}</strong>
               <span class="n">{{ g.count }}</span>
@@ -29,6 +29,81 @@
           </li>
         }
       </ol>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="fields-title">
+    <div class="block__head">
+      <p class="kicker">Explore by field</p>
+      <h2 id="fields-title">Start with a problem, follow the connections.</h2>
+      <p>Open a subject, learn the core terms, then follow its prerequisites and related ideas instead of studying isolated definitions.</p>
+    </div>
+    <div class="mosaic">
+      <a routerLink="/programming" class="tile tile--lg">
+        <span class="tile__n">01 / BUILD</span>
+        <h3>Programming</h3>
+        <p>Variables, functions, types, memory, debugging, and the design choices behind reliable code.</p>
+        <span class="tile__meta">Languages · Fundamentals · OOP</span>
+      </a>
+      <a routerLink="/os" class="tile">
+        <span class="tile__n">02 / RUN</span>
+        <h3>Operating systems</h3>
+        <p>Processes, threads, scheduling, synchronization, memory, and filesystems.</p>
+        <span class="tile__meta">Execution · Resources · Isolation</span>
+      </a>
+      <a routerLink="/networks" class="tile">
+        <span class="tile__n">03 / CONNECT</span>
+        <h3>Networking</h3>
+        <p>Packets, IP addressing, routing, transport, HTTP, and secure communication.</p>
+        <span class="tile__meta">Links · Protocols · Delivery</span>
+      </a>
+      <a routerLink="/dbms" class="tile">
+        <span class="tile__n">04 / STORE</span>
+        <h3>Databases</h3>
+        <p>Relational modeling, SQL, joins, indexes, transactions, and integrity.</p>
+        <span class="tile__meta">Data · Queries · Consistency</span>
+      </a>
+      <a routerLink="/library" class="tile">
+        <span class="tile__n">05 / DISCOVER</span>
+        <h3>Full library</h3>
+        <p>Search the catalog and move from a familiar topic to its prerequisites and neighbors.</p>
+        <span class="tile__meta">Browse all topic pages</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="method-title">
+    <div class="block__head">
+      <p class="kicker">A repeatable learning loop</p>
+      <h2 id="method-title">Understand it. Trace it. Test it.</h2>
+      <p>Use the same routine for a protocol, an algorithm, an operating-system mechanism, or a database feature.</p>
+    </div>
+    <div class="tri">
+      <article>
+        <span>01 / MODEL</span>
+        <h3>Build the mental model</h3>
+        <p>Define the mechanism, identify what it guarantees, and name the problem it exists to solve.</p>
+      </article>
+      <article>
+        <span>02 / TRACE</span>
+        <h3>Walk one example</h3>
+        <p>Follow a request, a few rows, a short sequence of operations, or a small scheduling timeline.</p>
+      </article>
+      <article>
+        <span>03 / CHECK</span>
+        <h3>Find the failure mode</h3>
+        <p>Test an edge case, compare the trade-offs, and explain why a plausible alternative would behave differently.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="finale" aria-labelledby="keep-free-title">
+    <p class="kicker">Open learning</p>
+    <h2 id="keep-free-title">Keep the core handbook free.</h2>
+    <p>Find a correction, suggest a missing explanation, or learn how reader support and clearly labelled educational sponsorships can help maintain the project.</p>
+    <div class="actions">
+      <a routerLink="/support" class="btn btn--solid">Support and partnerships <cs-icon name="arrow" /></a>
+      <a routerLink="/contact" class="btn btn--line">Send feedback</a>
     </div>
   </section>
 </div>

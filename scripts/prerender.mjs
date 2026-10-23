@@ -134,7 +134,27 @@ function renderStaticPageBody(page) {
       if (!items.length) return "";
       return `<li><a href="${escapeHtml(localHref(sectionUrl(section)))}">${escapeHtml(sectionTitle(section))}</a> — ${items.length} topics</li>`;
     }).filter(Boolean).join("");
-    return `<main style="max-width: 52rem; margin: 0 auto; padding: 3rem 1.5rem;"><h1>${escapeHtml(page.h1)}</h1><p>${escapeHtml(page.desc)}</p><p><a href="${escapeHtml(localHref("/library"))}">Browse every topic</a></p><section><h2>Start with these computer science topics</h2>${topicList(featured, true)}</section><section><h2>Explore the curriculum</h2><ul>${sectionLinks}</ul></section></main>`;
+    return `
+      <main style="max-width: 60rem; margin: 0 auto; padding: 3rem 1.5rem;">
+        <header>
+          <p>Computer Science Handbook</p>
+          <h1>${escapeHtml(page.h1)}</h1>
+          <p>${escapeHtml(page.desc)}</p>
+          <p><a href="${escapeHtml(localHref("/library"))}">Browse the full catalog</a> · <a href="${escapeHtml(localHref("/programming"))}">Start with programming</a></p>
+        </header>
+        <section><h2>Explore by field</h2><ul>
+          <li><a href="${escapeHtml(localHref("/programming"))}">Programming</a> — fundamentals, languages, and object-oriented design</li>
+          <li><a href="${escapeHtml(localHref("/os"))}">Operating systems</a> — processes, threads, scheduling, synchronization, and memory</li>
+          <li><a href="${escapeHtml(localHref("/networks"))}">Networking</a> — IP, routing, transport, HTTP, and secure communication</li>
+          <li><a href="${escapeHtml(localHref("/dbms"))}">Databases</a> — relational modeling, SQL, joins, indexes, and transactions</li>
+          <li><a href="${escapeHtml(localHref("/library"))}">Full topic library</a> — search across the complete catalog</li>
+        </ul></section>
+        <section><h2>Start with these topics</h2>${topicList(featured, true)}</section>
+        <section><h2>Explore the curriculum</h2><ul>${sectionLinks}</ul></section>
+        <section><h2>A repeatable learning method</h2><ol><li>Understand the definition and the guarantee the concept provides.</li><li>Trace a small example or state transition from input to result.</li><li>Test an edge case and explain the trade-off or failure mode.</li></ol></section>
+        <section><h2>Help keep the handbook useful</h2><p>Report corrections or discuss clearly labelled educational partnerships through the <a href="${escapeHtml(localHref("/support"))}">support and sponsorship page</a>.</p></section>
+      </main>
+    `
   }
   if (page.path === "/support") {
     const supportUrl = externalHttpsUrl("SUPPORT_URL");
@@ -153,8 +173,8 @@ const staticPages = [
   {
     path: "/",
     title: "Computer Science Handbook — Learn CS in Depth",
-    desc: "Free computer science guides with examples and diagrams for programming, algorithms, operating systems, networks, and databases.",
-    h1: "Learn computer science in depth",
+    desc: "Free computer science explanations, worked examples, and structured learning routes for programming, operating systems, networking, and databases.",
+    h1: "Learn the whole of computer science.",
   },
   {
     path: "/library",

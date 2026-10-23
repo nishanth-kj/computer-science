@@ -171,33 +171,55 @@
     ],
     "next": "l4-transport",
     "tags": [
-      "networks"
+      "networks",
+      "beginner",
+      "core-concept"
     ],
     "viz": "osi-explorer",
     "lab": "osi-explorer",
-    "what": "Layer 5 in OSI manages a conversation: establish, checkpoint, recover, tear down. TCP already gives a byte-stream session; HTTP/2 streams and TLS sessions absorbed more. RPC systems (and NetBIOS) made this layer visible.",
-    "why": "It is the layer people fail to name in interviews, and the right answer is: the function exists, the internet did not keep it as a separate protocol suite.",
-    "mental": "The phone call, not the words and not the copper: who is talking to whom, and can we resume.",
+    "what": "The OSI session layer (Layer 5) organizes dialogs between applications. Conceptually it can establish, manage, synchronize, recover, and end a conversation, including dialog control and checkpoints. In many Internet stacks, these responsibilities are implemented inside transport libraries or application protocols rather than in a separate session-layer protocol.",
+    "why": "The layer is useful as a model for the state of a conversation across multiple exchanges, especially when an application needs to resume work or control who may send at a given point. It also explains why the OSI model names a distinct layer even though TCP/IP does not map every OSI layer to a separate protocol suite.",
+    "mental": "Think of a long phone call with checkpoints: the network carries the words, but the application may also need to know which dialog is active, whose turn it is, and where a recoverable exchange can resume. The OSI layer is a conceptual responsibility, not a requirement that every real stack implement a product called a session layer.",
     "points": [
-      "Purpose: organize a dialog between two presentation entities.",
-      "PDU: data, sometimes with a session id.",
-      "Examples: RPC conversations, SMB sessions, TLS session resumption as a cousin.",
-      "On TCP/IP this is folded into TCP + the application."
+      "Session responsibilities can include establishing and ending a dialog, managing dialog direction, and defining synchronization points.",
+      "A checkpoint records a point at which a long-running exchange may be able to resume without repeating all earlier work; the application still needs a way to validate and recover state.",
+      "TCP provides a reliable ordered byte stream, but it does not define application-level dialog meaning, transaction boundaries, or restart checkpoints.",
+      "Applications and RPC frameworks often implement conversation state themselves; TLS session resumption is related terminology but is not a direct implementation of every OSI Layer 5 function.",
+      "Layer names are a conceptual model. Real protocol suites may combine, split, or omit those responsibilities."
     ],
     "usage": [
-      "RPC frameworks",
-      "SMB",
-      "Interview mnemonics"
+      "Designing resumable uploads, long-running RPC workflows, and multi-step protocols.",
+      "Explaining the distinction between transport connections and application-level sessions.",
+      "Reviewing whether a reconnect can safely resume an operation or needs an idempotent retry."
     ],
     "mistakes": [
-      "Inventing a session protocol that TCP already is"
+      "Claiming TCP provides application checkpoints or understands a business conversation; TCP delivers an ordered byte stream.",
+      "Treating TLS session resumption as identical to the complete OSI session-layer definition.",
+      "Assuming a lost connection means the remote application did not finish the last request; completion state must be checked or deduplicated."
     ],
     "interview": [
       {
-        "q": "Why does L5 feel empty on the internet?",
-        "a": "TCP’s connection is already a session. Applications added their own (HTTP/2 streams, TLS sessions).",
+        "q": "Why does Layer 5 seem less visible in the TCP/IP model?",
+        "a": "Many session-like responsibilities are handled by transport behavior, libraries, and application protocols rather than by a universally separate Internet session protocol.",
+        "level": "beginner"
+      },
+      {
+        "q": "How is an application session different from a TCP connection?",
+        "a": "A TCP connection is a transport channel. An application session represents higher-level state such as authentication, dialog progress, transaction identity, or resumable workflow state and may span multiple connections.",
         "level": "intermediate"
+      },
+      {
+        "q": "What must an application define to resume a conversation after a disconnect?",
+        "a": "It needs durable or reconstructible progress state, validation of the caller and operation, a safe resume point, and retry/deduplication rules so a request is not applied twice.",
+        "level": "advanced"
       }
+    ],
+    "steps": [
+      "An application starts a multi-step exchange and establishes identity and state for that conversation.",
+      "The peers exchange messages while tracking the current dialog state and any required ordering.",
+      "The application records a safe checkpoint after completing a consistent unit of work.",
+      "If the connection fails, the application reconnects and validates whether it can resume from the checkpoint or must restart.",
+      "When the operation finishes or is cancelled, the peers release conversation state and related resources."
     ]
   },
   {
