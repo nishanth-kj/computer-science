@@ -81,6 +81,7 @@ jobs:
           npx ng build --base-href "$BASE_HREF"
           node scripts/configure-site.mjs
           node scripts/prerender.mjs
+          node scripts/audit-built-site.mjs
           touch dist/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3
