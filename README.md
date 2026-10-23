@@ -48,6 +48,21 @@ Leave any integration's values unset to keep it disabled. These identifiers are 
 
 For local testing, set the same environment variables before `npm run build`. The build writes validated public values to `dist/site-config.js`; source defaults stay empty.
 
+## Monetization and trust
+
+This is a static educational site. Monetization should not compromise the free core curriculum or disguise paid recommendations as editorial advice.
+
+- **Display ads:** Google AdSense support is implemented but remains off until the account is approved and the Actions variables `ADSENSE_PUBLISHER_ID`, `ADSENSE_IN_ARTICLE_SLOT`, and `ADSENSE_LIBRARY_SLOT` are correctly configured. Never commit a fake publisher or slot ID. Configure a certified consent-management platform for regions where Google requires one.
+- **Affiliate recommendations:** add only relevant books, courses, developer tools, or hosting/services that have been personally reviewed. Identify affiliate links close to the recommendation and keep `/affiliate-disclosure` current. The project currently has no affiliate URLs or partner IDs configured.
+- **Digital products:** offer original revision sheets, interview-workbook PDFs, printable diagrams, or worked-problem packs through a reputable creator checkout. The checkout can be external; do not put payment secrets in frontend code.
+- **Sponsorships:** use `/support` to invite relevant education and developer-tool partnerships. Clearly label paid placements and do not sell control over educational conclusions.
+- **Reader support:** a donation checkout is not connected yet. Add a real GitHub Sponsors, Ko-fi, or other creator link only after the account is active and the exact destination is confirmed.
+- **Courses and workshops:** sell live interview preparation, small-group classes, or advanced labs once the content and capacity exist.
+- **Membership or paid progress features:** saved progress across devices, member-only practice sets, subscriptions, and course gating require a backend or a hosted membership platform. They cannot be secured by hiding content in this static bundle.
+- **Newsletter, job board, licensing, and team training:** these are later options after there is a real audience and a reliable process for delivering value. Newsletter signup needs an email provider and clear privacy handling.
+
+The order of work matters: make the content genuinely useful and indexable first, then test a small number of relevant affiliate/product offers, and only then optimize ads or sponsorships against measured traffic. Ad revenue is traffic-dependent and is not guaranteed.
+
 ## Test
 
 ```bash
