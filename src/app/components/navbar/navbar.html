@@ -4,16 +4,8 @@
       type="button"
       class="inline-flex size-8 items-center justify-center rounded-md text-fg hover:bg-surface-2 lg:hidden"
       [attr.aria-expanded]="sidebar.open()"
-      aria-label="Open library"
-      (click)="sidebar.show()"
-    >
-      <cs-icon name="panel" />
-    </button>
-    <button
-      type="button"
-      class="inline-flex size-8 items-center justify-center rounded-md text-fg hover:bg-surface-2 lg:hidden"
       aria-label="Open menu"
-      (click)="menu.set(true)"
+      (click)="sidebar.show()"
     >
       <cs-icon name="menu" />
     </button>
@@ -54,20 +46,4 @@
     </div>
   </div>
 </header>
-@if (menu()) {
-  <div class="fixed inset-0 z-50 lg:hidden">
-    <button type="button" class="absolute inset-0 bg-bg/70" aria-label="Close menu" (click)="menu.set(false)"></button>
-    <div class="relative z-10 flex h-full w-[min(20rem,88vw)] flex-col border-r border-border bg-surface p-4">
-      <div class="mb-4 flex items-center gap-2.5">
-        <img src="logo.svg" alt="Computer Science" class="size-6 rounded-md border border-border shrink-0" />
-        <span class="font-sans text-base font-semibold tracking-tight">Computer Science</span>
-      </div>
-      <nav class="flex flex-col gap-1">
-        @for (n of nav; track n.href) {
-          <a [routerLink]="n.href" class="rounded-md px-3 py-2 text-sm hover:bg-surface-2" (click)="menu.set(false)">{{ n.label }}</a>
-        }
-      </nav>
-    </div>
-  </div>
-}
 <cs-search [open]="search()" (openChange)="search.set($event)" />

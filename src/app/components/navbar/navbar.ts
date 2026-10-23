@@ -18,7 +18,6 @@ export class Navbar {
   readonly sidebar = inject(SidebarState);
   readonly nav = NAV;
   readonly search = signal(false);
-  readonly menu = signal(false);
 
   @HostListener("window:keydown", ["$event"])
   onKey(e: KeyboardEvent) {
@@ -35,7 +34,6 @@ export class Navbar {
       this.sidebar.toggle();
     } else if (e.key === "Escape") {
       this.search.set(false);
-      this.menu.set(false);
       this.sidebar.hideOverlay();
     }
   }
