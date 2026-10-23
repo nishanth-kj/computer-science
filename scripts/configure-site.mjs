@@ -15,7 +15,6 @@ const config = {
   adsensePublisherId: process.env.ADSENSE_PUBLISHER_ID?.trim() ?? "",
   adsenseSlots: {
     inArticle: process.env.ADSENSE_IN_ARTICLE_SLOT?.trim() ?? "",
-    libraryBanner: process.env.ADSENSE_LIBRARY_SLOT?.trim() ?? "",
   },
   supportUrl: validHttpsUrl(process.env.SUPPORT_URL ?? ""),
   digitalProductsUrl: validHttpsUrl(process.env.DIGITAL_PRODUCTS_URL ?? ""),
