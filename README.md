@@ -1,6 +1,6 @@
-# CS
+# Computer Science Handbook
 
-Static Angular website for computer science pages, learning paths, and interview questions. Frontend only — no server, no database, no auth.
+Static Angular website for computer science pages, learning paths, interactive labs, and interview preparation. The website is frontend-only and does not require an account.
 
 ## Run locally
 
@@ -17,58 +17,47 @@ Opens at [http://localhost:4200](http://localhost:4200).
 npm run build
 ```
 
-Static files land in `dist/` (`index.html` + `404.html` for hosts that fall back on missing paths).
+Static files land in `dist/`. The production build generates the sitemap, public site configuration, prerendered pages, and SEO/monetization audits.
 
-Serve that folder with any static host (GitHub Pages, Netlify, nginx, `npx serve dist`).
+## Deploy with GitHub Pages
 
-## Deploy (GitHub Pages)
+The workflow at `.github/workflows/deploy.yml` runs tests and a production build for pull requests. Pushes to `main` and manual workflow runs deploy the generated `dist/` directory to GitHub Pages.
 
-[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs on every push and pull request: it installs, runs the tests, and builds. On pushes to `main` (or a manual run from the Actions tab) it then publishes `dist/` to GitHub Pages.
-
-One-time setup: in the repository go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**.
-
-The deploy job reads the site's URL from the Pages settings, so the same workflow works for a project site (`https://<owner>.github.io/<repo>/`) and for a custom domain. It builds with the matching `--base-href` and passes the site URL to the sitemap and prerender scripts as `SITE_ORIGIN`. To test a sub-path build locally:
-
-```bash
-SITE_ORIGIN=https://<owner>.github.io/<repo> node scripts/generate-sitemap.mjs
-npx ng build --base-href /<repo>/
-node scripts/configure-site.mjs
-node scripts/prerender.mjs
-```
+For a project site, use the base path selected by GitHub Pages; for the custom domain, configure the Pages domain and DNS correctly. The workflow reads the Pages URL, sets the matching base href, and generates canonical URLs and the sitemap.
 
 ## Optional analytics and advertising
 
-Analytics and advertising are disabled by default. No third-party script or empty ad placement is rendered without both valid configuration and the visitor's consent. For a GitHub Pages deployment, add these **Actions variables** under **Settings → Secrets and variables → Actions → Variables**:
+Analytics and advertising are disabled by default. The site does not load the configured analytics or AdSense scripts until a visitor chooses to allow optional services. Configure only genuine IDs from accounts you control using GitHub **Settings → Secrets and variables → Actions → Variables**:
 
-- `GA_MEASUREMENT_ID` — a Google Analytics web stream ID such as `G-...`.
-- `ADSENSE_PUBLISHER_ID` — the approved AdSense client ID in `ca-pub-` format.
-- `ADSENSE_IN_ARTICLE_SLOT` — the numeric in-article ad-unit ID created in the approved account.
-- `SUPPORT_URL` — an active HTTPS donation/support page (for example, a creator platform you have actually enabled).
-- `DIGITAL_PRODUCTS_URL` — a live HTTPS storefront for original paid study materials.
-- `NEWSLETTER_URL` — a live HTTPS newsletter signup page from a provider you use.
+- `GA_MEASUREMENT_ID`: Google Analytics web stream ID such as `G-...`.
+- `ADSENSE_PUBLISHER_ID`: the publisher ID supplied by your AdSense account, in `ca-pub-0000000000000000` format.
+- `ADSENSE_IN_ARTICLE_SLOT`: the numeric in-article ad-unit ID generated in the approved AdSense account.
+- `SUPPORT_URL`: a live public HTTPS creator-support/donation page.
+- `DIGITAL_PRODUCTS_URL`: a live HTTPS storefront for original downloadable materials.
+- `NEWSLETTER_URL`: a live HTTPS signup page with an appropriate privacy notice.
 
-When `GA_MEASUREMENT_ID` is configured and a visitor accepts optional analytics, the support page records outbound click events for the support checkout, product store, newsletter, and sponsorship contact. The events are not sent before analytics is permitted; mark appropriate events as key events in GA4 after real clicks appear.
+The values are public browser configuration, not secrets. Do not put API keys, private payment tokens, or email-provider secrets in browser code or these public build variables.
 
-Leave any integration's values unset to keep it disabled. These identifiers are public browser configuration, not secrets. After AdSense approval, replace the comments in `public/ads.txt` with the exact authorized-seller record supplied by Google; never publish a placeholder publisher ID. AdSense approval, consent-platform requirements, and regional policy configuration remain external account tasks.
+### AdSense activation sequence
 
-For local testing, set the same environment variables before `npm run build`. The build writes validated public values to `dist/site-config.js`; source defaults stay empty.
+1. Improve the content and navigation and apply for AdSense in the account that owns the site.
+2. After the account supplies a genuine publisher ID, configure `ADSENSE_PUBLISHER_ID`. The build adds Google's publisher verification meta tag to `dist/index.html` and writes the matching authorized seller line to `dist/ads.txt`.
+3. After approval, create an in-article ad unit and configure `ADSENSE_IN_ARTICLE_SLOT`. Ads remain disabled unless both publisher and slot IDs are valid and the visitor allows optional services.
+4. Inspect `https://computer-science.site/ads.txt` and the homepage source after deploying. The build audit checks that the generated seller record and verification tag match the configured publisher ID.
+5. Complete Google's current privacy/consent requirements before enabling advertising for the regions you serve. The site's built-in banner is a basic first-party choice control, not a Google-certified CMP and does not create IAB TCF signals. Google requires a certified CMP integrated with the TCF when serving personalized ads to visitors in the EEA, UK, and Switzerland. Review Google's [publisher CMP requirements](https://support.google.com/adsense/answer/13554116). Do not treat passing the build as AdSense approval or legal compliance.
 
-## Monetization and trust
+Never use a placeholder publisher ID or ad-unit ID. Leave the variables empty until the real account values exist. The site cannot request AdSense approval, configure account-side settings, or guarantee acceptance automatically.
 
-This is a static educational site. Monetization should not compromise the free core curriculum or disguise paid recommendations as editorial advice.
+## Reader support and sponsorships
 
-- **Display ads:** Google AdSense support is implemented but remains off until the account is approved and the Actions variables `ADSENSE_PUBLISHER_ID` and `ADSENSE_IN_ARTICLE_SLOT` are correctly configured. Never commit a fake publisher or slot ID. Configure a certified consent-management platform for regions where Google requires one.
-- **Affiliate recommendations:** add only relevant books, courses, developer tools, or hosting/services that have been personally reviewed. Identify affiliate links close to the recommendation and keep `/affiliate-disclosure` current. The project currently has no affiliate URLs or partner IDs configured.
-- **Digital products:** offer original revision sheets, interview-workbook PDFs, printable diagrams, or worked-problem packs through a reputable creator checkout. The checkout can be external; do not put payment secrets in frontend code.
-- **Sponsorships:** use `/support` to invite relevant education and developer-tool partnerships. Clearly label paid placements and do not sell control over educational conclusions.
-- **Reader support:** a donation checkout is not connected yet. Add a real GitHub Sponsors, Ko-fi, or other creator link only after the account is active and the exact destination is confirmed.
-- **Courses and workshops:** sell live interview preparation, small-group classes, or advanced labs once the content and capacity exist.
-- **Membership or paid progress features:** saved progress across devices, member-only practice sets, subscriptions, and course gating require a backend or a hosted membership platform. They cannot be secured by hiding content in this static bundle.
-- **Newsletter, job board, licensing, and team training:** these are later options after there is a real audience and a reliable process for delivering value. Newsletter signup needs an email provider and clear privacy handling.
+The `/support` page explains reader support, the kinds of educational sponsorships considered, and how to contact the maintainer. No donation flow or paid sponsorship inventory is represented as active until a real destination or campaign is configured.
 
-The order of work matters: make the content genuinely useful and indexable first, then test a small number of relevant affiliate/product offers, and only then optimize ads or sponsorships against measured traffic. Ad revenue is traffic-dependent and is not guaranteed.
+- Reader support: configure `SUPPORT_URL` only after an account and destination are active.
+- Sponsorship inquiry: the page links to email; there are no invented visitor, reach, or impression claims. Use actual privacy-respecting analytics and current Search Console data when preparing a media kit.
+- Sponsored work: label paid placements near the content, preserve editorial independence, and do not sell favourable technical conclusions.
+- Digital products/newsletter: set the URLs only after the storefront or signup page is live.
 
-For the full revenue roadmap, content priorities, compliance checklist, and configuration sequence, see [docs/monetization-plan.md](docs/monetization-plan.md).
+Use [docs/sponsorship-media-kit.md](docs/sponsorship-media-kit.md) as an internal template. Fill in verified figures before sending it to any prospective sponsor. See [docs/monetization-plan.md](docs/monetization-plan.md) for the wider roadmap and policy checklist.
 
 ## Test
 
@@ -76,12 +65,4 @@ For the full revenue roadmap, content priorities, compliance checklist, and conf
 npm test
 ```
 
-Page specs live next to each screen in `src/app/pages/` (`home.spec.ts`, `graph.spec.ts`, …).
-
-## Layout
-
-- `src/content/` — topic, lab, and path data
-- `src/app/lib/` — theme, progress, sim helper, utilities
-- `src/app/components/` — layout, article, labs
-- `src/app/pages/` — routed pages
-- `src/app/app.routes.ts` — one route per section, topic, lab, and path
+Run the full unit test and build workflow before merging changes. A green build validates the generated site structure; it does not validate the live domain's DNS, AdSense approval, CMP certification, audience metrics, payment links, or sponsorship sales process.
