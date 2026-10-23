@@ -9,10 +9,10 @@ import {
 } from "./content";
 import type { SectionId } from "./content/types";
 
-export const SITE_NAME = "CS";
+export const SITE_NAME = "Computer Science Handbook";
 export const SITE_TAGLINE = "Learn computer science in depth";
 export const SITE_DESCRIPTION =
-  "The path to learn full computer science in depth — programming, systems, networks, databases, AI, theory, and ordered learning paths.";
+  "A free, structured computer science handbook with topic guides, code examples, visual explainers, prerequisites, and learning paths across programming, algorithms, operating systems, networking, databases, and AI.";
 export const SITE_IMAGE = "/og.jpg";
 export const SITE_THEME_COLOR = "#0c0e11";
 export const SITE_LOCALE = "en_US";
@@ -136,10 +136,30 @@ export function describePath(path: string): SeoPage {
 
   if (head === "contact" && rest.length === 0) {
     return page({
-      description: "How to report mistakes or propose pages for the computer science handbook.",
+      description: "Contact the Computer Science Handbook to report errors, suggest topics, or discuss educational partnerships.",
       breadcrumbs: [
         { name: SITE_NAME, path: "/" },
         { name: "Contact", path: "/contact" },
+      ],
+    });
+  }
+
+  if (head === "support" && rest.length === 0) {
+    return page({
+      description: "Ways to support the free Computer Science Handbook, report corrections, or discuss clearly labeled educational sponsorships.",
+      breadcrumbs: [
+        { name: SITE_NAME, path: "/" },
+        { name: "Support", path: "/support" },
+      ],
+    });
+  }
+
+  if (head === "affiliate-disclosure" && rest.length === 0) {
+    return page({
+      description: "Disclosure of affiliate relationships and the editorial principles used for any future affiliate recommendations.",
+      breadcrumbs: [
+        { name: SITE_NAME, path: "/" },
+        { name: "Affiliate Disclosure", path: "/affiliate-disclosure" },
       ],
     });
   }
