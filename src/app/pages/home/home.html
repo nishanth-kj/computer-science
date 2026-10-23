@@ -1,54 +1,22 @@
 <div class="lp">
   <section class="hero">
     <div class="hero__copy">
-      <p class="kicker">The complete path</p>
+      <p class="kicker">The complete catalog</p>
       <h1>Learn the <em>whole</em> of computer science.</h1>
       <p class="lede">
-        From the first program to compilers, kernels, networks, databases, and models that learn —
-        written in depth, in order, as pages you can finish.
+        From the first program to kernels, networks, and databases — written in depth, as pages you can finish.
       </p>
       <div class="actions">
-        <a routerLink="/paths/beginner" class="btn btn--solid">Start from zero <cs-icon name="arrow" /></a>
-        <a routerLink="/library" class="btn btn--line">Browse the catalog</a>
+        <a routerLink="/library" class="btn btn--solid">Browse the catalog <cs-icon name="arrow" /></a>
+        <a [routerLink]="topicHref('what-is-programming')" class="btn btn--line">Start reading</a>
       </div>
       <ul class="stats">
         <li><b>{{ stats.pages }}</b> pages</li>
         <li><b>{{ stats.sections }}</b> fields</li>
-        <li><b>{{ stats.paths }}</b> paths</li>
       </ul>
-      <div class="mt-8 max-w-md rounded-xl border border-border bg-surface-2/40 p-4">
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-2">
-            <span
-              class="inline-flex size-2 rounded-full"
-              [class.bg-emerald-500]="progress.visitedCount() > 0"
-              [class.bg-subtle]="progress.visitedCount() === 0"
-            ></span>
-            <span class="text-xs font-semibold tracking-wider uppercase text-fg">Your Progress</span>
-          </div>
-          <span class="font-mono text-xs font-medium tabular-nums text-muted">
-            {{ progress.visitedCount() }} / {{ progress.totalTopics }} ({{ progress.progressPercent() }}%)
-          </span>
-        </div>
-        <div class="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-surface border border-border/50">
-          <div
-            class="h-full bg-emerald-500 rounded-full transition-all duration-500"
-            [style.width.%]="progress.progressPercent()"
-          ></div>
-        </div>
-        <div class="mt-2.5 flex items-center justify-between text-xs text-muted">
-          @if (progress.visitedCount() > 0) {
-            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Keep it up!</span>
-            <a routerLink="/paths" class="text-link hover:underline">View learning paths &rarr;</a>
-          } @else {
-            <span>Progress updates as you read</span>
-            <a routerLink="/paths/beginner" class="text-link hover:underline">Start with beginner path &rarr;</a>
-          }
-        </div>
-      </div>
     </div>
-    <div class="hero__panel" aria-label="Curriculum spine">
-      <p class="kicker">{{ phase.title }} · The spine</p>
+    <div class="hero__panel" aria-label="Fields">
+      <p class="kicker">Fields</p>
       <ol>
         @for (g of featured; track g.id) {
           <li>
@@ -86,24 +54,9 @@
 
   <section class="block">
     <header class="block__head">
-      <p class="kicker">Map</p>
-      <h2>See how it connects.</h2>
-      <p>A slice of the catalog. Click a node to open that page.</p>
-    </header>
-    <cs-graph
-      [nodes]="graph.nodes"
-      [edges]="graph.edges"
-      layout="radial"
-      label="A slice of the catalog graph"
-      [legend]="['Dashed: prerequisite', 'Solid: related']"
-    />
-  </section>
-
-  <section class="block">
-    <header class="block__head">
-      <p class="kicker">{{ phase.title }}</p>
-      <h2>{{ phase.subtitle }}.</h2>
-      <p>{{ phase.blurb }} <a [routerLink]="'/' + phase.id" class="text-link hover:underline">See the whole phase &rarr;</a></p>
+      <p class="kicker">Catalog</p>
+      <h2>Four fields, one place.</h2>
+      <p>Everything lives in the library. Pick a field and start.</p>
     </header>
     <div class="mosaic">
       @for (g of featured; track g.id; let i = $index) {
@@ -124,18 +77,9 @@
     </header>
     <div class="found">
       @for (t of start; track t.slug; let i = $index) {
-        <a
-          [routerLink]="topicHref(t.slug)"
-          class="found__card"
-          [class.border-emerald-500/40]="progress.isVisited(t.slug)"
-        >
+        <a [routerLink]="topicHref(t.slug)" class="found__card">
           <div class="flex items-center justify-between">
             <span>{{ i + 1 }}</span>
-            @if (progress.isVisited(t.slug)) {
-              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-                <cs-icon name="check" /> Done
-              </span>
-            }
           </div>
           <h3>{{ t.title }}</h3>
           <p>{{ t.summary }}</p>
@@ -144,30 +88,12 @@
     </div>
   </section>
 
-  <section class="block">
-    <header class="block__head">
-      <p class="kicker">Paths</p>
-      <h2>Walk it in order.</h2>
-    </header>
-    <div class="ways">
-      @for (p of paths; track p.id) {
-        <a [routerLink]="'/paths/' + p.id" class="way">
-          <span>{{ p.audience }}</span>
-          <h3>{{ p.title }}</h3>
-          <p>{{ p.blurb }}</p>
-          <em>Open path <cs-icon name="arrow" /></em>
-        </a>
-      }
-    </div>
-  </section>
-
   <section class="finale">
     <p class="kicker">Begin</p>
     <h2>The whole degree, as pages.</h2>
-    <p>Start at zero, or jump a field. Depth is the point.</p>
+    <p>Open the library, or jump a field. Depth is the point.</p>
     <div class="actions">
-      <a routerLink="/paths/beginner" class="btn btn--solid">Start the path <cs-icon name="arrow" /></a>
-      <a routerLink="/library" class="btn btn--line">The library</a>
+      <a routerLink="/library" class="btn btn--solid">Open the library <cs-icon name="arrow" /></a>
     </div>
   </section>
 </div>

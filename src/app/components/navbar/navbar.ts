@@ -1,16 +1,11 @@
 import { Component, HostListener, inject, signal } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { ThemeService } from "@/lib/theme";
-import { ProgressService } from "@/lib/progress";
 import { Icon } from "@/app/components/ui/icon";
 import { SearchDialog } from "@/app/components/search/search";
 import { SidebarState } from "@/app/components/sidebar/sidebar-state";
 
-const NAV = [
-  { href: "/phase-2", label: "Phase 2" },
-  { href: "/library", label: "Library" },
-  { href: "/paths", label: "Paths" },
-] as const;
+const NAV = [{ href: "/library", label: "Library" }] as const;
 
 @Component({
   selector: "cs-navbar, cs-header",
@@ -21,7 +16,6 @@ const NAV = [
 export class Navbar {
   readonly theme = inject(ThemeService);
   readonly sidebar = inject(SidebarState);
-  readonly progress = inject(ProgressService);
   readonly nav = NAV;
   readonly search = signal(false);
   readonly menu = signal(false);

@@ -1,7 +1,5 @@
 import { NAV, NAV_BY_SLUG, type NavTopic } from "./nav";
 import { NAV_REST } from "./nav-rest";
-import { PATHS, PATH_BY_ID } from "./paths";
-import { PHASES, PHASE_BY_ID } from "./phases";
 import { SECTIONS, SECTION_BY_ID, SECTION_GROUPS, type SectionGroup } from "./sections";
 import { FLAGSHIP as CORE } from "./topics/flagship";
 import { FLAGSHIP as FUNDAMENTALS } from "./topics/fundamentals";
@@ -14,7 +12,7 @@ import { FLAGSHIP as MORE } from "./topics/more";
 import type { SectionId, Topic } from "./types";
 import { enrich } from "./enrich";
 
-export { PATHS, PATH_BY_ID, PHASES, PHASE_BY_ID, SECTIONS, SECTION_BY_ID, SECTION_GROUPS };
+export { SECTIONS, SECTION_BY_ID, SECTION_GROUPS };
 export type { Topic, SectionId };
 
 export const ALL_NAV: NavTopic[] = [...NAV, ...NAV_REST];
@@ -196,7 +194,6 @@ export function searchTopics(query: string, limit = 24): NavTopic[] {
 export const STATS = {
   pages: ALL_NAV.length,
   sections: SECTION_GROUPS.length,
-  paths: PATHS.length,
 };
 
 export function graphData() {

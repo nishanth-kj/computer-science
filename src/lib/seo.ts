@@ -1,7 +1,5 @@
 import {
   ALL_NAV,
-  PATH_BY_ID,
-  PHASES,
   SECTION_BY_ID,
   SECTION_GROUPS,
   getTopic,
@@ -65,33 +63,6 @@ export function describePath(path: string): SeoPage {
         { name: "Library", path: "/library" },
       ],
     });
-  }
-
-  if (head === "paths" && rest.length === 0) {
-    return page({
-      kind: "collection",
-      description: "Guided learning paths through computer science, including a beginner route, software engineering interview preparation, and a backend engineering route.",
-      breadcrumbs: [
-        { name: SITE_NAME, path: "/" },
-        { name: "Paths", path: "/paths" },
-      ],
-    });
-  }
-
-  if (head === "paths" && rest.length === 1) {
-    const learningPath = PATH_BY_ID[rest[0]];
-    if (learningPath) {
-      return page({
-        kind: "collection",
-        description: learningPath.blurb,
-        keywords: [learningPath.title, "learning path", "computer science"],
-        breadcrumbs: [
-          { name: SITE_NAME, path: "/" },
-          { name: "Paths", path: "/paths" },
-          { name: learningPath.title, path: `/paths/${learningPath.id}` },
-        ],
-      });
-    }
   }
 
   if ((head === "quiz" || head === "interview-mode") && rest.length === 0) {
@@ -160,19 +131,6 @@ export function describePath(path: string): SeoPage {
       breadcrumbs: [
         { name: SITE_NAME, path: "/" },
         { name: "Affiliate Disclosure", path: "/affiliate-disclosure" },
-      ],
-    });
-  }
-
-  const phase = PHASES.find((p) => p.id === head);
-  if (phase && rest.length === 0) {
-    return page({
-      kind: "collection",
-      description: phase.blurb,
-      keywords: [phase.title, phase.subtitle, "operating systems", "databases", "networks", "programming"],
-      breadcrumbs: [
-        { name: SITE_NAME, path: "/" },
-        { name: `${phase.title} · ${phase.subtitle}`, path: `/${phase.id}` },
       ],
     });
   }

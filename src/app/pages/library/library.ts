@@ -1,6 +1,6 @@
 import { Component, computed, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
-import { ALL_NAV, PHASES, SECTION_BY_ID, SECTION_GROUPS, graphData, topicHref } from "@/lib/content";
+import { ALL_NAV, SECTION_BY_ID, SECTION_GROUPS, graphData, topicHref } from "@/lib/content";
 import type { SectionId } from "@/lib/content/types";
 import { GraphView } from "@/app/components/ui/graph/graph";
 import { Pagination } from "@/app/components/ui/pagination/pagination";
@@ -17,10 +17,7 @@ const PAGE_SIZE = 20;
 export class Library {
   readonly topicHref = topicHref;
   readonly count = ALL_NAV.length;
-  readonly phases = PHASES.map((p) => ({
-    ...p,
-    groups: p.groups.flatMap((id) => SECTION_GROUPS.filter((g) => g.id === id)),
-  }));
+  readonly groups = SECTION_GROUPS;
   readonly SECTION_BY_ID = SECTION_BY_ID;
   readonly fields = SECTION_GROUPS.flatMap((g) => g.sections);
   readonly pageSize = PAGE_SIZE;

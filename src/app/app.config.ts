@@ -1,6 +1,7 @@
 import { ApplicationConfig, provideZonelessChangeDetection } from "@angular/core";
-import { provideRouter, TitleStrategy, withComponentInputBinding, withInMemoryScrolling } from "@angular/router";
+import { provideRouter, TitleStrategy, withComponentInputBinding, withInMemoryScrolling, withPreloading } from "@angular/router";
 import { routes } from "./app.routes";
+import { HubPreload } from "./hub-preload";
 import { SeoTitleStrategy } from "./seo";
 
 export const appConfig: ApplicationConfig = {
@@ -10,6 +11,7 @@ export const appConfig: ApplicationConfig = {
       routes,
       withComponentInputBinding(),
       withInMemoryScrolling({ scrollPositionRestoration: "enabled", anchorScrolling: "enabled" }),
+      withPreloading(HubPreload),
     ),
     { provide: TitleStrategy, useClass: SeoTitleStrategy },
   ],

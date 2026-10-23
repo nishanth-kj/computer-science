@@ -7,9 +7,7 @@ const ORIGIN = (process.env.SITE_ORIGIN?.trim() || fallbackOrigin).replace(/\/+$
 const nav = JSON.parse(fs.readFileSync("src/data/content/nav.json", "utf8"));
 const navRest = JSON.parse(fs.readFileSync("src/data/content/nav-rest.json", "utf8"));
 const topics = [...nav, ...navRest];
-const paths = JSON.parse(fs.readFileSync("src/data/content/paths.json", "utf8"));
 const sectionGroups = JSON.parse(fs.readFileSync("src/data/content/section-groups.json", "utf8"));
-const phases = JSON.parse(fs.readFileSync("src/data/content/phases.json", "utf8"));
 
 const PROGRAMMING = new Set(sectionGroups.find((g) => g.id === "programming")?.sections ?? []);
 
@@ -28,11 +26,9 @@ const sections = [...new Set(topics.map((t) => t.section))];
 const urls = [
   { loc: "/", priority: "1.0", changefreq: "weekly" },
   { loc: "/library", priority: "0.9", changefreq: "weekly" },
-  ...phases.map((p) => ({ loc: `/${p.id}`, priority: "0.9", changefreq: "weekly" })),
   ...sectionGroups
     .filter((g) => g.sections.length > 1)
     .map((g) => ({ loc: `/${g.id}`, priority: "0.8", changefreq: "weekly" })),
-  { loc: "/paths", priority: "0.8", changefreq: "weekly" },
   { loc: "/about", priority: "0.4", changefreq: "yearly" },
   { loc: "/privacy", priority: "0.3", changefreq: "yearly" },
   { loc: "/terms", priority: "0.3", changefreq: "yearly" },
@@ -41,7 +37,6 @@ const urls = [
   { loc: "/affiliate-disclosure", priority: "0.2", changefreq: "yearly" },
   ...sections.map((s) => ({ loc: sectionPath(s), priority: "0.8", changefreq: "weekly" })),
   ...topics.map((t) => ({ loc: topicPath(t.slug, t.section), priority: "0.7", changefreq: "monthly" })),
-  ...paths.map((p) => ({ loc: `/paths/${p.id}`, priority: "0.6", changefreq: "monthly" })),
 ];
 
 const seen = new Set();

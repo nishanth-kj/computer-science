@@ -6,7 +6,6 @@ const fallbackOrigin = /^[a-z0-9.-]+$/i.test(cname) ? `https://${cname}` : "http
 const ORIGIN = (process.env.SITE_ORIGIN?.trim() || fallbackOrigin).replace(/\/+$/, "");
 const sectionGroups = JSON.parse(fs.readFileSync("src/data/content/section-groups.json", "utf8"));
 const PROGRAMMING = new Set(sectionGroups.find((g) => g.id === "programming")?.sections ?? []);
-const phases = JSON.parse(fs.readFileSync("src/data/content/phases.json", "utf8"));
 const sectionMeta = Object.fromEntries(
   JSON.parse(fs.readFileSync("src/data/content/sections.json", "utf8")).map((s) => [s.id, s]),
 );
@@ -16,10 +15,6 @@ function sectionTitle(id) {
 }
 
 function parseNav(file) {
-  return JSON.parse(fs.readFileSync(file, "utf8"));
-}
-
-function parsePaths(file) {
   return JSON.parse(fs.readFileSync(file, "utf8"));
 }
 
@@ -44,7 +39,6 @@ const navItems = [
   ...parseNav("src/data/content/nav.json"),
   ...parseNav("src/data/content/nav-rest.json"),
 ];
-const pathsList = parsePaths("src/data/content/paths.json");
 const sectionsList = [...new Set(navItems.map((n) => n.section))];
 const navBySlug = new Map(navItems.map((topic) => [topic.slug, topic]));
 const topicDetails = new Map();
@@ -140,8 +134,7 @@ function renderStaticPageBody(page) {
       if (!items.length) return "";
       return `<li><a href="${escapeHtml(localHref(sectionUrl(section)))}">${escapeHtml(sectionTitle(section))}</a> — ${items.length} topics</li>`;
     }).filter(Boolean).join("");
-    const paths = pathsList.map((item) => `<li><a href="${escapeHtml(localHref(`/paths/${item.id}`))}">${escapeHtml(item.title)}</a> — ${escapeHtml(item.blurb)}</li>`).join("");
-    return `<main style="max-width: 52rem; margin: 0 auto; padding: 3rem 1.5rem;"><h1>${escapeHtml(page.h1)}</h1><p>${escapeHtml(page.desc)}</p><p><a href="${escapeHtml(localHref("/paths"))}">Choose a learning path</a> · <a href="${escapeHtml(localHref("/library"))}">Browse every topic</a></p><section><h2>Start with these computer science topics</h2>${topicList(featured, true)}</section><section><h2>Explore the curriculum</h2><ul>${sectionLinks}</ul></section><section><h2>Structured learning paths</h2><ul>${paths}</ul></section></main>`;
+    return `<main style="max-width: 52rem; margin: 0 auto; padding: 3rem 1.5rem;"><h1>${escapeHtml(page.h1)}</h1><p>${escapeHtml(page.desc)}</p><p><a href="${escapeHtml(localHref("/library"))}">Browse every topic</a></p><section><h2>Start with these computer science topics</h2>${topicList(featured, true)}</section><section><h2>Explore the curriculum</h2><ul>${sectionLinks}</ul></section></main>`;
   }
   if (page.path === "/support") {
     const supportUrl = externalHttpsUrl("SUPPORT_URL");
@@ -153,7 +146,7 @@ function renderStaticPageBody(page) {
     return `<main style="max-width: 48rem; margin: 0 auto; padding: 3rem 1.5rem;"><h1>Affiliate Disclosure</h1><p>As of the latest site update, this handbook does not intentionally publish affiliate links. If affiliate links are added in the future, they will be clearly identified near the recommendation and this page will be updated.</p><p>Recommendations should be relevant to computer science education and based on editorial usefulness, not solely on commission. Affiliate relationships will not change the price paid by the reader unless explicitly stated.</p><p>Questions about a partnership or recommendation can be sent to <a href="mailto:neurokodes@gmail.com">neurokodes@gmail.com</a>.</p></main>`;
   }
   const additional = page.path === "/contact" ? '<p><a href="mailto:neurokodes@gmail.com">neurokodes@gmail.com</a></p>' : "";
-  return `<main style="max-width: 48rem; margin: 0 auto; padding: 3rem 1.5rem;"><h1>${escapeHtml(page.h1)}</h1><p>${escapeHtml(page.desc)}</p>${additional}<p><a href="${escapeHtml(localHref("/library"))}">Browse the library</a> · <a href="${escapeHtml(localHref("/paths"))}">Learning paths</a></p></main>`;
+  return `<main style="max-width: 48rem; margin: 0 auto; padding: 3rem 1.5rem;"><h1>${escapeHtml(page.h1)}</h1><p>${escapeHtml(page.desc)}</p>${additional}<p><a href="${escapeHtml(localHref("/library"))}">Browse the library</a></p></main>`;
 }
 
 const staticPages = [
@@ -168,12 +161,6 @@ const staticPages = [
     title: "Library · CS",
     desc: "The full computer science catalog covering programming, operating systems, databases, and networking in depth.",
     h1: "Library",
-  },
-  {
-    path: "/paths",
-    title: "Learning Paths · CS",
-    desc: "Curated learning paths through computer science, from beginner to backend engineering.",
-    h1: "Learning Paths",
   },
   {
     path: "/about",
@@ -213,14 +200,7 @@ const staticPages = [
   },
 ];
 
-// Phase pages and multi-section group hubs (for example /programming) are real routes too.
 staticPages.push(
-  ...phases.map((p) => ({
-    path: `/${p.id}`,
-    title: `${p.title} · ${p.subtitle} · CS`,
-    desc: p.blurb,
-    h1: `${p.title}: ${p.subtitle}`,
-  })),
   ...sectionGroups
     .filter((g) => g.sections.length > 1)
     .map((g) => ({
@@ -315,21 +295,15 @@ function renderHtml(p, title, desc, bodyContent, schema, robots = "index, follow
       parts.forEach((part, index) => {
         currentPath += `/${part}`;
         const final = index === parts.length - 1;
-        const phase = phases.find((item) => item.id === part);
-        const learningPath = pathsList.find((item) => item.id === part);
         const navTopic = navBySlug.get(part);
         const group = sectionGroups.find((item) => item.id === part);
         const name = final
           ? title
-          : phase
-            ? `${phase.title}: ${phase.subtitle}`
-            : learningPath
-              ? learningPath.title
-              : navTopic
-                ? navTopic.title
-                : group
-                  ? group.title
-                  : sectionMeta[part]?.title ?? sectionTitle(part);
+          : navTopic
+            ? navTopic.title
+            : group
+              ? group.title
+              : sectionMeta[part]?.title ?? sectionTitle(part);
         itemListElement.push({
           "@type": "ListItem",
           position: index + 2,
@@ -386,40 +360,7 @@ for (const page of staticPages) {
   count++;
 }
 
-// 2. Learning Paths
-for (const p of pathsList) {
-  const routePath = `/paths/${p.id}`;
-  const routeDir = path.join("dist", "paths", p.id);
-  fs.mkdirSync(routeDir, { recursive: true });
-
-  const title = `${p.title} · Learning Path · CS`;
-  const desc = p.blurb;
-  const orderedTopics = p.slugs.map((slug) => navBySlug.get(slug)).filter(Boolean);
-  const body = `
-    <main style="max-width: 48rem; margin: 0 auto; padding: 3rem 1.5rem;">
-      <p>Learning Path · ${escapeHtml(p.audience)}</p>
-      <h1>${escapeHtml(p.title)}</h1>
-      <p>${escapeHtml(p.blurb)}</p>
-      <h2>Follow these topics in order</h2>
-      <ol>${orderedTopics.map((topic) => `<li>${topicLink(topic)} — ${escapeHtml(topic.summary)}</li>`).join("")}</ol>
-      <p><a href="${escapeHtml(localHref("/paths"))}">All learning paths</a> · <a href="${escapeHtml(localHref("/library"))}">Full library</a></p>
-    </main>
-  `;
-
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: p.title,
-    description: p.blurb,
-    url: `${ORIGIN}${routePath}`,
-  };
-
-  const html = renderHtml(routePath, title, desc, body, schema);
-  fs.writeFileSync(path.join(routeDir, "index.html"), html);
-  count++;
-}
-
-// 3. Sections
+// 2. Sections
 for (const s of sectionsList) {
   const routePath = sectionUrl(s);
   const routeDir = path.join("dist", routePath.replace(/^\//, ""));
