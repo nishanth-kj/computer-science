@@ -1,76 +1,71 @@
-# Monetization plan for Computer Science Handbook
+# Monetization plan for the Computer Science Handbook
 
-This plan is based on the current static Angular site. It has no account system, database, payment backend, or active affiliate/product account configured. A link can point to a third-party checkout, but paid access and cross-device progress cannot be secured in the static frontend alone.
+The website is a static Angular educational reference. It does not have an account system, payment backend, subscriber database, or active affiliate/product account configured. Third-party checkout links can be used without exposing payment secrets to the frontend, but access control and member-only content require a trusted provider or backend.
 
-## Best-fit revenue streams
+## Current priorities
 
-### 1. Original downloadable products
-Create material that saves learners time: OS/DBMS/networks revision sheets, interview question packs with worked answers, diagrams, DSA pattern guides, lab exercises, exam revision planners, or a combined computer-science study bundle. Sell through an external storefront and link to it with `DIGITAL_PRODUCTS_URL`. Start with one small product, solve a clear problem, then expand from customer feedback. Do not sell copied textbook material or content that is only a reformat of the free pages.
+### 1. Google AdSense
 
-### 2. Relevant affiliate recommendations
-Recommend books, courses, developer tools, hosting platforms, cloud labs, or exam-prep resources where a recommendation genuinely helps the reader. Use a partner program only after acceptance, test links, label commission-bearing links near the recommendation, and retain editorial independence. The site currently has no affiliate links or partner IDs. Update `/affiliate-disclosure` before adding any.
+The code supports a publisher verification meta tag, generated `ads.txt`, and consent-gated in-article ad slots. That is implementation support, not approval. Google reviews the actual site and may reject or request changes.
 
-### 3. Sponsorships
-Invite appropriate developer-tool companies, technical publishers, training providers, and education platforms to sponsor a clearly labelled site placement, learning path, interactive lab, newsletter issue, or original tutorial. Use the contact route on `/support`. Set a written policy: sponsorship cannot change technical conclusions, rankings, or the editorial direction of an explanation.
+Before applying, check that the site has original and useful content, clear navigation, a good reading experience, visible contact/about/privacy/terms pages, no broken routes, and no pages whose primary purpose is thin content or ads. The content-depth audit is a signal to guide editorial improvement, not an AdSense approval prediction.
 
-### 4. Reader support
-Connect an active creator-support page, such as a sponsorship or donation platform. Set `SUPPORT_URL` to its real HTTPS destination. That URL is hidden until configured; this repository does not assume that any support account already exists.
+Activation sequence:
 
-### 5. Display advertising
-The site has consent-gated AdSense slots, but AdSense is not enabled by default. Apply only after the site contains enough substantial, original content, its policies and navigation are in good shape, and Google has approved the site. Configure the actual publisher and slot IDs, publish the exact authorised-seller record in `ads.txt`, and complete any required consent-management setup. The code keeps ads off summary-only topic pages and the topic-directory page; don't expand ad placement just to increase ad impressions.
+1. Review Google's [site readiness guidance](https://support.google.com/adsense/answer/7299563) and improve high-value, summary-only topics.
+2. Apply to AdSense and add `computer-science.site` in the account that controls the domain.
+3. Once a real publisher ID is supplied, set `ADSENSE_PUBLISHER_ID` in GitHub Actions Variables. The production build will add `<meta name="google-adsense-account" content="ca-pub-…">` to the homepage and generate the corresponding `google.com, pub-…, DIRECT, f08c47fec0942fa0` record in `dist/ads.txt`. The ID in `ads.txt` is the `pub-…` form; it intentionally omits the `ca-` prefix.
+4. Deploy, then open `https://computer-science.site/ads.txt` and the homepage source to confirm both are publicly accessible and match the account. Check AdSense's site/ads.txt status and request review through the account.
+5. After account approval, create an in-article unit and set `ADSENSE_IN_ARTICLE_SLOT`. Do not add made-up values. Ads stay off unless valid publisher and slot values are configured and the visitor has allowed optional services.
+6. Complete required account-side privacy/consent settings before serving ads in the regions you target.
 
-### 6. Newsletter
-Publish a useful digest—one original explanation, one exercise, and one project or resource per issue. A newsletter can later earn from disclosed sponsor placements, affiliate recommendations, paid study packs, or course launches. Choose a provider, publish a privacy notice, and set `NEWSLETTER_URL` to a real HTTPS signup page. The link alone does not create an email list.
+**Consent limitation:** the site's current banner is a basic first-party opt-in/opt-out control. It is not a Google-certified consent management platform and does not send IAB Transparency and Consent Framework signals. Google requires a Google-certified CMP integrated with the TCF when serving personalised ads to users in the EEA, UK, and Switzerland. See [Google's current publisher requirements](https://support.google.com/adsense/answer/13554116). Configure a CMP that meets applicable requirements before targeting those regions; do not claim the current banner satisfies that requirement.
 
-### 7. Paid learning and services
-Offer live interview preparation, small-group classes, GATE/semester revision sessions, mentoring, code walkthroughs, or technical workshops. This can generate revenue before a large advertising audience exists, but requires delivery time and honest descriptions of what buyers receive. Use the existing contact email to test demand before building complex tooling.
+`public/ads.txt` is not a place for placeholders. The build generates a valid seller record from a correctly formatted publisher ID and emits only a comment when no valid ID is configured. A green build is not an AdSense approval or a live-domain verification.
 
-### 8. Courses and video
-Turn original high-value topics into lessons, screencasts, worked examples, quizzes, and short technical videos. Monetize through course sales, platform revenue where eligible, sponsorships, and relevant affiliate links. The website should remain the reference and search landing page that directs viewers to the full lesson.
+### 2. Sponsorships and reader support
 
-### 9. Membership and advanced practice
-Potential paid features include larger solved-problem banks, guided quizzes, spaced repetition, saved notes, mock interviews, and downloadable packs. Secure subscriptions, accounts, and member-only content through a trusted course/membership platform or a backend with server-side entitlement checks. Hiding links or content in Angular is not access control.
+The `/support` page explains the current support model and invites relevant technical/education partnerships. Reader donations remain disconnected until a real support destination is configured through `SUPPORT_URL`.
 
-### 10. Job and internship listings
-A curated, paid job board or sponsored listings may fit once developers and students return regularly. Verify postings, label sponsored roles, prohibit pay-to-pretend listings, and avoid launching until there is sufficient employer and learner demand.
+Good-fit sponsor concepts:
+- A clearly labelled sponsored tutorial or code walkthrough with a useful technical learning outcome.
+- A relevant learning-resource or interactive-lab sponsorship.
+- A clearly labelled developer-tool demonstration that includes limitations and alternatives.
 
-### 11. Curriculum licensing and team training
-Offer tailored learning paths, internal workshops, or licensed curriculum bundles to colleges, bootcamps, student clubs, and engineering teams. This is relationship-driven rather than pure website advertising; create a clear inquiry and delivery process first.
+Do not promise placement availability, impressions, click volume, traffic, or outcomes without evidence. Use [the media-kit template](sponsorship-media-kit.md) to prepare outreach, filling only verified numbers from recent GA4 and Search Console reports. If reliable traffic metrics are not available, say so and propose a small test campaign or a non-performance-based collaboration. Pricing should follow actual audience quality, delivery effort, and results—not invented reach.
 
-### 12. Paid quizzes, exam packs, and certificates
-Sell original practice tests, explanation-led exam packs, graded mock interviews, or completion certificates with real assessment. Do not imply that a self-issued certificate is accredited or equivalent to a recognised qualification.
+Every sponsorship must be disclosed at the placement, maintain editorial independence, and avoid claims the product cannot substantiate. Sponsor fit and content review come before payment. Never sell favourable conclusions or change technical rankings in exchange for money.
 
-### 13. Corporate and recruiting partnerships
-Companies may sponsor a systems-design path, interview-preparation series, technical lab, or hiring event. Maintain a clear distinction between education and hiring promotion; never sell candidate information or misrepresent a sponsor.
+### 3. Revenue paths to build later
 
-## Recommended order
+- Original downloadable revision packs, interview workbooks, diagrams, and solved exercises through a reputable storefront.
+- Relevant affiliate recommendations, disclosed immediately near the link and described on `/affiliate-disclosure`.
+- A newsletter, after there is a provider and a useful, consistent publication schedule.
+- Workshops, interview preparation, mentoring, and team training when delivery capacity is available.
+- Membership features only when a hosted membership provider or server-side backend can enforce entitlements. Hiding content in Angular is not access control.
 
-1. **Complete the content before scaling ads.** In the current source data, 68 of 195 topic routes have full authored material; the other 127 are summary-only. Expand the most useful missing topics with examples, diagrams, edge cases, sources, and genuinely answered questions. The build logs report this coverage.
-2. **Test one paid product.** A focused interview pack or revision bundle is easier to validate than a large course. Link the real storefront using `DIGITAL_PRODUCTS_URL`.
-3. **Add only a few high-confidence affiliate recommendations.** Use disclosure language beside the links and track clicks without collecting unnecessary personal data.
-4. **Ask for sponsorships after you can show evidence.** Prepare real visitor counts, high-performing topic pages, audience profile, and a concise media kit.
-5. **Apply for display ads when content and traffic justify it.** Approval and revenue are not guaranteed. Don't place ads on thin entries, empty pages, or controls that interfere with learning.
-6. **Build a newsletter and services only when you can deliver consistently.** Use them to turn one-off search traffic into returning learners.
+## Configuration
 
-## Configure the optional site links
+Set these values only when the associated account/destination is real and active:
 
-In GitHub: **Settings → Secrets and variables → Actions → Variables**, set only the real URLs you have launched:
+- `ADSENSE_PUBLISHER_ID`: AdSense client ID in `ca-pub-` plus 16 digits.
+- `ADSENSE_IN_ARTICLE_SLOT`: numeric slot ID created in AdSense.
+- `SUPPORT_URL`: active public HTTPS support/donation page.
+- `DIGITAL_PRODUCTS_URL`: active HTTPS storefront for original material.
+- `NEWSLETTER_URL`: active HTTPS newsletter signup page with an appropriate privacy notice.
+- `GA_MEASUREMENT_ID`: GA4 measurement ID, if analytics has been configured with appropriate notice/consent.
 
-- `SUPPORT_URL`: public support/donation page.
-- `DIGITAL_PRODUCTS_URL`: a live storefront for original material.
-- `NEWSLETTER_URL`: the live signup page.
-
-All must be HTTPS. After saving, deploy a commit or run the Pages workflow; the site build exposes only validated public URLs. Do not put private API keys, payment secrets, or email-provider credentials in these variables or browser code. Leave a URL empty until the destination exists.
+Do not put private API keys, payment secrets, or email-provider credentials in browser variables. The build validates public identifiers and HTTPS destinations.
 
 ## Measurement
 
-Use Search Console to track indexed URLs, organic impressions, clicks, CTR, and queries; use consent-respecting analytics for engaged visits and outbound-click events. Check performance by topic and device. Revenue reports should record product conversions, affiliate clicks/conversions, sponsor renewals, and ad revenue separately. Make decisions from actual data rather than estimated visitor counts.
+Use Search Console to monitor indexed pages, search impressions, clicks, CTR, and queries. Use consent-respecting analytics to understand engagement and outbound click events. Record product conversions, sponsorship delivery, and ad revenue separately. Share audience figures only when you can export and date the underlying report.
 
 ## Trust and policy checklist
 
 - Keep the core curriculum usable without payment.
-- Identify affiliate links and sponsored content clearly.
-- Never create fake partner links, fake scarcity, fake earnings claims, forced downloads, or ad-heavy doorway pages.
-- Keep privacy, terms, and affiliate disclosures consistent with the services actually enabled.
-- Configure a Google-certified consent-management platform when required for AdSense traffic and ad types in the EEA, UK, or Switzerland.
-- Review current platform, advertising, tax, and consumer-protection requirements before taking payments.
+- Keep privacy, terms, and disclosures aligned to services actually enabled.
+- Label sponsorships clearly on each placement and identify affiliate links close to the recommendation.
+- Never create fake partner IDs, placeholder seller records, fake scarcity, forced downloads, or ad-heavy doorway pages.
+- Configure a Google-certified CMP where required; review platform, advertising, tax, and consumer-protection rules before accepting payments.
+- Review the actual live domain after deployment. The build cannot verify DNS, domain ownership, account approval, consent-platform certification, traffic, or the quality of every lesson.

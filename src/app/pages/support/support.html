@@ -2,8 +2,8 @@
   <p class="kicker">Community</p>
   <h1>Support the Computer Science Handbook</h1>
   <p>
-    The handbook is free to read. Support can help fund careful explanations, worked examples,
-    accessible diagrams, corrections, and maintenance without putting essential learning behind a paywall.
+    The handbook is free to read. Contributions and carefully chosen partnerships help fund original explanations,
+    worked examples, accessible diagrams, corrections, and maintenance without putting essential learning behind a paywall.
   </p>
 
   <h2>Reader support</h2>
@@ -13,10 +13,29 @@
     </p>
   } @else {
     <p>
-      A support checkout is not connected yet. Once an active support page exists, set the GitHub Actions variable
-      <code>SUPPORT_URL</code> to its HTTPS URL to show it here.
+      A support checkout is not connected yet. After activating a creator-support page, set the GitHub Actions variable
+      <code>SUPPORT_URL</code> to its public HTTPS URL. No donation is collected on this site.
     </p>
   }
+
+  <h2>Educational sponsorships</h2>
+  <p>
+    We consider partnerships with technical publishers, developer-tool teams, and computer-science education providers.
+    Sponsorship opportunities may include a clearly labelled sponsored tutorial, a subject-specific learning resource,
+    or an educational tool demonstration that is genuinely useful to readers. Each proposal is reviewed for relevance
+    and fit; not every category will be available at every time.
+  </p>
+  <ul>
+    <li>Paid placements will be labelled clearly as sponsored.</li>
+    <li>Sponsors cannot buy favourable technical conclusions, rankings, or control of independent explanations.</li>
+    <li>Sponsored links and claims will be checked for relevance and presented without misleading guarantees.</li>
+    <li>Packages, dates, and pricing are discussed case by case. We do not publish audience or impression claims until they can be verified from current analytics.</li>
+  </ul>
+  <p>
+    To discuss a partnership, email <a href="mailto:neurokodes@gmail.com?subject=Computer%20Science%20Handbook%20sponsorship%20inquiry&amp;body=Hello%2C%0A%0AOrganization%3A%0ACampaign%20goal%3A%0ATarget%20audience%3A%0ATiming%3A%0ABudget%20range%20(optional)%3A%0AWebsite%20or%20campaign%20URL%3A%0A%0AThank%20you."
+    class="font-mono underline" (click)="trackClick('sponsorship_inquiry_click')">send a sponsorship inquiry</a>.
+    Include your organization, campaign goal, audience, timeline, campaign URL, and (optionally) budget range.
+  </p>
 
   <h2>Original study products</h2>
   @if (digitalProductsUrl) {
@@ -25,8 +44,8 @@
     </p>
   } @else {
     <p>
-      Downloadable revision sheets, printable diagrams, and worked interview packs are potential paid products.
-      No storefront is connected yet; configure <code>DIGITAL_PRODUCTS_URL</code> only after the checkout is live.
+      Original revision sheets, printable diagrams, and worked interview packs are potential future products.
+      No storefront is connected yet; configure <code>DIGITAL_PRODUCTS_URL</code> only after a live checkout exists.
     </p>
   }
 
@@ -34,28 +53,16 @@
   @if (newsletterUrl) {
     <p><a [href]="newsletterUrl" target="_blank" rel="noopener noreferrer" class="font-mono underline" (click)="trackClick('newsletter_signup_click')">Join the learning newsletter</a></p>
   } @else {
-    <p>No newsletter provider is connected yet. Set <code>NEWSLETTER_URL</code> after a privacy-reviewed signup page is ready.</p>
+    <p>No newsletter provider is connected yet. Set <code>NEWSLETTER_URL</code> only after a privacy-reviewed signup page is ready.</p>
   }
-
-  <h2>Educational sponsorships</h2>
-  <p>
-    We are open to relevant partnerships with technical book publishers, developer-tool teams, and computer-science
-    education providers. Sponsored placements would be clearly labelled and kept separate from editorial content.
-    Sponsorship does not buy control of explanations or rankings.
-  </p>
-  <p>
-    <a href="mailto:neurokodes@gmail.com?subject=Computer%20Science%20Handbook%20partnership" class="font-mono underline" (click)="trackClick('sponsorship_inquiry_click')">
-      Email about a partnership
-    </a>
-  </p>
 
   <h2>Help improve the content</h2>
   <ul>
-    <li>Report a factual error or a broken link through <a href="https://github.com/nishanth-kj/computer-science/issues" rel="noopener noreferrer" target="_blank">GitHub Issues</a>.</li>
+    <li>Report a factual error or broken link through <a href="https://github.com/nishanth-kj/computer-science/issues" rel="noopener noreferrer" target="_blank">GitHub Issues</a>.</li>
     <li>Suggest a new topic, worked example, or interactive lab in the <a href="https://github.com/nishanth-kj/computer-science" rel="noopener noreferrer" target="_blank">source repository</a>.</li>
-    <li>Share the <a routerLink="/library">topic library</a> with another learner.</li>
+    <li>Explore the <a routerLink="/paths">learning paths</a> or share the <a routerLink="/library">full topic library</a> with another learner.</li>
   </ul>
   <p>
-    See the <a routerLink="/affiliate-disclosure">affiliate disclosure</a> for how any future commercial recommendations will be identified.
+    See the <a routerLink="/affiliate-disclosure">affiliate disclosure</a> for how commercial recommendations and sponsored placements will be identified.
   </p>
 </article>

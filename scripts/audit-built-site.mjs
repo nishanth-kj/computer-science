@@ -39,6 +39,34 @@ if (!robots.split(/\r?\n/).some((line) => line.trim() === `Sitemap: ${expectedSi
   fail(`robots.txt must point to ${expectedSitemapUrl}`);
 }
 
+// A configured publisher must have matching verification metadata and seller record.
+// Without a valid ID, this build must not publish a fake/placeholder seller record.
+const rawPublisherId = process.env.ADSENSE_PUBLISHER_ID?.trim() ?? "";
+const publisherId = /^ca-pub-\d{16}$/.test(rawPublisherId) ? rawPublisherId : "";
+const indexHtml = fs.readFileSync("dist/index.html", "utf8");
+const adsTxtPath = "dist/ads.txt";
+if (!fs.existsSync(adsTxtPath)) {
+  fail("dist/ads.txt is missing");
+} else {
+  const adsTxt = fs.readFileSync(adsTxtPath, "utf8");
+  const sellerLine = publisherId
+    ? `google.com, ${publisherId.replace(/^ca-/, "")}, DIRECT, f08c47fec0942fa0`
+    : "";
+  if (publisherId && !adsTxt.split(/\r?\n/).some((line) => line.trim() === sellerLine)) {
+    fail("dist/ads.txt does not contain the exact seller record for ADSENSE_PUBLISHER_ID");
+  }
+  if (!publisherId && /^\s*google\.com,\s*pub-\d+/m.test(adsTxt)) {
+    fail("dist/ads.txt contains a seller ID but ADSENSE_PUBLISHER_ID is not valid/configured");
+  }
+}
+const verificationTags = [...indexHtml.matchAll(/<meta\s+name=["']google-adsense-account["']\s+content=["']([^"']+)["'][^>]*>/gi)];
+if (publisherId && !verificationTags.some((match) => match[1] === publisherId)) {
+  fail("dist/index.html is missing the AdSense verification meta tag for ADSENSE_PUBLISHER_ID");
+}
+if (!publisherId && verificationTags.length) {
+  fail("dist/index.html contains an AdSense verification tag without a valid ADSENSE_PUBLISHER_ID");
+}
+
 for (const loc of locations) {
   let url;
   try {
@@ -63,8 +91,8 @@ for (const loc of locations) {
 
   const html = fs.readFileSync(pageFile, "utf8");
   const titles = [...html.matchAll(/<title>[^<]+<\/title>/g)];
-  const descriptions = [...html.matchAll(/<meta\s+name="description"\s+content="[^"]*"\s*\/?>/g)];
-  const canonicals = [...html.matchAll(/<link\s+rel="canonical"\s+href="([^"]+)"\s*\/?>/g)];
+  const descriptions = [...html.matchAll(/<meta\s+name="description"\s+content="[^"]*"\s*\/?\s*>/g)];
+  const canonicals = [...html.matchAll(/<link\s+rel="canonical"\s+href="([^"]+)"\s*\/?\s*>/g)];
   if (titles.length !== 1) fail(`${loc} must have exactly one non-empty title`);
   if (descriptions.length !== 1) fail(`${loc} must have exactly one meta description`);
   if (canonicals.length !== 1) fail(`${loc} must have exactly one canonical link`);
@@ -76,5 +104,5 @@ for (const loc of locations) {
 if (process.exitCode) {
   console.error(`Checked ${locations.length} sitemap entries; one or more checks failed.`);
 } else {
-  console.log(`SEO build audit passed: ${locations.length} unique sitemap URLs map to prerendered pages with title, description, canonical, and matching robots sitemap.`);
+  console.log(`SEO/monetization audit passed: ${locations.length} unique sitemap URLs, canonical metadata, robots sitemap, and AdSense verification/ads.txt state are consistent.`);
 }
