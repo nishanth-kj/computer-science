@@ -1,0 +1,2110 @@
+[
+  {
+    "slug": "what-is-os",
+    "section": "os",
+    "title": "What is an OS?",
+    "summary": "The program that multiplexes hardware and offers processes a usable machine.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "kernel"
+    ],
+    "next": "kernel",
+    "tags": [
+      "os",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "The operating system is the trusted software layer between applications and hardware. It manages CPU time, memory, storage, devices, and isolation. Applications usually ask for services through libraries and system calls rather than controlling devices directly.",
+    "why": "The OS makes a shared machine safer and easier to use. Multiple programs can run without each one having to implement disk drivers, memory protection, or CPU scheduling. Its abstractions also let applications survive differences between hardware models.",
+    "mental": "Treat the OS as a resource manager and an abstraction layer. A process sees a private address space and files; underneath, the kernel maps those abstractions onto shared physical resources.",
+    "points": [
+      "The kernel executes privileged operations and enforces protection boundaries; system libraries provide convenient higher-level APIs.",
+      "Scheduling shares CPU time among runnable threads. Memory management maps virtual addresses to physical pages and enforces access permissions.",
+      "Filesystems translate names such as /home/user/report.txt into metadata and blocks on storage.",
+      "Device drivers and kernel subsystems coordinate access to hardware; user-space services handle many policies outside the kernel.",
+      "Isolation limits the damage one process can do to another, but bugs in privileged code can cross that boundary."
+    ],
+    "steps": [
+      "A program starts; the loader maps its executable and libraries into a process address space.",
+      "The process calls a library API such as open(); the library may issue a system call to request kernel work.",
+      "The kernel validates arguments and permissions, coordinates with a filesystem or device, and returns a result or error.",
+      "The scheduler gives runnable threads CPU time; timer interrupts let the kernel regain control."
+    ],
+    "usage": [
+      "Explaining how an application reaches a file or network socket.",
+      "Debugging permission errors, memory exhaustion, process stalls, and device failures.",
+      "Comparing operating-system designs and user-space versus kernel-space responsibilities."
+    ],
+    "mistakes": [
+      "Saying the whole OS is the kernel; many services and utilities run in user space.",
+      "Treating a system call and a library function as identical; a library call may never enter the kernel.",
+      "Assuming every resource can be isolated perfectly; shared kernel and hardware vulnerabilities still matter."
+    ],
+    "interview": [
+      {
+        "q": "What are the main responsibilities of an operating system?",
+        "a": "Resource management (CPU, memory, storage, devices), abstractions for applications, and protection/isolation.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is the difference between kernel space and user space?",
+        "a": "Kernel space has privileged execution and access to protected machine state. User space is restricted and requests privileged work through controlled interfaces.",
+        "level": "beginner"
+      },
+      {
+        "q": "Trace a file read from an application to storage.",
+        "a": "The application calls a library/API; a system call validates the request; the filesystem resolves the path and may request cached or device data; the result is copied or mapped back to the process. Actual I/O may be asynchronous or satisfied from cache.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "kernel",
+    "section": "os",
+    "title": "Kernel",
+    "summary": "The privileged core of the OS: syscalls, scheduling, virtual memory, drivers.",
+    "level": "intermediate",
+    "prereqs": [
+      "what-is-os"
+    ],
+    "related": [
+      "system-calls",
+      "user-mode"
+    ],
+    "next": "system-calls",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "The kernel is the part of an operating system that runs with elevated CPU privileges and owns core mechanisms such as scheduling, virtual memory, interrupt handling, and many device interfaces. Its exact structure varies: monolithic kernels, microkernels, and hybrid designs place responsibilities at different boundaries.",
+    "why": "Kernel code sits at a high-trust boundary. A kernel bug can crash the machine or undermine isolation for every process, so the kernel's mechanisms must validate inputs and keep shared state consistent.",
+    "mental": "Think of the kernel as a small, highly privileged control plane. User programs submit requests; the kernel decides whether they are legal, coordinates shared resources, and records the state needed to resume work.",
+    "points": [
+      "A syscall entry path changes execution from user privilege to a controlled kernel entry point.",
+      "The scheduler chooses a runnable thread and saves/restores execution state when switching contexts.",
+      "Virtual-memory code maintains address-space mappings and handles page faults.",
+      "Interrupt handlers react to hardware events; complex work is often deferred out of the immediate handler.",
+      "Kernel designs trade a smaller trusted core against communication overhead and the complexity of crossing protection boundaries."
+    ],
+    "steps": [
+      "A thread issues a syscall or receives an interrupt.",
+      "The CPU enters a defined kernel entry path and saves enough state to handle the event safely.",
+      "The kernel checks parameters, permissions, and current process state before changing shared resources.",
+      "The kernel returns a result, schedules another thread, or handles a fault that cannot be recovered."
+    ],
+    "usage": [
+      "Understanding why drivers, syscall interfaces, and scheduling are security-sensitive.",
+      "Using tools such as strace or perf to understand where applications spend time.",
+      "Evaluating kernel-module, microkernel, and user-space-driver trade-offs."
+    ],
+    "mistakes": [
+      "Calling every privileged OS service a separate executable; many fundamental mechanisms live in the kernel.",
+      "Assuming kernel code can trust user pointers or sizes; user-controlled input must be checked.",
+      "Assuming an interrupt handler should do unbounded work; long handling can increase latency."
+    ],
+    "interview": [
+      {
+        "q": "Why must the kernel validate syscall arguments?",
+        "a": "Arguments originate in a less-privileged context and may be malformed, unmapped, or changed concurrently. Validation preserves isolation and kernel invariants.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is the difference between an interrupt and a system call?",
+        "a": "A system call is a deliberate request by software through a defined interface; an interrupt is typically an asynchronous hardware event. Both can transfer control to privileged handling code.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why might a microkernel move drivers into user space?",
+        "a": "It can reduce the trusted kernel and contain some driver failures, at the cost of IPC, context switches, and more complex coordination.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "system-calls",
+    "section": "os",
+    "title": "System Calls",
+    "summary": "The trap into the kernel: the only legal way a user program asks for privileged work.",
+    "level": "intermediate",
+    "prereqs": [
+      "kernel"
+    ],
+    "related": [
+      "user-mode",
+      "kernel-mode"
+    ],
+    "next": "user-mode",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A system call is a controlled entry from a user process into the kernel to request an operation that needs privileged access, such as creating a process, reading a file, changing memory mappings, or sending data through a socket. The ABI specifies how the call number, arguments, return value, and errors are represented.",
+    "why": "System calls define a security and compatibility boundary. The kernel must treat arguments as untrusted, enforce permissions, and preserve a stable interface for user programs.",
+    "mental": "A syscall resembles a guarded service counter: cross the boundary with a request, let the kernel verify it and perform permitted work, then return a result. The boundary is explicit; not every ordinary function call crosses it.",
+    "points": [
+      "A high-level library function may wrap one syscall, several syscalls, or no syscall at all.",
+      "The CPU's syscall/trap instruction enters a configured privileged handler; the exact mechanism is architecture-specific.",
+      "The kernel validates pointers, lengths, file descriptors, permissions, and current state before using them.",
+      "Results and errors follow the platform ABI; POSIX interfaces often report -1 and set errno in the libc wrapper.",
+      "Frequent syscalls have overhead, so buffered I/O and batching can reduce boundary crossings when semantics allow."
+    ],
+    "steps": [
+      "In C, open(path, flags) is commonly a libc wrapper around the open/openat syscall family.",
+      "The wrapper places arguments in the platform-defined locations and enters the kernel.",
+      "The kernel resolves the path, checks credentials and mount/file permissions, then creates or returns a file descriptor.",
+      "The return value is translated into the API's result and error convention."
+    ],
+    "usage": [
+      "Reading syscall traces to diagnose unexpected disk, process, or network behavior.",
+      "Designing APIs that batch work instead of making thousands of tiny calls.",
+      "Understanding the boundary enforced by seccomp, capabilities, and permission checks."
+    ],
+    "mistakes": [
+      "Assuming each standard-library function maps one-to-one to a syscall.",
+      "Treating a file descriptor as a path; it is a process-local handle to an open kernel-managed object.",
+      "Passing user pointers to kernel code without safe copying or validation."
+    ],
+    "interview": [
+      {
+        "q": "Does printf always make a system call?",
+        "a": "No. It formats output in a user-space buffer and may call write() when the buffer flushes; behavior depends on buffering and the stream.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can two libc versions implement the same API with different syscalls?",
+        "a": "The user-facing API and kernel ABI are separate layers. A libc may use a newer syscall, fall back to an older one, or combine operations while preserving the documented API.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What security checks belong at a syscall boundary?",
+        "a": "Validate values and memory ranges, check object handles and permissions, handle concurrent changes safely, and return consistent errors without exposing kernel memory.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "user-mode",
+    "section": "os",
+    "title": "User Mode",
+    "summary": "Unprivileged execution. Page faults and syscalls are how you leave it.",
+    "level": "beginner",
+    "prereqs": [
+      "kernel"
+    ],
+    "related": [
+      "kernel-mode"
+    ],
+    "next": "kernel-mode",
+    "tags": [
+      "os",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "User mode is the restricted CPU privilege level in which ordinary applications run. Instructions that modify protected control state or directly access privileged devices are blocked, and memory protection prevents a process from freely reading or writing kernel memory or another process's private pages.",
+    "why": "User mode contains many application bugs. Without a privilege boundary, one faulty or malicious program could overwrite the kernel, steal another process's data, or reconfigure hardware.",
+    "mental": "Imagine each process gets a fenced workspace. Its instructions can manipulate its own permitted memory, but it must request a guarded operation to cross the fence. A fault or syscall transfers control to the operating system to decide what happens next.",
+    "points": [
+      "The CPU enforces privilege levels and access checks; these are hardware mechanisms, not just coding conventions.",
+      "A process has virtual-memory mappings whose permissions distinguish readable, writable, and executable regions.",
+      "A syscall intentionally enters the kernel; a page fault enters fault-handling code when an access cannot proceed as requested.",
+      "Not every fault is fatal: a demand-paging fault can be resolved by mapping a page, while an invalid access may terminate the process.",
+      "User mode limits damage but does not eliminate vulnerabilities in browsers, runtimes, or applications."
+    ],
+    "steps": [
+      "An application reads memory it owns; the CPU checks the mapping and permissions.",
+      "The application invokes a syscall to open a protected file.",
+      "The CPU transfers control to the kernel entry point, which checks credentials and requested access.",
+      "The kernel returns a file descriptor or an error; the program continues in user mode."
+    ],
+    "usage": [
+      "Reasoning about process isolation and least privilege.",
+      "Understanding why device access generally goes through drivers and kernel interfaces.",
+      "Distinguishing a recoverable page fault from an invalid memory access."
+    ],
+    "mistakes": [
+      "Saying user mode cannot access any kernel functionality; it can request services through syscalls.",
+      "Assuming the OS alone enforces memory permissions; the CPU's MMU participates in enforcement.",
+      "Assuming user mode makes an application inherently trustworthy or safe."
+    ],
+    "interview": [
+      {
+        "q": "Can user-mode code read kernel memory directly?",
+        "a": "Normally no: hardware-enforced page permissions and privilege rules block such access. A kernel vulnerability can undermine that boundary.",
+        "level": "beginner"
+      },
+      {
+        "q": "What happens on a page fault?",
+        "a": "The CPU transfers control to the OS. The kernel may bring a page into memory or fix a valid mapping; an invalid or disallowed access typically results in an error or process signal.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "kernel-mode",
+    "section": "os",
+    "title": "Kernel Mode",
+    "summary": "Privileged execution: the CPU will honor instructions that touch control registers and I/O.",
+    "level": "intermediate",
+    "prereqs": [
+      "user-mode"
+    ],
+    "related": [
+      "system-calls"
+    ],
+    "next": "processes",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Kernel mode is a processor privilege state in which trusted OS code can execute privileged instructions and manage protected CPU state. On common systems, kernel code controls page tables, interrupt configuration, scheduling, and hardware interfaces subject to CPU and platform rules.",
+    "why": "Privileged instructions must be tightly controlled because mistakes can destabilize or compromise the entire machine. The operating system confines most application logic to user mode and enters kernel mode only through defined events.",
+    "mental": "Kernel mode is not a separate computer; it is a more privileged execution state on the same CPU. A transition changes what the CPU permits, while the kernel still must follow correct invariants and handle unsafe input.",
+    "points": [
+      "System calls, exceptions, and interrupts are controlled entry paths into privileged handling code.",
+      "The processor and memory-management unit enforce permissions; software cannot safely simulate these protections alone.",
+      "Kernel-mode bugs can corrupt shared state or crash the system, so kernel code needs stronger validation and review.",
+      "The return path restores the user context or schedules a different runnable thread.",
+      "Privilege level and process identity are distinct: a kernel thread can run without a user process's ordinary address space."
+    ],
+    "steps": [
+      "A thread runs application code in user mode.",
+      "A timer interrupt occurs and transfers control to the kernel's interrupt handler.",
+      "The kernel records state and may decide another thread should run.",
+      "The return path restores the chosen thread and resumes its execution with the appropriate privilege."
+    ],
+    "usage": [
+      "Explaining interrupt-driven scheduling and protected device access.",
+      "Reasoning about why kernel drivers require stronger trust.",
+      "Debugging user/kernel boundary issues in low-level code."
+    ],
+    "mistakes": [
+      "Equating kernel mode with administrator permissions inside an application; these are different concepts.",
+      "Assuming kernel code can ignore validation because it is privileged.",
+      "Assuming every kernel-mode entry is caused by a system call; interrupts and exceptions are also entry paths."
+    ],
+    "interview": [
+      {
+        "q": "What is the risk of a kernel-mode bug?",
+        "a": "It can affect shared kernel state, bypass isolation, or crash the system, unlike a typical contained user-process failure.",
+        "level": "beginner"
+      },
+      {
+        "q": "Does a system call always imply a context switch to another process?",
+        "a": "No. It changes privilege and enters the kernel, but the same thread may continue after the call; scheduling another thread is a separate decision.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "threads",
+    "section": "os",
+    "title": "Threads",
+    "summary": "A schedulable execution context. Threads in one process share an address space.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "synchronization",
+      "context-switching"
+    ],
+    "next": "process-states",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A thread is an independently schedulable flow of execution with its own registers, program counter, stack, and thread-local state. Threads belonging to the same process normally share code, heap, and open process resources, while separate processes typically have separate virtual address spaces.",
+    "why": "Threads can improve responsiveness and throughput when work can overlap, but shared memory introduces races and synchronization costs. A bug in one thread can corrupt shared process state used by all other threads.",
+    "mental": "One process is a workshop; threads are workers sharing the tools and materials. Each worker has a separate current task and stack, but they must coordinate when touching the same mutable object.",
+    "points": [
+      "Threads in one process share the address space but do not share each other's register state or ordinary stacks.",
+      "Concurrency means operations overlap in time; parallelism means multiple operations execute simultaneously on different cores.",
+      "Threads can block independently on I/O, locks, timers, and other wait conditions.",
+      "Synchronization establishes ordering or mutual exclusion around shared invariants.",
+      "More threads do not guarantee faster execution; contention, memory bandwidth, and scheduling overhead can dominate."
+    ],
+    "steps": [
+      "Two threads increment a shared counter.",
+      "Each reads the counter's old value before either write is complete.",
+      "Both compute the same next value and one update is lost without synchronization.",
+      "Use a mutex, atomic operation, or message-passing design appropriate to the invariant."
+    ],
+    "usage": [
+      "Running independent I/O tasks concurrently.",
+      "Keeping a user interface responsive while background work proceeds.",
+      "Implementing bounded worker pools for request or job processing."
+    ],
+    "mistakes": [
+      "Saying every thread has a separate process address space.",
+      "Assuming code with no explicit locks is thread-safe because the test passed once.",
+      "Creating unbounded threads without considering memory, scheduling, and downstream capacity."
+    ],
+    "interview": [
+      {
+        "q": "Which resources are commonly shared by threads in one process?",
+        "a": "Code, heap, global variables, and process resources such as file descriptors are commonly shared; stacks and register state are per-thread.",
+        "level": "beginner"
+      },
+      {
+        "q": "When would multiple processes be preferable to threads?",
+        "a": "When stronger fault or security isolation is worth the extra communication and memory-management cost, or when components have different privilege boundaries.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How would you protect a shared counter?",
+        "a": "Use a mutex around the read-modify-write operation or an atomic increment if that operation matches the required semantics.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "process-states",
+    "section": "os",
+    "title": "Process States",
+    "summary": "New, ready, running, waiting, terminated — and the events that move a process between them.",
+    "level": "beginner",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "cpu-scheduling",
+      "context-switching"
+    ],
+    "next": "context-switching",
+    "tags": [
+      "os",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A process or thread state describes what it is currently able to do from the scheduler's perspective. Common textbook states are new, ready, running, waiting/blocked, and terminated; real operating systems use richer state machines and distinguish runnable tasks from tasks sleeping in different ways.",
+    "why": "The state explains why a task is not currently using the CPU. A ready task can run when scheduled; a blocked task needs an event such as I/O completion or lock availability before it becomes runnable.",
+    "mental": "Imagine a queue at a service desk. Ready tasks are waiting for CPU time; a running task is being served; a blocked task is waiting for an external event and should not occupy the ready queue.",
+    "points": [
+      "Ready means eligible to run, not currently executing.",
+      "Running means the task currently owns a CPU execution slot.",
+      "Blocked/waiting means the task awaits an event and usually cannot make progress merely by receiving more CPU time.",
+      "Preemption moves a running task back to ready when its time slice ends or a higher-priority task should run.",
+      "Termination releases or schedules cleanup of resources, but process accounting and child reaping may continue."
+    ],
+    "steps": [
+      "A process becomes ready after creation and successful initialization.",
+      "The scheduler dispatches it, moving it to running.",
+      "It requests blocking I/O, so the kernel marks it waiting and runs another task.",
+      "When I/O completes, the task becomes ready; it runs again when selected."
+    ],
+    "usage": [
+      "Interpreting task listings and scheduler traces.",
+      "Calculating waiting time, turnaround time, and response time in scheduling problems.",
+      "Diagnosing a service where tasks are blocked on disk, locks, or network I/O."
+    ],
+    "mistakes": [
+      "Treating ready and waiting as synonyms; only ready tasks are eligible for CPU dispatch.",
+      "Assuming every running task voluntarily yields; timer interrupts allow preemption.",
+      "Confusing a process with a single thread; multithreaded processes have several schedulable execution contexts."
+    ],
+    "interview": [
+      {
+        "q": "What event moves a blocked task to ready?",
+        "a": "Completion of its awaited event, such as I/O, a timer, or a synchronization condition becoming true.",
+        "level": "beginner"
+      },
+      {
+        "q": "A running task's time slice expires. What is its next state?",
+        "a": "Usually ready if it remains runnable; the scheduler can select it again later.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "context-switching",
+    "section": "os",
+    "title": "Context Switching",
+    "summary": "Saving one thread's registers and loading another's so the CPU can change jobs.",
+    "level": "intermediate",
+    "prereqs": [
+      "threads"
+    ],
+    "related": [
+      "cpu-scheduling"
+    ],
+    "next": "cpu-scheduling",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A context switch changes which thread or process executes on a CPU. The OS saves the outgoing execution context, selects another runnable context, and restores its saved state. A switch may happen after a timer interrupt, blocking syscall, exception, or wake-up that changes scheduling decisions.",
+    "why": "Context switching enables multitasking but is not free. Register save/restore, scheduler work, cache disruption, and address-space changes can add latency. Frequent switching may reduce useful throughput.",
+    "mental": "Think of a CPU as a worker with a notebook. To change jobs, the OS records the current job's place and working state, then loads the next job's notes. The CPU continues from that job's saved instruction rather than starting over.",
+    "points": [
+      "A switch between threads in one process may keep the same address space; switching processes can require address-space changes.",
+      "Kernel entry does not automatically mean another thread is selected; many syscalls return to the same caller.",
+      "Switching cost includes direct save/restore and indirect effects such as cold caches and translation lookaside buffer pressure.",
+      "Blocking I/O may cause the caller to yield until an event wakes it.",
+      "Latency-sensitive systems must balance fairness, throughput, and switch frequency."
+    ],
+    "steps": [
+      "Thread A runs until its time slice expires.",
+      "The timer interrupt transfers control to the kernel, which records A's state.",
+      "The scheduler selects ready thread B and restores B's saved registers and stack pointer.",
+      "B resumes at its previous instruction; A remains ready unless it was blocked or terminated."
+    ],
+    "usage": [
+      "Explaining why thread count affects latency and throughput.",
+      "Interpreting scheduler profiles and voluntary versus involuntary context switches.",
+      "Choosing worker-pool sizes to reduce excess scheduling overhead."
+    ],
+    "mistakes": [
+      "Claiming every syscall causes a context switch to another task.",
+      "Ignoring cache effects and considering only register save/restore.",
+      "Using high thread counts as a substitute for measuring concurrency and contention."
+    ],
+    "interview": [
+      {
+        "q": "Does every mode switch cause a context switch?",
+        "a": "No. A user-to-kernel mode transition can return to the same thread. A context switch changes the scheduled execution context.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can a process switch cost more than switching threads in the same process?",
+        "a": "It may change address-space mappings and cause more TLB/cache disruption, in addition to the scheduling and register work.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "fcfs",
+    "section": "os",
+    "title": "FCFS",
+    "summary": "First-come, first-served. Simple, convoy-prone, no preemption required.",
+    "level": "beginner",
+    "prereqs": [
+      "cpu-scheduling"
+    ],
+    "related": [
+      "sjf",
+      "round-robin"
+    ],
+    "next": "sjf",
+    "tags": [
+      "os",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "First-Come, First-Served (FCFS) is a non-preemptive CPU scheduling policy that selects ready jobs in arrival order. Once a job starts, it typically runs until it blocks or completes, even if a shorter job arrives while it is running.",
+    "why": "FCFS is easy to implement and has predictable queue order, but long CPU bursts can keep short jobs waiting. This convoy effect can harm average waiting time and responsiveness, especially when short interactive jobs sit behind long CPU-bound work.",
+    "mental": "FCFS is a single checkout line with no express lane. Everyone keeps their place, but a large order delays everyone behind it.",
+    "points": [
+      "Waiting time is the time before a process first receives the CPU, not its total turnaround time.",
+      "For non-preemptive FCFS with all jobs arriving at time zero, waiting times are cumulative preceding burst times.",
+      "Arrival order matters when jobs arrive at different times.",
+      "The convoy effect arises when many short jobs wait behind a long job.",
+      "FCFS can still be reasonable when simplicity and fairness of queue order matter more than minimizing average wait."
+    ],
+    "steps": [
+      "Jobs A, B, C arrive in order with CPU bursts 6, 2, 1.",
+      "FCFS executes A from 0–6, B from 6–8, and C from 8–9.",
+      "Waiting times are A=0, B=6, C=8; average waiting time is 14/3.",
+      "Compare with SJF, which changes the order when all jobs are available at time zero."
+    ],
+    "usage": [
+      "Solving GATE and OS scheduling table problems.",
+      "Reasoning about FIFO queues in simple batch systems.",
+      "Explaining convoy effects and why response-time requirements may need another policy."
+    ],
+    "mistakes": [
+      "Confusing waiting time with turnaround time; turnaround also includes execution time.",
+      "Reordering jobs by burst time while claiming to use FCFS.",
+      "Ignoring release/arrival times in scheduling timelines."
+    ],
+    "interview": [
+      {
+        "q": "Why is FCFS non-preemptive in the usual textbook model?",
+        "a": "The selected job keeps the CPU until it blocks or finishes; the scheduler does not interrupt it merely because a shorter job arrives.",
+        "level": "beginner"
+      },
+      {
+        "q": "For bursts 6, 2, 1 arriving together, what is average waiting time?",
+        "a": "FCFS waiting times are 0, 6, and 8, so the average is 14/3 time units.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "sjf",
+    "section": "os",
+    "title": "SJF",
+    "summary": "Shortest job first. Optimal average waiting time if you magically know run times.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu-scheduling"
+    ],
+    "related": [
+      "fcfs",
+      "priority-scheduling"
+    ],
+    "next": "round-robin",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Shortest Job First (SJF) chooses the ready process with the smallest next CPU burst. The classic non-preemptive form lets that process run until it blocks or completes. The preemptive variant is shortest remaining time first (SRTF), which may interrupt a running job when a shorter remaining job arrives.",
+    "why": "With known burst lengths and all jobs available together, SJF minimizes average waiting time. Real systems rarely know a job's next burst exactly, and repeatedly favoring short jobs can starve long jobs under an endless stream of arrivals.",
+    "mental": "At a queue of tasks, serve the shortest task first to reduce the time others spend waiting behind long work. The policy is mathematically attractive when the size estimates are accurate.",
+    "points": [
+      "Non-preemptive SJF compares the next burst of ready jobs only when the CPU becomes available.",
+      "SRTF compares remaining CPU time and may preempt the current job.",
+      "Average waiting time can improve greatly when a long burst otherwise blocks many short bursts.",
+      "Operating systems estimate bursts using history or use other policies because exact future runtimes are unknown.",
+      "Starvation risk grows when short jobs continue to arrive before long jobs can be selected."
+    ],
+    "steps": [
+      "Three jobs arrive at time zero with bursts A=6, B=2, C=1.",
+      "SJF order is C (0–1), B (1–3), A (3–9).",
+      "Waiting times are C=0, B=1, A=3; average waiting time is 4/3.",
+      "Under SRTF, recalculate the remaining time at each arrival because the order can change."
+    ],
+    "usage": [
+      "Comparing policies using average waiting and turnaround time.",
+      "Understanding burst prediction and short-job bias.",
+      "Explaining the distinction between SJF and SRTF."
+    ],
+    "mistakes": [
+      "Saying SJF is always best for every objective; it optimizes average waiting under specific assumptions.",
+      "Confusing a new burst length with remaining execution time in SRTF.",
+      "Ignoring arrival times or starvation when interpreting a scheduling example."
+    ],
+    "interview": [
+      {
+        "q": "Under what assumptions does SJF minimize average waiting time?",
+        "a": "For a set of jobs available together with known CPU burst lengths, the non-preemptive SJF ordering minimizes average waiting time.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How does SRTF differ from SJF?",
+        "a": "SRTF is preemptive: a new arrival with a shorter remaining burst can preempt the currently running job.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "priority-scheduling",
+    "section": "os",
+    "title": "Priority Scheduling",
+    "summary": "Run the highest-priority ready thread. Starvation and aging come with it.",
+    "level": "intermediate",
+    "prereqs": [
+      "cpu-scheduling"
+    ],
+    "related": [
+      "round-robin"
+    ],
+    "next": "synchronization",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Priority scheduling selects the ready task with the best assigned priority. A system may use fixed or dynamic priorities and can be preemptive or non-preemptive. Priority direction is convention-specific: in some systems a lower numeric value means higher priority.",
+    "why": "The policy is useful when some work is more urgent, such as real-time events or latency-sensitive services. It can also starve low-priority work if high-priority tasks continue arriving.",
+    "mental": "Priority is a fast-pass rule in a queue. It gives important tasks short waits but needs a fairness policy so less urgent tasks do not wait forever.",
+    "points": [
+      "Priority may be based on importance, deadlines, observed behavior, or resource needs.",
+      "Preemptive priority scheduling can interrupt a running lower-priority task.",
+      "Starvation happens when lower-priority work is repeatedly postponed.",
+      "Aging gradually increases waiting tasks' priority to restore progress.",
+      "Priority inversion occurs when a high-priority task waits for a resource held by a lower-priority task; priority inheritance can mitigate it."
+    ],
+    "steps": [
+      "A low-priority task starts running.",
+      "A higher-priority task becomes ready and preempts it in a preemptive system.",
+      "The higher-priority task finishes or blocks; the scheduler reevaluates the ready queue.",
+      "If this repeats indefinitely, the low-priority task may starve unless aging or another rule intervenes."
+    ],
+    "usage": [
+      "Scheduling control-plane or real-time workloads.",
+      "Analyzing starvation and priority inversion in concurrent applications.",
+      "Comparing responsiveness with fairness and throughput."
+    ],
+    "mistakes": [
+      "Assuming numeric priority values have the same direction in every system.",
+      "Treating priority assignment as a guarantee of deadline completion.",
+      "Ignoring priority inversion when locks connect tasks with different priorities."
+    ],
+    "interview": [
+      {
+        "q": "What is starvation in priority scheduling?",
+        "a": "A ready task waits indefinitely because higher-priority work keeps being selected.",
+        "level": "beginner"
+      },
+      {
+        "q": "How does aging help?",
+        "a": "It increases the effective priority of a task as its wait grows, so long-waiting tasks can eventually compete for the CPU.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What is priority inversion?",
+        "a": "A high-priority task is delayed by a lower-priority task holding a needed resource, potentially while medium-priority work keeps the holder from running.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "synchronization",
+    "section": "os",
+    "title": "Synchronization",
+    "summary": "Coordinating threads that share state so the result could have been sequential.",
+    "level": "intermediate",
+    "prereqs": [
+      "threads"
+    ],
+    "related": [
+      "race-conditions",
+      "mutex"
+    ],
+    "next": "race-conditions",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Synchronization provides ordering and coordination between concurrent activities. Common mechanisms include mutexes, semaphores, condition variables, atomics, barriers, and message passing. The right primitive depends on whether the requirement is exclusive access, notification, ordering, or a count of available resources.",
+    "why": "Concurrency bugs are often timing-dependent. Synchronization protects invariants across interleavings and establishes when one thread's writes become visible to another, but careless synchronization can introduce deadlocks and contention.",
+    "mental": "Treat synchronization as rules for shared state. A lock controls who can enter a critical section; a condition variable lets a thread sleep until a predicate may be true; an atomic operation updates a small value indivisibly.",
+    "points": [
+      "Mutual exclusion prevents concurrent entry to a critical section, but does not by itself guarantee fairness.",
+      "Condition-variable waits should be inside a loop that checks the predicate because wake-ups can be spurious or another thread may consume the condition first.",
+      "Atomics are appropriate for specific operations and memory-ordering contracts, not as a universal replacement for locks.",
+      "Lock ordering and minimizing lock hold times help reduce deadlocks and contention.",
+      "Message passing can avoid shared mutable state but still needs protocol and backpressure design."
+    ],
+    "steps": [
+      "Two threads need to update a shared map.",
+      "Identify the invariant: insertions and lookups must observe a consistent structure.",
+      "Protect the compound update with a mutex or choose a concurrent data structure with an appropriate contract.",
+      "Test with stress runs and race detectors; a single successful run does not prove correctness."
+    ],
+    "usage": [
+      "Implementing producer-consumer queues and shared counters.",
+      "Choosing between a mutex, atomic, semaphore, or condition variable.",
+      "Diagnosing flaky races and lock contention."
+    ],
+    "mistakes": [
+      "Using a lock but updating some related state outside it.",
+      "Waiting on a condition once without rechecking the predicate.",
+      "Assuming volatile alone makes compound operations atomic or establishes full synchronization in every language."
+    ],
+    "interview": [
+      {
+        "q": "What does a mutex guarantee?",
+        "a": "It grants exclusive ownership of a protected region to one owner at a time; the program must still define the invariant and locking discipline.",
+        "level": "beginner"
+      },
+      {
+        "q": "When is a condition variable useful?",
+        "a": "When a thread should sleep until a state predicate may become true, such as a queue becoming non-empty, instead of busy-waiting.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why should condition-variable waits be in a loop?",
+        "a": "Wake-ups can be spurious, and another thread may change the predicate before the awakened thread reacquires the lock.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "race-conditions",
+    "section": "os",
+    "title": "Race Conditions",
+    "summary": "When the result depends on an unlucky interleaving of concurrent accesses.",
+    "level": "intermediate",
+    "prereqs": [
+      "synchronization"
+    ],
+    "related": [
+      "critical-sections",
+      "mutex"
+    ],
+    "next": "critical-sections",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A race condition occurs when the correctness of a program depends on the timing or ordering of concurrent events. A data race is a narrower case involving unsynchronized conflicting memory accesses, at least one of which writes, under a language's memory model.",
+    "why": "Race conditions create intermittent corruption, lost updates, stale reads, and security bugs. Because the failure depends on scheduling and load, a bug may disappear under a debugger and return in production.",
+    "mental": "Imagine two workers editing the same spreadsheet cell after reading the same old value. Each calculates a new value correctly in isolation, but the last write erases the other's update.",
+    "points": [
+      "A read-modify-write sequence is often multiple operations rather than one atomic operation.",
+      "Mutual exclusion can protect a compound invariant; atomics can protect simple state transitions when their semantics suffice.",
+      "Race freedom requires a defined synchronization relationship and correct protection for all accesses to the shared state.",
+      "Thread sanitizers and stress tests help find races but cannot prove the absence of all concurrency errors.",
+      "A race can also involve non-memory events, such as checking a file and then opening it after the file changes."
+    ],
+    "steps": [
+      "A shared counter starts at 0.",
+      "Thread A reads 0; thread B also reads 0 before either writes.",
+      "Both compute 1 and write 1, so two increments produce a final value of 1 instead of 2.",
+      "Use an atomic increment or protect the read-modify-write sequence with a mutex."
+    ],
+    "usage": [
+      "Debugging flaky multithreaded tests.",
+      "Reviewing check-then-act security patterns and file access.",
+      "Designing concurrent caches, counters, queues, and registries."
+    ],
+    "mistakes": [
+      "Assuming an operation is atomic because it is one source-code line.",
+      "Testing only under light load or one CPU core.",
+      "Locking the write but not the preceding read that participates in the invariant."
+    ],
+    "interview": [
+      {
+        "q": "Why can two increments result in only one increment?",
+        "a": "Both threads may read the same old value and then overwrite each other's computed result; the compound read-modify-write was not atomic.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is the difference between a race condition and a data race?",
+        "a": "A race condition is a broad correctness dependency on event order. A data race is specifically conflicting unsynchronized memory access under a language memory model.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "deadlock-prevention",
+    "section": "os",
+    "title": "Deadlock Prevention",
+    "summary": "Break a Coffman condition so a cycle cannot form: no hold-and-wait, preemption, ordering.",
+    "level": "intermediate",
+    "prereqs": [
+      "deadlocks"
+    ],
+    "related": [
+      "deadlock-avoidance"
+    ],
+    "next": "deadlock-avoidance",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Deadlock prevention designs resource rules so at least one of the four necessary Coffman conditions cannot hold: mutual exclusion, hold and wait, no preemption, and circular wait. A system may require resources upfront, allow certain resources to be reclaimed, or impose a global ordering on locks.",
+    "why": "Prevention gives a structural guarantee against a class of deadlocks, but can reduce concurrency or complicate resource use. The engineering goal is to remove the unsafe pattern without making ordinary workflows unnecessarily restrictive.",
+    "mental": "To stop a traffic gridlock, change the road rules so the circular wait can never be completed. The solution avoids one necessary condition rather than trying to guess whether a particular state will become deadlocked.",
+    "points": [
+      "Mutual exclusion cannot be removed for inherently exclusive resources.",
+      "Hold-and-wait can be reduced by requesting all required resources at once, although this may waste capacity.",
+      "Preemption is possible for some resources but not for arbitrary stateful operations.",
+      "A global lock ordering prevents circular wait when every participant follows the same order.",
+      "Prevention is different from avoidance: avoidance inspects the current allocation and grants requests only if the resulting state remains safe."
+    ],
+    "steps": [
+      "Thread A needs locks L1 and L2; thread B needs the same pair.",
+      "Without a rule, A can hold L1 while waiting for L2, while B holds L2 waiting for L1.",
+      "Declare and enforce one ordering, L1 before L2, in all code paths.",
+      "Because both threads acquire in the same order, this two-lock circular wait cannot form."
+    ],
+    "usage": [
+      "Reviewing lock acquisition order in services and libraries.",
+      "Comparing deadlock prevention, avoidance, detection, and recovery for exams.",
+      "Writing concurrency guidelines for a codebase."
+    ],
+    "mistakes": [
+      "Calling every timeout a deadlock-prevention strategy; timeout-and-retry is a different recovery approach.",
+      "Introducing lock ordering in one code path but violating it in another.",
+      "Removing a necessary condition without checking the cost to throughput or usability."
+    ],
+    "interview": [
+      {
+        "q": "Which Coffman condition does a global lock order break?",
+        "a": "Circular wait. All threads acquire locks in a consistent order, so a cycle of wait dependencies cannot form.",
+        "level": "beginner"
+      },
+      {
+        "q": "How does prevention differ from avoidance?",
+        "a": "Prevention structurally breaks a necessary deadlock condition; avoidance makes per-request decisions based on whether the resulting state remains safe.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "deadlock-avoidance",
+    "section": "os",
+    "title": "Deadlock Avoidance",
+    "summary": "Admit a request only if the resulting state is safe. Banker's algorithm is the classic.",
+    "level": "advanced",
+    "prereqs": [
+      "deadlocks"
+    ],
+    "related": [
+      "bankers-algorithm"
+    ],
+    "next": "bankers-algorithm",
+    "tags": [
+      "os",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Deadlock avoidance evaluates resource requests against the current allocation and declared future needs. The OS grants a request only if the hypothetical post-allocation state remains safe: there is some sequence in which each process can obtain its remaining resources, finish, and release what it holds.",
+    "why": "A locally valid allocation can create a globally unsafe state. Avoidance preserves a possible completion order, but requires useful knowledge of maximum demands and adds decision cost at allocation time.",
+    "mental": "A state is safe when you can write a finish order for every process under the available resources and its declared remaining need. Unsafe means no such proof is available; it does not mean a deadlock already exists.",
+    "points": [
+      "Available counts currently free instances of each resource type.",
+      "Need is often computed as Max minus Allocation when the classic Banker model is used.",
+      "Safety testing repeatedly finds a process whose remaining need fits the current work vector, then assumes it finishes and releases its allocation.",
+      "A safe state has at least one completion sequence; an unsafe state may or may not be deadlocked now.",
+      "Avoidance is practical only when maximum claims and resource models are sufficiently predictable."
+    ],
+    "steps": [
+      "Start with Available and each process's Need and Allocation vectors.",
+      "Find a process whose Need is less than or equal to the current Work vector in every resource dimension.",
+      "Assume it finishes and add its Allocation to Work; record the process in the safe sequence.",
+      "Repeat until all processes finish (safe) or no unfinished process qualifies (unsafe)."
+    ],
+    "usage": [
+      "Solving Banker's algorithm tables and safe-sequence questions.",
+      "Understanding admission control and reserved-capacity trade-offs.",
+      "Explaining why a request can be denied even when enough resource units are currently free."
+    ],
+    "mistakes": [
+      "Equating unsafe with already deadlocked.",
+      "Comparing resource vectors component-wise incorrectly.",
+      "Adding Need back to Work when a process finishes; the newly available resources are its Allocation."
+    ],
+    "interview": [
+      {
+        "q": "What does a safe state guarantee?",
+        "a": "There exists an order in which every process can finish using currently available resources plus resources released by earlier completed processes.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why might a request be denied even if Available is large enough now?",
+        "a": "Granting it may leave a state with no safe completion sequence, so future progress cannot be guaranteed under the declared maximum demands.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "bankers-algorithm",
+    "section": "os",
+    "title": "Banker's Algorithm",
+    "summary": "Dijkstra's safety algorithm: pretend to allocate, see if a finish order exists.",
+    "level": "advanced",
+    "prereqs": [
+      "deadlock-avoidance"
+    ],
+    "related": [
+      "deadlocks"
+    ],
+    "next": "memory-management",
+    "tags": [
+      "os",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Banker's algorithm is a classic deadlock-avoidance method for multiple resource types. Each process declares a maximum demand; the algorithm tracks Allocation, Max, Need, and Available, and tests whether a tentative request leaves the system in a safe state.",
+    "why": "It turns a qualitative question—could these allocations block everyone?—into a step-by-step safety check. Its assumptions are restrictive for general-purpose systems, but the method teaches resource accounting and safe sequences clearly.",
+    "mental": "Think of a bank granting loans only if the remaining cash and repayments from borrowers who can finish leave enough capacity for the next borrower. It checks a potential sequence, not merely whether the current request fits in the free pool.",
+    "points": [
+      "Need[i][j] = Max[i][j] − Allocation[i][j].",
+      "A request larger than Need is invalid under the declared maximum; a request larger than Available must wait.",
+      "For a plausible request, subtract it from Available and add it to Allocation, then run the safety check hypothetically.",
+      "If the state is safe, grant the request; if unsafe, roll back the tentative values and defer it.",
+      "A request smaller than current Available can still be unsafe after allocation."
+    ],
+    "steps": [
+      "Compute Need for each process and resource type.",
+      "Copy Available into Work and mark all processes unfinished.",
+      "Repeatedly choose an unfinished process with Need ≤ Work; add its Allocation to Work and mark it finished.",
+      "If every process can finish, the state is safe and the chosen order is a safe sequence.",
+      "When evaluating a request, tentatively allocate, run the test, then commit or roll back."
+    ],
+    "usage": [
+      "Working through textbook resource-allocation matrices.",
+      "Explaining the difference between safety checking and deadlock detection.",
+      "Validating a simple resource manager with small bounded resource types."
+    ],
+    "mistakes": [
+      "Updating Available but forgetting to add released allocations to Work.",
+      "Declaring a state deadlocked as soon as no process fits; that establishes unsafe under the model, not necessarily an existing deadlock.",
+      "Comparing vectors using only their totals rather than each resource dimension."
+    ],
+    "interview": [
+      {
+        "q": "What are the four key data structures?",
+        "a": "Available, Max, Allocation, and Need, where Need = Max − Allocation.",
+        "level": "beginner"
+      },
+      {
+        "q": "What must be restored when a tentative request fails the safety test?",
+        "a": "Restore the original Available, Allocation, and Need state; the rejected request must not change the real allocation.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "memory-management",
+    "section": "os",
+    "title": "Memory Management",
+    "summary": "How the OS carves physical memory for processes: allocation, protection, sharing.",
+    "level": "intermediate",
+    "prereqs": [
+      "processes"
+    ],
+    "related": [
+      "paging",
+      "segmentation"
+    ],
+    "next": "paging",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Memory management tracks physical memory, allocates it to kernel and user workloads, maps process virtual addresses to physical locations, shares selected pages, and enforces access permissions. Modern systems commonly combine paging with virtual address spaces, page tables, and demand allocation.",
+    "why": "Applications benefit from each process having a simple, isolated address space even when physical RAM is fragmented and shared. Memory-management policies also affect performance through locality, page faults, overcommit, and swapping.",
+    "mental": "A virtual address is a name, not a physical location. The MMU consults page-table mappings and permissions to translate that name; the OS changes those mappings when pages are allocated, shared, swapped, or protected.",
+    "points": [
+      "Virtual memory separates process-visible addresses from physical frames.",
+      "Page tables map virtual pages to physical frames and record access permissions.",
+      "A page fault transfers control to the OS when a mapping is absent or an access violates permissions.",
+      "Demand paging delays physical allocation or loading until a page is first touched.",
+      "Copy-on-write lets processes initially share pages and copy a page only when a writer modifies it."
+    ],
+    "steps": [
+      "A process loads or accesses a virtual address.",
+      "The MMU checks the page-table entry and permissions during translation.",
+      "If the mapping is present and allowed, the access proceeds to the physical frame.",
+      "If absent, the kernel decides whether to allocate/load a page or report an invalid access."
+    ],
+    "usage": [
+      "Diagnosing page faults, memory pressure, and out-of-memory termination.",
+      "Explaining process isolation, memory-mapped files, and shared libraries.",
+      "Estimating the cost of random memory access versus sequential locality."
+    ],
+    "mistakes": [
+      "Assuming virtual memory means unlimited RAM; storage-backed pages are much slower than RAM.",
+      "Treating all page faults as bugs; demand paging can cause normal first-touch faults.",
+      "Ignoring permissions while focusing only on address translation."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between a virtual page and a physical frame?",
+        "a": "A virtual page is part of a process's address space; a physical frame is a fixed-size unit of physical RAM to which that page may be mapped.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is copy-on-write?",
+        "a": "Multiple processes share a page until one tries to modify it; then the OS creates a private copy for that writer when required.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "file-systems",
+    "section": "os",
+    "title": "File Systems",
+    "summary": "The on-disk (and in-memory) structures that turn bytes into files, directories, and mounts.",
+    "level": "intermediate",
+    "prereqs": [],
+    "related": [
+      "disk-scheduling"
+    ],
+    "next": "disk-scheduling",
+    "tags": [
+      "os",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A filesystem defines how bytes on a storage device are organized into named files and directories, how metadata and permissions are stored, and how writes are made visible and recoverable. Common designs use inodes or equivalent objects, directory mappings, allocation structures, caches, and journaling or copy-on-write metadata.",
+    "why": "Without a filesystem, applications would need to manage raw storage blocks and metadata themselves. Filesystems provide naming, ownership, space allocation, and recovery behavior, but durability depends on the filesystem, device, and how applications issue writes.",
+    "mental": "Think of storage as a set of numbered blocks. A filesystem maintains a directory index from names to file objects, and from file objects to the blocks or extents that contain content.",
+    "points": [
+      "A directory maps names to filesystem objects; the exact metadata model differs by filesystem.",
+      "An inode-like object commonly stores metadata and references to data blocks, while directory entries connect names to object identifiers.",
+      "Page cache and write-back buffers improve performance but mean a successful write call may not equal durable media persistence.",
+      "Journaling or copy-on-write techniques help keep metadata structures consistent after a crash.",
+      "Mounts compose multiple filesystems into one namespace; permissions and ownership still need to be enforced."
+    ],
+    "steps": [
+      "A user calls open('/home/a.txt'); the VFS resolves components of the path.",
+      "The filesystem checks directory entries and access permissions, then returns an open file descriptor.",
+      "Reads may be satisfied from the page cache or trigger block I/O.",
+      "Writes update cached pages and metadata; sync/fsync semantics influence when data is requested to become durable."
+    ],
+    "usage": [
+      "Investigating disk-full errors, permissions, mount points, and slow I/O.",
+      "Choosing file-oriented storage versus a database for application data.",
+      "Understanding crash consistency and durability of file writes."
+    ],
+    "mistakes": [
+      "Assuming write() always means bytes are safely on durable media.",
+      "Confusing a path name with an open file descriptor.",
+      "Ignoring permissions on parent directories when diagnosing path access."
+    ],
+    "interview": [
+      {
+        "q": "What is the difference between a directory entry and an inode-like object?",
+        "a": "A directory entry associates a name with an object identifier; the inode-like object stores metadata and references to file data, depending on filesystem design.",
+        "level": "intermediate"
+      },
+      {
+        "q": "Why might fsync be needed after a write?",
+        "a": "Buffered writes may still reside in cache. fsync requests that file data and metadata needed for retrieval be synchronized to durable storage, subject to the device and filesystem contract.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "database-fundamentals",
+    "section": "dbms",
+    "title": "Database Fundamentals",
+    "summary": "A database is a managed collection of data with a query language, integrity rules, and a storage engine.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "relational-databases"
+    ],
+    "next": "relational-databases",
+    "tags": [
+      "dbms",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A database system stores data, defines its structure, enforces constraints, accepts queries, coordinates concurrent access, and recovers from failures. A DBMS is the software providing these capabilities; the database is the managed data and metadata.",
+    "why": "Applications need durable state that remains coherent across requests, concurrent users, and process restarts. A DBMS reduces the amount of custom code needed for indexing, transactions, backup, access control, and query execution.",
+    "mental": "Separate the logical model from the physical engine. A query expresses which rows or values are wanted; the optimizer chooses a plan, and the storage engine reads and modifies the underlying pages.",
+    "points": [
+      "Schema describes data structures and constraints; data are the current stored values.",
+      "Queries are declarative in systems such as SQL: they describe results rather than an exact sequence of operations.",
+      "Indexes accelerate selected access patterns but consume storage and add write work.",
+      "Transactions group changes and provide guarantees about failure and concurrency.",
+      "Backups, logs, replication, access control, and monitoring are part of operating a real database."
+    ],
+    "steps": [
+      "A client submits a parameterized query.",
+      "The parser validates syntax and resolves referenced tables and columns.",
+      "The optimizer compares candidate plans using statistics and estimated cost.",
+      "The executor runs the chosen plan against buffers/storage and returns rows or an error."
+    ],
+    "usage": [
+      "Selecting a persistence layer for an application.",
+      "Diagnosing slow queries and understanding why an index may or may not help.",
+      "Explaining the difference between DBMS, schema, query, transaction, and storage engine."
+    ],
+    "mistakes": [
+      "Assuming a database is only a collection of tables; logs, indexes, constraints, and metadata matter.",
+      "Building SQL through string concatenation with untrusted input instead of parameters.",
+      "Confusing an accepted write with a durable write when transaction and storage guarantees matter."
+    ],
+    "interview": [
+      {
+        "q": "What responsibilities does a DBMS provide beyond storing bytes?",
+        "a": "It provides a data model, query execution, constraints, concurrency control, recovery, security, and operational tools such as backups and indexing.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why might two equivalent SQL queries have different performance?",
+        "a": "The optimizer may choose different access paths or join orders based on query shape, statistics, indexes, and estimated row counts.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "relational-databases",
+    "section": "dbms",
+    "title": "Relational Databases",
+    "summary": "Data as relations (tables), queried with algebra/calculus, constrained by keys.",
+    "level": "beginner",
+    "prereqs": [
+      "database-fundamentals"
+    ],
+    "related": [
+      "sql",
+      "tables"
+    ],
+    "next": "sql",
+    "tags": [
+      "dbms",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A relational database models data as relations, commonly presented as tables with rows and columns. Keys and integrity constraints express identity and relationships; relational algebra provides operators such as selection, projection, and join that underpin query reasoning.",
+    "why": "The model separates logical meaning from physical representation. Applications can ask for a relation satisfying conditions without specifying which pages or index nodes the engine must read.",
+    "mental": "Think of each table as a set-like relation with a defined heading (attributes) and a body (tuples). SQL often uses bag semantics, so duplicate rows can appear unless a query or constraint removes them.",
+    "points": [
+      "A relation's schema defines attributes and domains; each tuple supplies values for those attributes.",
+      "Primary and candidate keys identify tuples; foreign keys express references that must remain valid.",
+      "Selection filters rows, projection chooses columns, and join combines related tuples under a predicate.",
+      "Normalization reduces certain update anomalies by decomposing relations according to dependencies.",
+      "SQL nulls and duplicate-row behavior mean SQL's practical semantics are not identical to pure set-based relational algebra."
+    ],
+    "steps": [
+      "Store students in Students(student_id, name) and courses in Courses(course_id, title).",
+      "Store enrollment in Enrollments(student_id, course_id) rather than embedding an unbounded list in each student row.",
+      "Join Students to Enrollments on student_id to retrieve enrolled learners.",
+      "Use foreign keys and uniqueness constraints to enforce the relationship at the database boundary."
+    ],
+    "usage": [
+      "Designing schemas and explaining table relationships.",
+      "Translating business requirements into keys and constraints.",
+      "Reasoning about joins, normalization, and query plans."
+    ],
+    "mistakes": [
+      "Treating row order as guaranteed without ORDER BY.",
+      "Assuming a table with a duplicate-looking row cannot contain duplicates unless a constraint prevents them.",
+      "Using free-form text fields for relationships that should be key-based."
+    ],
+    "interview": [
+      {
+        "q": "What is a candidate key?",
+        "a": "A minimal set of attributes that uniquely identifies each tuple in a relation.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why does row order not belong to a relational table's logical meaning?",
+        "a": "A relation is unordered. If an application needs a particular order, it must request that order explicitly, typically with ORDER BY.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "tables",
+    "section": "dbms",
+    "title": "Tables",
+    "summary": "Named relations: a heading of columns and a body of rows. Duplicates depend on whether you mean bag or set.",
+    "level": "beginner",
+    "prereqs": [
+      "sql"
+    ],
+    "related": [
+      "primary-keys"
+    ],
+    "next": "primary-keys",
+    "tags": [
+      "dbms",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A table defines named columns and stores rows whose values correspond to those columns. A declared schema specifies data types and constraints. In SQL databases, tables normally behave as bags of rows, which means duplicates can exist unless a key, unique constraint, or query operation prevents them.",
+    "why": "Well-designed tables make valid data easier to store and invalid states harder to represent. Column types and constraints catch errors close to the data rather than relying entirely on every application client.",
+    "mental": "Treat a table as a contract: every row has the same set of named attributes, and each column has a declared meaning and type. The table's physical row order is not a reliable API.",
+    "points": [
+      "Use types that match the domain, such as integer identifiers, timestamps for instants, and decimal types for exact currency values.",
+      "Use NOT NULL, CHECK, UNIQUE, primary keys, and foreign keys to express invariants.",
+      "Do not assume insertion order defines retrieval order; specify ORDER BY.",
+      "Normalization can split one wide table into related tables to reduce update anomalies.",
+      "Indexes are separate access structures; adding an index does not change the table's logical meaning."
+    ],
+    "steps": [
+      "Create an orders table with order_id as primary key and customer_id as a foreign key.",
+      "Insert a row and let the DBMS enforce types and constraints.",
+      "Query a subset with WHERE and choose columns with SELECT.",
+      "Use ORDER BY created_at, order_id if stable ordering is needed."
+    ],
+    "usage": [
+      "Modeling records, events, products, accounts, and other entities.",
+      "Explaining schema constraints and the difference between logical and physical ordering.",
+      "Reviewing schema design before API development."
+    ],
+    "mistakes": [
+      "Relying on row position as identity.",
+      "Using text for every field and validating only in frontend code.",
+      "Allowing duplicates in a field meant to uniquely identify a record."
+    ],
+    "interview": [
+      {
+        "q": "Does a SQL table guarantee row order?",
+        "a": "No. Query results are unordered unless ORDER BY specifies an order.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why should important invariants be declared as database constraints?",
+        "a": "The database can enforce them for every writer, including scripts, jobs, and other applications, instead of relying on each caller to behave correctly.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "primary-keys",
+    "section": "dbms",
+    "title": "Primary Keys",
+    "summary": "A column (or set) that uniquely identifies a row. The handle the rest of the schema points at.",
+    "level": "beginner",
+    "prereqs": [
+      "tables"
+    ],
+    "related": [
+      "foreign-keys",
+      "constraints"
+    ],
+    "next": "foreign-keys",
+    "tags": [
+      "dbms",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A primary key is the chosen candidate key used to identify each row in a table. It can be one column or a composite of multiple columns, and its values must be unique and non-null.",
+    "why": "Stable row identity lets other tables refer to a record unambiguously and prevents duplicate entities from silently entering the data model. Choosing a key also affects index size and how relationships are represented.",
+    "mental": "A primary key is a durable handle, not necessarily a descriptive value. A student number or generated UUID may remain stable while a person's name or email changes.",
+    "points": [
+      "A primary key must uniquely identify every row and cannot contain NULL.",
+      "Composite keys are useful when identity naturally depends on multiple columns, such as (student_id, course_id) in enrollment.",
+      "Surrogate keys simplify references but do not replace unique constraints on real-world business identifiers.",
+      "Foreign keys reference a candidate/primary key in another table.",
+      "Changing a primary key can cascade through many references, so stable key design matters."
+    ],
+    "steps": [
+      "Create Students(student_id PRIMARY KEY, email UNIQUE, name).",
+      "Use student_id in Enrollment rows as a foreign key.",
+      "Attempt to insert the same student_id twice; the constraint rejects the duplicate.",
+      "Allow a name or email to change without changing the row's identity."
+    ],
+    "usage": [
+      "Designing relational schemas and joins.",
+      "Choosing natural versus surrogate identifiers.",
+      "Diagnosing unique-constraint violations."
+    ],
+    "mistakes": [
+      "Using a mutable name as the sole primary key.",
+      "Believing an auto-increment ID automatically prevents duplicate emails or business entities.",
+      "Allowing nullable columns inside the primary key."
+    ],
+    "interview": [
+      {
+        "q": "Can a table have more than one primary key?",
+        "a": "A table has one primary-key constraint, but that key may contain multiple columns. Other candidate keys can be enforced with UNIQUE constraints.",
+        "level": "beginner"
+      },
+      {
+        "q": "When is a composite primary key useful?",
+        "a": "When the combination itself defines identity, such as one enrollment per student-course pair. An explicit UNIQUE constraint may enforce the same business rule with a surrogate key.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "foreign-keys",
+    "section": "dbms",
+    "title": "Foreign Keys",
+    "summary": "A column that must match a key in another table. Referential integrity as a constraint, not a hope.",
+    "level": "beginner",
+    "prereqs": [
+      "primary-keys"
+    ],
+    "related": [
+      "constraints",
+      "joins"
+    ],
+    "next": "constraints",
+    "tags": [
+      "dbms",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "A foreign key constrains one or more columns so their values reference a candidate key in another table, or are null when the schema permits it. It encodes a relationship and lets the database reject references to nonexistent parent rows.",
+    "why": "Foreign keys protect referential integrity across all clients and jobs. Without them, an application may accumulate orphan rows that appear valid locally but point to missing entities.",
+    "mental": "Think of an enrollment row as a claim that a student and a course exist. The database checks those references at write time rather than trusting the form or service that sent the row.",
+    "points": [
+      "The number and compatible types of referencing columns must match the referenced key.",
+      "A foreign key can be composite; then the tuple of values must match a parent key.",
+      "ON DELETE and ON UPDATE policies can reject, cascade, or set referencing values null, depending on the constraint.",
+      "A nullable foreign key often means the relationship is optional; it does not mean an invalid non-null reference is allowed.",
+      "Foreign keys protect integrity but do not automatically create every useful index on the referencing columns."
+    ],
+    "steps": [
+      "Insert a course into Courses.",
+      "Insert an Enrollment with a course_id that exists; the constraint allows it.",
+      "Attempt to insert a nonexistent course_id; the database rejects it.",
+      "On course deletion, the configured referential action controls whether deletion is blocked or references are changed."
+    ],
+    "usage": [
+      "Modeling one-to-many and many-to-many relationships.",
+      "Preventing orphan records after deleting parent rows.",
+      "Designing transactional changes across related entities."
+    ],
+    "mistakes": [
+      "Assuming frontend validation is enough to guarantee referential integrity.",
+      "Deleting parent data without considering references and intended retention policy.",
+      "Treating a foreign key as authorization; valid references do not prove the caller may access the row."
+    ],
+    "interview": [
+      {
+        "q": "What is a referential-integrity violation?",
+        "a": "A referencing foreign-key value points to no permitted row in the referenced key, and the database rejects or otherwise handles the operation according to its constraint.",
+        "level": "beginner"
+      },
+      {
+        "q": "Does a foreign key automatically guarantee the caller is authorized to view the parent?",
+        "a": "No. It validates data relationships, not user identity or access permissions.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "joins",
+    "section": "dbms",
+    "title": "Joins",
+    "summary": "Combining rows from two relations by a predicate: inner, left, right, full, cross, and the nested-loop vs hash implementations.",
+    "level": "intermediate",
+    "prereqs": [
+      "sql",
+      "foreign-keys"
+    ],
+    "related": [
+      "subqueries"
+    ],
+    "next": "dbms-aggregation",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A join combines rows from two inputs according to a condition. An inner join emits matching pairs; an outer join also preserves selected unmatched rows with null-extended columns; a cross join forms every pair. The DBMS can use nested-loop, hash, or merge algorithms depending on data and access paths.",
+    "why": "Relational data are normalized across related tables, so joins reconstruct the combined view an application needs. Understanding their semantics prevents lost rows, accidental row multiplication, and expensive plans.",
+    "mental": "A join is a matching operation between two row sets. First specify what counts as a match; then specify what should happen to rows without a match.",
+    "points": [
+      "The ON predicate defines matches; WHERE filters the joined result and can change the behavior of an outer join.",
+      "One-to-many joins multiply a parent row by the number of matching children.",
+      "LEFT JOIN keeps every left input row; missing right-side values become NULL.",
+      "Nested-loop joins can be effective for a small outer input with an index on the inner side.",
+      "Hash joins build a lookup structure for one input; merge joins exploit compatible ordering."
+    ],
+    "steps": [
+      "Customers has rows C1 and C2; Orders has two rows for C1 and none for C2.",
+      "INNER JOIN returns only C1 paired with its two orders.",
+      "LEFT JOIN returns both C1 order rows plus one C2 row whose order columns are NULL.",
+      "If counting customers with no orders, test an appropriate right-side key for IS NULL or use NOT EXISTS."
+    ],
+    "usage": [
+      "Combining normalized tables in application queries.",
+      "Debugging duplicated totals caused by one-to-many joins.",
+      "Reading execution plans and choosing indexes based on join access patterns."
+    ],
+    "mistakes": [
+      "Putting a right-table filter in WHERE when you intended to preserve unmatched rows from a LEFT JOIN.",
+      "Joining without a meaningful predicate and accidentally creating a Cartesian product.",
+      "Counting a parent column after a one-to-many join without accounting for row multiplication."
+    ],
+    "interview": [
+      {
+        "q": "How does LEFT JOIN differ from INNER JOIN?",
+        "a": "LEFT JOIN preserves all rows from the left input and fills unmatched right-side columns with NULL; INNER JOIN emits only matching pairs.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why can a join multiply rows?",
+        "a": "If one left row matches several right rows, the output contains one row for each matching pair.",
+        "level": "intermediate"
+      },
+      {
+        "q": "What factors influence hash join versus nested-loop join choice?",
+        "a": "Input sizes, join selectivity, available indexes, memory, existing ordering, and the optimizer's cardinality estimates.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "transactions",
+    "section": "dbms",
+    "title": "Transactions",
+    "summary": "A grouping of reads and writes that should succeed or fail as a unit.",
+    "level": "intermediate",
+    "prereqs": [
+      "sql"
+    ],
+    "related": [
+      "acid",
+      "isolation-levels"
+    ],
+    "next": "acid",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "A transaction groups database operations into a logical unit. It can commit its changes or roll them back, and the DBMS coordinates concurrent transactions and crash recovery according to configured isolation and durability guarantees.",
+    "why": "Without transactions, a multi-step update can leave partial state after a failure. For example, a bank transfer should not debit an account while failing before crediting the destination.",
+    "mental": "Think of a transaction as a guarded change set. The DBMS keeps track of the operations until commit decides that the change should become visible and durable according to the configured contract.",
+    "points": [
+      "BEGIN starts an explicit transaction in many SQL systems; COMMIT makes it successful, and ROLLBACK undoes its uncommitted effects.",
+      "Atomicity means a transaction does not leave a partial logical update, though exact behavior can depend on the system and external side effects.",
+      "Isolation defines how concurrent transactions may observe one another's operations.",
+      "Durability depends on the database's commit protocol, logs, storage settings, and hardware assumptions.",
+      "Transactions cannot automatically roll back emails, HTTP requests, or other side effects outside the database."
+    ],
+    "steps": [
+      "Start a transaction for a transfer.",
+      "Debit account A and credit account B, with validation and constraints.",
+      "If any step fails, roll back the database changes.",
+      "Commit only when the complete invariant holds; handle external messaging with an outbox or another reliable coordination pattern."
+    ],
+    "usage": [
+      "Maintaining invariants across related row updates.",
+      "Building payment, inventory, and booking workflows.",
+      "Understanding locking, MVCC, isolation anomalies, and recovery logs."
+    ],
+    "mistakes": [
+      "Committing each statement separately when the business operation must be atomic as a group.",
+      "Assuming database rollback reverses an external API call already made.",
+      "Keeping transactions open during slow user interaction, increasing lock and resource pressure."
+    ],
+    "interview": [
+      {
+        "q": "Why use a transaction for a bank transfer?",
+        "a": "Debit and credit must succeed or fail together so the database cannot expose a committed half-transfer.",
+        "level": "beginner"
+      },
+      {
+        "q": "Does a transaction guarantee serializable isolation by default?",
+        "a": "No. Isolation level and database semantics determine which concurrent effects are allowed; many systems use a weaker default.",
+        "level": "intermediate"
+      },
+      {
+        "q": "How can a database transaction coordinate reliably with an external message broker?",
+        "a": "A common approach is the transactional outbox: write the business change and outgoing event record in one DB transaction, then publish from the outbox with retry/idempotency.",
+        "level": "advanced"
+      }
+    ]
+  },
+  {
+    "slug": "normalization",
+    "section": "dbms",
+    "title": "Normalization",
+    "summary": "Decomposing schemas to remove redundancy. Normal forms are tests, not decorations.",
+    "level": "intermediate",
+    "prereqs": [
+      "relational-databases"
+    ],
+    "related": [
+      "1nf",
+      "bcnf"
+    ],
+    "next": "1nf",
+    "tags": [
+      "dbms",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Normalization organizes relations to reduce undesirable redundancy using functional dependencies and normal-form rules. It decomposes a wide relation into related tables while aiming to preserve information and the dependencies that matter.",
+    "why": "Redundant facts create update anomalies: changing an address in one row but not another leaves conflicting truths. A normalized design stores each fact in a place that reflects its dependencies, while joins reconstruct combined views when needed.",
+    "mental": "Ask what determines what. If a fact is repeated in several rows because it belongs to a different entity, model that dependency explicitly instead of copying the fact everywhere.",
+    "points": [
+      "First normal form requires attributes to hold values from their intended domains rather than nested repeating groups in the classic model.",
+      "Second normal form rules out non-prime attributes depending on only part of a candidate key, relative to the functional dependencies.",
+      "Third normal form constrains nontrivial dependencies on non-superkeys when the right-hand side is non-prime.",
+      "BCNF requires every nontrivial functional dependency's determinant to be a superkey.",
+      "Decomposition should be assessed for losslessness and dependency preservation; normalization is not merely splitting tables until they look small."
+    ],
+    "steps": [
+      "A table stores student_id, course_id, student_name, course_name, grade with key (student_id, course_id).",
+      "student_name depends only on student_id, while course_name depends only on course_id.",
+      "Move student and course facts to their own relations and keep the enrollment fact in Enrollment.",
+      "Use keys and foreign keys to preserve identity and relationships across the decomposition."
+    ],
+    "usage": [
+      "Designing schemas that avoid insert, update, and delete anomalies.",
+      "Explaining 1NF, 2NF, 3NF, and BCNF exam problems.",
+      "Deciding when a reporting model may intentionally denormalize for performance."
+    ],
+    "mistakes": [
+      "Treating every repeated value as automatically wrong; repetition can be legitimate depending on dependencies and requirements.",
+      "Using the number of columns or tables as the definition of normality.",
+      "Ignoring lossless joins and dependency preservation when decomposing relations."
+    ],
+    "interview": [
+      {
+        "q": "What anomalies does normalization try to prevent?",
+        "a": "Insertion, update, and deletion anomalies caused by storing multiple independent facts redundantly in one relation.",
+        "level": "beginner"
+      },
+      {
+        "q": "Is every normalized schema faster?",
+        "a": "No. Normalization improves integrity and reduces redundancy, but some read workloads may need more joins; performance should be measured and denormalization justified by evidence.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "1nf",
+    "section": "dbms",
+    "title": "1NF",
+    "summary": "Atomic values in cells; no repeating groups. The floor of the relational model.",
+    "level": "beginner",
+    "prereqs": [
+      "normalization"
+    ],
+    "related": [
+      "2nf"
+    ],
+    "next": "2nf",
+    "tags": [
+      "dbms",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "First Normal Form (1NF) is commonly taught as requiring a single value from the intended domain in each attribute position and avoiding repeating groups or list-valued columns in the relational model. Practical database types can store arrays or JSON, but those values require a separate modeling decision rather than being assumed equivalent to ordinary relational attributes.",
+    "why": "Atomic columns make predicates, constraints, joins, and indexes more predictable. Bundling multiple independent values in one cell often forces brittle string parsing and makes updates difficult.",
+    "mental": "Each row-column intersection should represent one value with one meaning for the relation's model. If a student has multiple courses, represent the repeating relationship as multiple enrollment rows rather than a comma-separated list.",
+    "points": [
+      "1NF is not a requirement that text contain no spaces or delimiters; atomicity is relative to the chosen data domain.",
+      "A repeating group such as phone1, phone2, phone3 reveals a fixed upper bound and often a multivalued relationship.",
+      "A separate child table can represent a variable number of related values with keys.",
+      "SQL arrays and JSON may be appropriate when the nested structure is intentionally treated as a single document value, but trade-offs differ.",
+      "1NF alone does not remove partial or transitive dependencies; higher normal forms address other anomalies."
+    ],
+    "steps": [
+      "A Students row stores courses as the string 'DBMS, OS, Networks'.",
+      "Move the many-to-many relationship into Enrollment(student_id, course_id).",
+      "Store one student-course relationship per row and constrain the pair as unique.",
+      "Join Enrollment back to Students and Courses for a combined display."
+    ],
+    "usage": [
+      "Solving normalization questions in database courses and GATE CSE.",
+      "Designing relational tables with repeating one-to-many values.",
+      "Reviewing schemas where arrays or comma-separated strings are difficult to query."
+    ],
+    "mistakes": [
+      "Claiming a text value is non-atomic merely because it contains punctuation.",
+      "Assuming 1NF guarantees the absence of all redundancy.",
+      "Creating one column per possible repeated item instead of representing the relationship."
+    ],
+    "interview": [
+      {
+        "q": "Why is a comma-separated list of courses usually a poor relational design?",
+        "a": "Membership is hard to constrain, index, join, and update safely; a relationship table represents each student-course pair directly.",
+        "level": "beginner"
+      },
+      {
+        "q": "Does 1NF guarantee a table has no redundancy?",
+        "a": "No. It addresses repeating groups/atomic attributes; partial and transitive dependencies are addressed by stronger normal forms.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "what-is-networking",
+    "section": "networks",
+    "title": "What is Networking?",
+    "summary": "Independent machines exchanging messages over a shared, unreliable medium.",
+    "level": "beginner",
+    "prereqs": [],
+    "related": [
+      "lan",
+      "osi-model"
+    ],
+    "next": "lan",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Computer networking connects independent systems so they can exchange data using agreed formats and protocols. Data crosses links and intermediate devices, while addressing, routing, transport, and application protocols handle different parts of delivery.",
+    "why": "A network lets applications communicate without sharing memory or physical hardware. It also introduces delay, packet loss, reordering, partial failure, security boundaries, and the need to define what happens when a peer is unavailable.",
+    "mental": "Treat the network as a message path where each hop may delay or drop data. Protocol layers create contracts: local delivery on a link, routing between networks, transport between processes, and application meaning.",
+    "points": [
+      "Link technologies transfer frames across one local segment; switches forward them using link-layer information.",
+      "IP addresses identify interfaces for routing across networks; routers choose next hops.",
+      "Transport protocols such as TCP and UDP carry data between application endpoints using ports.",
+      "Applications define their own request and response formats, timeouts, retries, and authentication.",
+      "A timeout tells you a response was not observed in time; it does not prove the remote operation never happened."
+    ],
+    "steps": [
+      "A browser resolves a hostname to an IP address using DNS.",
+      "It opens a transport connection to the destination service.",
+      "Packets traverse local links and routers toward the server.",
+      "The application exchanges messages and handles errors, delays, or retries."
+    ],
+    "usage": [
+      "Debugging connectivity from DNS through TCP/UDP to application protocols.",
+      "Explaining the difference between latency, bandwidth, loss, and throughput.",
+      "Designing robust client behavior for timeouts and partial failures."
+    ],
+    "mistakes": [
+      "Assuming that a timeout means the server did not process a request.",
+      "Confusing a local MAC address with an end-to-end IP address.",
+      "Retrying non-idempotent operations without an idempotency key or deduplication strategy."
+    ],
+    "interview": [
+      {
+        "q": "Why does a network protocol need more than an address?",
+        "a": "Endpoints also need delivery rules, message formats, sequencing/reliability where required, and application semantics; an address alone does not describe the communication.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does a client timeout prove?",
+        "a": "Only that the client did not observe completion before its deadline; the server may have completed the request and the response may have been delayed or lost.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "ip",
+    "section": "networks",
+    "title": "IP",
+    "summary": "The internet's network protocol: best-effort datagrams and hierarchical addresses.",
+    "level": "beginner",
+    "prereqs": [
+      "l3-network"
+    ],
+    "related": [
+      "ipv4",
+      "ipv6",
+      "routing"
+    ],
+    "next": "ipv4",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Internet Protocol (IP) delivers packets across interconnected networks using logical addresses and routing. IP is connectionless and best-effort: it does not promise that each packet arrives, arrives once, or arrives in order.",
+    "why": "IP provides a common layer across different link technologies. Reliability, ordering, congestion behavior, and application-level semantics are supplied by other protocols when needed.",
+    "mental": "Think of IP as a postal addressing and forwarding system. Each router forwards a packet closer to the destination based on a routing table; intermediate routers do not establish a reliable end-to-end conversation by themselves.",
+    "points": [
+      "IPv4 uses 32-bit addresses and IPv6 uses 128-bit addresses.",
+      "Routers forward based on destination prefixes and next-hop decisions.",
+      "TTL in IPv4 (Hop Limit in IPv6) limits packets from circulating indefinitely.",
+      "IP may fragment or require packetization choices depending on version and path MTU; IPv6 routers do not fragment packets in transit.",
+      "TCP, UDP, and application logic provide behavior beyond IP's best-effort delivery contract."
+    ],
+    "steps": [
+      "A host creates an IP packet for a destination address.",
+      "It checks whether the destination is local or needs a configured gateway.",
+      "The packet is wrapped in the local link's frame and sent to the next hop.",
+      "Each router consults its forwarding table and transmits the packet on a new link until it reaches the destination network."
+    ],
+    "usage": [
+      "Reading packet captures and routing tables.",
+      "Explaining how traffic crosses multiple networks.",
+      "Distinguishing link-layer delivery from end-to-end IP routing."
+    ],
+    "mistakes": [
+      "Assuming IP guarantees delivery or in-order arrival.",
+      "Assuming the destination IP is necessarily a device's hardware address.",
+      "Treating all addresses in the same subnet prefix as directly reachable without considering routing and policy."
+    ],
+    "interview": [
+      {
+        "q": "What service does IP provide?",
+        "a": "Best-effort packet delivery across networks using logical addresses and routing, without an end-to-end delivery guarantee.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why is a default gateway needed?",
+        "a": "It provides the next hop for destinations not covered by the host's directly connected routes.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "ipv4",
+    "section": "networks",
+    "title": "IPv4",
+    "summary": "32-bit addresses, dotted quad, fragmentation, and a header you should be able to sketch.",
+    "level": "beginner",
+    "prereqs": [
+      "ip"
+    ],
+    "related": [
+      "ipv6",
+      "subnetting",
+      "nat"
+    ],
+    "next": "subnetting",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "IPv4 is the 32-bit version of Internet Protocol. Addresses are usually written as four decimal octets, such as 192.0.2.10, and CIDR prefixes specify how many leading bits identify a network.",
+    "why": "IPv4 addressing and subnetting are foundational for routing, DHCP configuration, access-control rules, NAT, and troubleshooting connectivity across LANs and WANs.",
+    "mental": "A dotted-decimal address is simply 32 bits displayed in four groups of eight. A /24 prefix means the first 24 bits form the network prefix and the remaining eight bits identify addresses within that subnet.",
+    "points": [
+      "Each octet represents a value from 0 through 255.",
+      "CIDR notation such as /24 expresses prefix length; a longer prefix leaves fewer host bits.",
+      "For a conventional IPv4 subnet, the all-zero host part identifies the network and the all-one host part is the directed broadcast, with special-purpose exceptions such as /31 point-to-point links.",
+      "The header includes source/destination addresses, protocol, TTL, and fields used for fragmentation and header integrity.",
+      "Private IPv4 ranges are not globally routed as public addresses; NAT is common but does not itself replace firewall policy."
+    ],
+    "steps": [
+      "Convert 192.0.2.10 to 32 bits: four octets, each eight bits.",
+      "Apply a /24 mask to identify 192.0.2.0 as the network prefix.",
+      "The host part is the final octet for /24.",
+      "Check routing, mask, gateway, and ACLs separately when diagnosing reachability."
+    ],
+    "usage": [
+      "Calculating network and broadcast addresses.",
+      "Reading interface configurations and firewall rules.",
+      "Understanding the roles and limitations of NAT."
+    ],
+    "mistakes": [
+      "Using the first three dotted octets as a universal subnet rule; prefixes can be any supported length.",
+      "Assuming every address ending in .255 is a broadcast address regardless of prefix.",
+      "Confusing private addressing with encryption or security."
+    ],
+    "interview": [
+      {
+        "q": "How many bits are in an IPv4 address?",
+        "a": "32 bits, commonly displayed as four decimal octets.",
+        "level": "beginner"
+      },
+      {
+        "q": "What does 192.0.2.10/24 mean?",
+        "a": "The prefix is 24 bits; the conventional subnet is 192.0.2.0/24 with host addresses in the remaining eight bits, subject to special-address rules.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "subnetting",
+    "section": "networks",
+    "title": "Subnetting",
+    "summary": "Carving a prefix into smaller networks. Masks, hosts, and the all-zero/all-one rules.",
+    "level": "intermediate",
+    "prereqs": [
+      "ipv4"
+    ],
+    "related": [
+      "cidr"
+    ],
+    "next": "cidr",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Subnetting divides an address block into smaller prefixes by extending the network prefix and reducing the number of host bits. CIDR notation makes the prefix length explicit, so subnet size is determined by the remaining address bits.",
+    "why": "Correct subnetting avoids overlap, allocates address space efficiently, and helps define routing and broadcast boundaries. A bad mask can cause failed local delivery or traffic to take an unexpected gateway path.",
+    "mental": "For IPv4 prefix /p, the host portion contains 32-p bits. The number of addresses in the block is 2^(32-p); usable host counts usually subtract network and broadcast addresses, except for special cases such as /31 point-to-point links.",
+    "points": [
+      "A /24 has 8 host bits and 256 total addresses; conventional usable hosts are 254.",
+      "Moving from /24 to /25 splits a block into two equal ranges with 128 addresses each.",
+      "The network address has every host bit zero; the directed broadcast has every host bit one in conventional subnets.",
+      "VLSM lets different subnets use different prefix lengths according to host needs.",
+      "Routing uses longest-prefix match: among matching routes, the most specific prefix is selected."
+    ],
+    "steps": [
+      "Requirement: a LAN needs about 50 conventional IPv4 host addresses.",
+      "A /26 provides 64 total addresses and normally 62 usable host addresses.",
+      "Choose a correctly aligned /26 block within the parent address range.",
+      "Verify network address, usable host range, broadcast, and that the next subnet does not overlap."
+    ],
+    "usage": [
+      "Planning LAN and VPC address ranges.",
+      "Solving network/broadcast and usable-host exam questions.",
+      "Debugging incorrect masks or overlapping routes."
+    ],
+    "mistakes": [
+      "Counting usable hosts as 2^hostbits for every conventional subnet without exceptions.",
+      "Choosing a prefix size but forgetting its network-block alignment.",
+      "Creating overlapping subnets or reserving no room for future growth."
+    ],
+    "interview": [
+      {
+        "q": "How many total IPv4 addresses are in a /26?",
+        "a": "There are 32−26 = 6 host bits, so 2^6 = 64 total addresses; a conventional subnet generally has 62 usable host addresses.",
+        "level": "beginner"
+      },
+      {
+        "q": "What is longest-prefix match?",
+        "a": "A router chooses the most specific matching route, meaning the route with the greatest prefix length.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "https",
+    "section": "networks",
+    "title": "HTTPS",
+    "summary": "HTTP over TLS. Confidentiality, integrity, and (usually) server authentication.",
+    "level": "beginner",
+    "prereqs": [
+      "http"
+    ],
+    "related": [],
+    "next": "ftp",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "HTTPS carries HTTP messages over a TLS-protected connection, commonly using TCP and TLS 1.3 or 1.2, or QUIC/TLS for HTTP/3. TLS authenticates the server using certificates and protects application data against network observation and modification when configured correctly.",
+    "why": "HTTPS protects credentials, session cookies, API requests, and page content over untrusted networks. It does not guarantee that a website is honest, that the browser is malware-free, or that a compromised server keeps its own data safe.",
+    "mental": "TLS establishes cryptographic keys and verifies the server's identity against a certificate and requested hostname. HTTP then travels inside the protected channel, rather than as readable application bytes on the network.",
+    "points": [
+      "A certificate chain links the server certificate to a trust anchor in the client trust store.",
+      "Hostname validation and certificate validity dates matter; encryption without correct identity checks can protect a connection to the wrong party.",
+      "TLS provides confidentiality and integrity for data in transit and authenticates the server in ordinary web usage.",
+      "HTTP status codes and API semantics remain application-layer concerns; TLS does not make a broken API correct.",
+      "Secure cookie flags, HSTS, authorization, and input validation solve different problems and complement HTTPS."
+    ],
+    "steps": [
+      "The browser resolves the hostname and connects to the server.",
+      "The client and server negotiate TLS parameters and validate certificates.",
+      "They establish traffic keys and protect subsequent records.",
+      "The browser sends the HTTP request inside the protected channel and checks the response."
+    ],
+    "usage": [
+      "Protecting logins, cookies, and API traffic.",
+      "Explaining certificates, trust chains, and browser security warnings.",
+      "Distinguishing transport security from application authorization."
+    ],
+    "mistakes": [
+      "Assuming the padlock proves a business is legitimate.",
+      "Ignoring certificate hostname errors or telling users to bypass them.",
+      "Treating HTTPS as a replacement for access control or secure application code."
+    ],
+    "interview": [
+      {
+        "q": "What security properties does HTTPS provide?",
+        "a": "TLS can provide confidentiality and integrity in transit and normally authenticates the server name through certificate validation.",
+        "level": "beginner"
+      },
+      {
+        "q": "Does HTTPS prevent SQL injection?",
+        "a": "No. It protects data in transit; SQL injection must be prevented by safe query construction, typically parameterized queries, and appropriate database permissions.",
+        "level": "beginner"
+      }
+    ]
+  },
+  {
+    "slug": "ethernet",
+    "section": "networks",
+    "title": "Ethernet",
+    "summary": "The LAN technology: CSMA/CD history, switching present, 802.3 framing.",
+    "level": "beginner",
+    "prereqs": [
+      "frames",
+      "mac-addresses"
+    ],
+    "related": [
+      "switching",
+      "vlan"
+    ],
+    "next": "switching",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Ethernet is a family of wired local-network technologies standardized mainly under IEEE 802.3. Modern switched full-duplex Ethernet links use frames and MAC addressing, while collision detection belongs primarily to the historical shared-medium/half-duplex model.",
+    "why": "Ethernet provides a common link-layer framing and delivery technology for local networks. Understanding frame boundaries, MAC addresses, VLAN tagging, and switches helps diagnose local connectivity independently of IP routing.",
+    "mental": "An Ethernet frame is the envelope used for one local-link hop. A switch learns which MAC addresses are reachable through its ports and forwards known unicast frames toward the appropriate port.",
+    "points": [
+      "A frame contains destination and source MAC addresses, a type/length field, payload, and frame-check sequence.",
+      "Switches learn source MAC addresses and associate them with ingress ports in a forwarding database.",
+      "Unknown unicast and broadcast frames may be flooded within a VLAN, subject to switch behavior and policy.",
+      "VLANs divide a physical switching fabric into logically separate layer-2 broadcast domains.",
+      "Full-duplex switched Ethernet avoids the collisions described by classic CSMA/CD shared-medium Ethernet."
+    ],
+    "steps": [
+      "Host A sends a frame addressed to Host B's MAC address.",
+      "The switch records A's source MAC on the incoming port.",
+      "If B's MAC is known in the same VLAN, the switch forwards only to B's port.",
+      "If unknown, the switch may flood the frame within the VLAN and learn B when it replies."
+    ],
+    "usage": [
+      "Troubleshooting link state, VLAN membership, and unexpected broadcasts.",
+      "Reading packet captures and switch forwarding tables.",
+      "Distinguishing local Ethernet forwarding from IP routing."
+    ],
+    "mistakes": [
+      "Saying modern switched full-duplex Ethernet still relies on collision detection in the same way as shared coaxial Ethernet.",
+      "Assuming a switch routes traffic between IP subnets without a layer-3 function.",
+      "Confusing MAC addresses with IP addresses or port numbers."
+    ],
+    "interview": [
+      {
+        "q": "What information does a basic Ethernet switch use to forward frames?",
+        "a": "It primarily uses the destination MAC address and its learned forwarding database within the relevant VLAN.",
+        "level": "beginner"
+      },
+      {
+        "q": "When does an Ethernet switch flood a frame?",
+        "a": "For broadcast traffic and often for unknown unicast or multicast according to its configuration and protocol behavior, within the relevant VLAN.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "arp",
+    "section": "networks",
+    "title": "ARP",
+    "summary": "Resolve IPv4 to MAC on a LAN. The cache, the timeout, and the spoof.",
+    "level": "intermediate",
+    "prereqs": [
+      "ip",
+      "mac-addresses"
+    ],
+    "related": [
+      "ipv4",
+      "ethernet"
+    ],
+    "next": "error-detection",
+    "tags": [
+      "networks",
+      "intermediate",
+      "core-concept"
+    ],
+    "what": "Address Resolution Protocol (ARP) discovers the layer-2 MAC address associated with an IPv4 address on the local link. A host broadcasts a request asking which device owns an IP address; the owner typically replies with its MAC address.",
+    "why": "IP routing needs a frame for the next local hop. When the destination is off-subnet, ARP resolves the gateway's MAC address rather than resolving the remote server's MAC directly.",
+    "mental": "IP chooses where a packet should go at the network layer; ARP finds the local Ethernet envelope recipient for the next hop. The answer is normally cached briefly to avoid broadcasting for every packet.",
+    "points": [
+      "ARP is for IPv4 on a local broadcast domain; IPv6 uses Neighbor Discovery.",
+      "An ARP request is normally broadcast, while the response is usually unicast to the requester.",
+      "ARP cache entries can be stale and refreshed; static and dynamic entries have different management properties.",
+      "ARP is not authenticated by default, which enables spoofing on a local network without additional protections.",
+      "ARP does not cross routers as a normal broadcast; each routed hop resolves its own next-hop address."
+    ],
+    "steps": [
+      "A host wants to send to a remote IPv4 destination.",
+      "It checks the routing table and chooses the default gateway as next hop.",
+      "If the gateway MAC is not in the ARP cache, the host broadcasts an ARP request for the gateway's IP.",
+      "The gateway replies with its MAC; the host sends an Ethernet frame to that MAC with the remote IP packet as payload."
+    ],
+    "usage": [
+      "Debugging a same-subnet host that cannot be reached.",
+      "Understanding gateway MAC resolution and ARP caches.",
+      "Assessing local-network spoofing risks and mitigations."
+    ],
+    "mistakes": [
+      "Trying to ARP for a remote internet server instead of the local gateway.",
+      "Assuming an ARP reply is cryptographically authenticated.",
+      "Confusing ARP cache problems with DNS resolution failures."
+    ],
+    "interview": [
+      {
+        "q": "If a server is on another subnet, whose MAC does the host resolve?",
+        "a": "The host normally resolves the next-hop router/default gateway's MAC, while the IP destination remains the remote server.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why is ARP spoofing possible?",
+        "a": "Basic ARP replies are not authenticated cryptographically, so a local attacker may send false IP-to-MAC mappings unless protections detect or prevent it.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "dhcp",
+    "section": "networks",
+    "title": "DHCP",
+    "summary": "Automatic host configuration: address, mask, gateway, DNS, lease.",
+    "level": "beginner",
+    "prereqs": [
+      "ipv4"
+    ],
+    "related": [
+      "dns"
+    ],
+    "next": "http",
+    "tags": [
+      "networks",
+      "beginner",
+      "core-concept"
+    ],
+    "what": "Dynamic Host Configuration Protocol (DHCP) automatically supplies network configuration such as an IP address, subnet mask/prefix, default gateway, DNS resolvers, and lease timing. DHCPv4 commonly uses UDP ports 67 and 68 and the discover-offer-request-acknowledge exchange.",
+    "why": "Manual addressing does not scale well and creates conflicting configurations. DHCP centralizes allocation and reduces mistakes, while leases allow addresses to be reused when clients leave.",
+    "mental": "Think of DHCP as a time-limited address lease from a network administrator. A client requests configuration, a server offers a lease, the client requests it, and the server confirms the parameters.",
+    "points": [
+      "The familiar DHCPv4 DORA sequence is Discover, Offer, Request, Acknowledge.",
+      "A lease has a duration; clients renew before expiry under the protocol's timing rules.",
+      "DHCP options convey more than the address itself, including gateway and DNS configuration.",
+      "A rogue or compromised DHCP server can give malicious gateway or resolver settings.",
+      "DHCP broadcasts stay within their local broadcast domain unless a relay forwards requests to a server elsewhere."
+    ],
+    "steps": [
+      "A new client joins a LAN without a usable IPv4 configuration.",
+      "It broadcasts DHCP Discover; one or more servers may send Offers.",
+      "The client requests one offered configuration and the chosen server sends an Acknowledgement.",
+      "The client configures its interface and later renews the lease as needed."
+    ],
+    "usage": [
+      "Investigating a host with no address, wrong gateway, or wrong DNS server.",
+      "Understanding DHCP relay in multi-subnet networks.",
+      "Planning address pools, reservations, lease periods, and conflict handling."
+    ],
+    "mistakes": [
+      "Assuming DHCP itself resolves human-readable hostnames; DNS does that.",
+      "Assuming a DHCP offer proves the server is trusted.",
+      "Checking only the assigned IP and ignoring the mask, gateway, DNS, lease, and duplicate-address state."
+    ],
+    "interview": [
+      {
+        "q": "What does DORA stand for in DHCPv4?",
+        "a": "Discover, Offer, Request, Acknowledge.",
+        "level": "beginner"
+      },
+      {
+        "q": "Why use a DHCP relay?",
+        "a": "It forwards client DHCP messages across a routed boundary to a server, because local broadcasts do not normally cross routers.",
+        "level": "intermediate"
+      }
+    ]
+  },
+  {
+    "slug": "congestion-control",
+    "section": "networks",
+    "title": "Congestion Control",
+    "summary": "Protecting the network from collapse: slow start, AIMD, ECN, and BBR.",
+    "level": "advanced",
+    "prereqs": [
+      "tcp",
+      "flow-control"
+    ],
+    "related": [
+      "tcp"
+    ],
+    "next": "dns",
+    "tags": [
+      "networks",
+      "advanced",
+      "core-concept"
+    ],
+    "what": "Congestion control adapts a sender's transmission rate to estimated network capacity and congestion. TCP algorithms infer congestion from signals such as loss, delay, or explicit congestion notification; designs differ in how they probe capacity and reduce sending rate.",
+    "why": "Without congestion control, senders can inject more traffic than links and routers can handle, increasing queues, delay, retransmissions, and loss for many flows. Congestion control balances throughput with stability and sharing.",
+    "mental": "Flow control protects the receiver from being overwhelmed; congestion control protects the path. A sender must respect both the receiver's advertised window and its congestion window.",
+    "points": [
+      "TCP's congestion window limits outstanding data in flight; the receiver window expresses receiver-side capacity.",
+      "Slow start probes available capacity rapidly from a small initial window, within the algorithm's current behavior.",
+      "AIMD-style algorithms increase cautiously and reduce on congestion signals, while modern algorithms may use different models.",
+      "Packet loss can indicate congestion but can also have other causes; algorithms use timing and protocol-specific signals.",
+      "Fairness is a property of competing flows and paths, not a guarantee that every connection receives identical throughput."
+    ],
+    "steps": [
+      "A sender starts with a conservative congestion window.",
+      "Successful acknowledgements permit the window to grow according to the algorithm.",
+      "A congestion signal such as loss or ECN causes a reduction or a model update.",
+      "The sender probes again while staying within the receiver's advertised window."
+    ],
+    "usage": [
+      "Explaining throughput collapse, queueing delay, and TCP behavior.",
+      "Distinguishing congestion control from receiver flow control.",
+      "Comparing different TCP congestion-control algorithms using measured workload results."
+    ],
+    "mistakes": [
+      "Treating the receiver window and congestion window as the same control.",
+      "Assuming every dropped packet proves congestion.",
+      "Comparing algorithms without accounting for RTT, bottlenecks, competing flows, and test conditions."
+    ],
+    "interview": [
+      {
+        "q": "How does flow control differ from congestion control?",
+        "a": "Flow control protects the receiver from excessive in-flight data; congestion control adapts sending to the network path's capacity.",
+        "level": "beginner"
+      },
+      {
+        "q": "What role does ECN play?",
+        "a": "Where supported and negotiated, Explicit Congestion Notification lets network devices mark packets to signal congestion without relying solely on packet drops.",
+        "level": "intermediate"
+      }
+    ]
+  }
+]
