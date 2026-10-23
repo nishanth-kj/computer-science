@@ -1,7 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const ORIGIN = (process.env.SITE_ORIGIN || "https://neuro-kodes.github.io/computer-science").replace(/\/$/, "");
+const cname = fs.existsSync("CNAME") ? fs.readFileSync("CNAME", "utf8").trim() : "";
+const fallbackOrigin = /^[a-z0-9.-]+$/i.test(cname) ? `https://${cname}` : "https://computer-science.site";
+const ORIGIN = (process.env.SITE_ORIGIN?.trim() || fallbackOrigin).replace(/\/+$/, "");
 const sectionGroups = JSON.parse(fs.readFileSync("src/data/content/section-groups.json", "utf8"));
 const PROGRAMMING = new Set(sectionGroups.find((g) => g.id === "programming")?.sections ?? []);
 const phases = JSON.parse(fs.readFileSync("src/data/content/phases.json", "utf8"));
