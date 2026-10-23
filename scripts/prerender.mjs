@@ -86,7 +86,7 @@ function renderExtraBlock(block) {
   if (block.type === "flow") return `<ol>${(block.steps ?? []).map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ol>`;
   return "";
 }
-function renderTopicBody(topic, navTopic, sectionTitleText, routePath) {
+function renderTopicBody(navTopic, sectionTitleText) {
   const detail = topicDetails.get(navTopic.slug);
   const relationLinks = (label, slugs) => {
     const links = (slugs ?? []).map((slug) => {
@@ -449,7 +449,7 @@ for (const t of navItems) {
   const desc = t.summary;
   const canonicalUrl = `${ORIGIN}${routePath}`;
 
-  const body = renderTopicBody(topicDetails.get(t.slug), t, sTitle, routePath);
+  const body = renderTopicBody(t, sTitle);
 
   const schema = {
     "@context": "https://schema.org",
