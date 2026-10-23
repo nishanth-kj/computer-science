@@ -145,8 +145,8 @@ function renderStaticPageBody(page) {
 const staticPages = [
   {
     path: "/",
-    title: "CS — Learn computer science in depth",
-    desc: "The path to learn full computer science in depth — programming, systems, networks, databases, AI, theory, and ordered learning paths.",
+    title: "Computer Science Handbook — Learn CS in Depth",
+    desc: "A free, structured computer science handbook with topic guides, code examples, visual explainers, prerequisites, and learning paths across programming, algorithms, operating systems, networking, databases, and AI.",
     h1: "Learn computer science in depth",
   },
   {
