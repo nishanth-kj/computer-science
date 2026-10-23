@@ -76,6 +76,9 @@ jobs:
           ADSENSE_PUBLISHER_ID: ${{ vars.ADSENSE_PUBLISHER_ID }}
           ADSENSE_IN_ARTICLE_SLOT: ${{ vars.ADSENSE_IN_ARTICLE_SLOT }}
           ADSENSE_LIBRARY_SLOT: ${{ vars.ADSENSE_LIBRARY_SLOT }}
+          SUPPORT_URL: ${{ vars.SUPPORT_URL }}
+          DIGITAL_PRODUCTS_URL: ${{ vars.DIGITAL_PRODUCTS_URL }}
+          NEWSLETTER_URL: ${{ vars.NEWSLETTER_URL }}
         run: |
           node scripts/generate-sitemap.mjs
           npx ng build --base-href "$BASE_HREF"
