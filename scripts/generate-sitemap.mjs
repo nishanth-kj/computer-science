@@ -37,6 +37,8 @@ const urls = [
   { loc: "/privacy", priority: "0.3", changefreq: "yearly" },
   { loc: "/terms", priority: "0.3", changefreq: "yearly" },
   { loc: "/contact", priority: "0.4", changefreq: "yearly" },
+  { loc: "/support", priority: "0.5", changefreq: "monthly" },
+  { loc: "/affiliate-disclosure", priority: "0.2", changefreq: "yearly" },
   ...sections.map((s) => ({ loc: sectionPath(s), priority: "0.8", changefreq: "weekly" })),
   ...topics.map((t) => ({ loc: topicPath(t.slug, t.section), priority: "0.7", changefreq: "monthly" })),
   ...paths.map((p) => ({ loc: `/paths/${p.id}`, priority: "0.6", changefreq: "monthly" })),
