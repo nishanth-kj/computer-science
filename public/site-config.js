@@ -5,7 +5,6 @@ window.__CS_SITE_CONFIG__ = Object.freeze({
   adsensePublisherId: "",
   adsenseSlots: Object.freeze({
     inArticle: "",
-    libraryBanner: "",
   }),
   supportUrl: "",
   digitalProductsUrl: "",
