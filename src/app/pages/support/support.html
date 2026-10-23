@@ -7,10 +7,35 @@
   </p>
 
   <h2>Reader support</h2>
-  <p>
-    A donation checkout is not connected yet, so this page does not pretend that a support payment is available.
-    For now, share useful pages, report mistakes, or contact us about helping fund the project.
-  </p>
+  @if (supportUrl) {
+    <p>
+      <a [href]="supportUrl" target="_blank" rel="noopener noreferrer" class="font-mono underline">Support the project</a>
+    </p>
+  } @else {
+    <p>
+      A support checkout is not connected yet. Once an active support page exists, set the GitHub Actions variable
+      <code>SUPPORT_URL</code> to its HTTPS URL to show it here.
+    </p>
+  }
+
+  <h2>Original study products</h2>
+  @if (digitalProductsUrl) {
+    <p>
+      <a [href]="digitalProductsUrl" target="_blank" rel="noopener noreferrer" class="font-mono underline">Browse downloadable study materials</a>
+    </p>
+  } @else {
+    <p>
+      Downloadable revision sheets, printable diagrams, and worked interview packs are potential paid products.
+      No storefront is connected yet; configure <code>DIGITAL_PRODUCTS_URL</code> only after the checkout is live.
+    </p>
+  }
+
+  <h2>Newsletter</h2>
+  @if (newsletterUrl) {
+    <p><a [href]="newsletterUrl" target="_blank" rel="noopener noreferrer" class="font-mono underline">Join the learning newsletter</a></p>
+  } @else {
+    <p>No newsletter provider is connected yet. Set <code>NEWSLETTER_URL</code> after a privacy-reviewed signup page is ready.</p>
+  }
 
   <h2>Educational sponsorships</h2>
   <p>
