@@ -31,6 +31,11 @@ for (const [slug, topic] of topicsBySlug) {
 const total = topicsBySlug.size;
 const percent = total ? Math.round((fullEditorial.length / total) * 100) : 0;
 console.log(`Editorial coverage: ${fullEditorial.length}/${total} topic routes have a definition, rationale, mental model, 3+ learning points, and 2+ interview questions (${percent}%).`);
+const minimumEditorialPercent = 95;
+if (percent < minimumEditorialPercent) {
+  console.error(`Editorial coverage is below the ${minimumEditorialPercent}% quality gate. Add authored lesson content rather than generated boilerplate.`);
+  process.exitCode = 1;
+}
 if (summaryOnly.length) {
   console.warn(`Content-quality warning: ${summaryOnly.length} topics remain summary-only. Write original explanations/examples before applying ads to those pages. First topics to improve: ${summaryOnly.slice(0, 20).join(", ")}`);
 }

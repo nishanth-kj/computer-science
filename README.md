@@ -59,6 +59,10 @@ The `/support` page explains reader support, the kinds of educational sponsorshi
 
 Use [docs/sponsorship-media-kit.md](docs/sponsorship-media-kit.md) as an internal template. Fill in verified figures before sending it to any prospective sponsor. See [docs/monetization-plan.md](docs/monetization-plan.md) for the wider roadmap and policy checklist.
 
+## Content quality
+
+Full lessons should teach a concept with a definition, rationale, mental model, worked trace, practical uses, mistakes, and answered questions. See [docs/editorial-standards.md](docs/editorial-standards.md) for authoring guidance. The production audit enforces a minimum editorial-coverage threshold and lists the remaining summary-only topics so they can be expanded deliberately.
+
 ## Test
 
 ```bash
